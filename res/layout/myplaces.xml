@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/mp_textview"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.30"
+        android:ellipsize="marquee"
+        android:text="@string/MP_tv"
+        android:textColor="#0f87ff"
+        android:textSize="10sp" />
+
+    <!-- ”marquee” ——以跑马灯的方式显示(动画横向移动) -->
+    
+<ListView
+        android:id="@+id/MP_list"
+        android:layout_width="fill_parent"
+        android:layout_height="60dp" >
+    </ListView>
+
+
+
+
+    <RatingBar
+        android:id="@+id/ratingBar1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:max="100"
+        android:numStars="5"
+        android:rating="2.5"
+        android:stepSize="20" />
+
+    <Button
+        android:id="@+id/BC_btn_MP"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/goback"
+        android:textColor="#0f87ff" />
+
+</LinearLayout>

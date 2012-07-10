@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>    
+<RelativeLayout     
+         android:layout_width="fill_parent"     
+         xmlns:android="http://schemas.android.com/apk/res/android"     
+         android:layout_height="wrap_content"     
+         android:paddingBottom="4dip"     
+         android:paddingLeft="12dip">    
+         
+    
+    <!-- paddingBottom="4dip"	Layout底部留出3像素空白区域
+		  paddingLeft="12dip"	Layout左边留出12像素空白
+		  textSize="30dip"		TextView的字体为30像素  -->
+		  
+		  
+         <TextView     
+               android:text="@string/wr_tv1"
+               android:layout_height="wrap_content"     
+               android:layout_width="fill_parent"     
+               android:id="@+id/itemTitle"
+               android:layout_toRightOf="@+id/itemImage" 
+               android:textSize="20dip">    
+         </TextView>  
+          <!-- itemTitle在itemImage的右边() -->
+         
+         
+         
+         <ImageView     
+             	 android:contentDescription="@string/app_name"
+               android:layout_width="wrap_content"     
+               android:id="@+id/itemImage" 
+               android:layout_height="fill_parent">     
+         </ImageView>    
+           
+         <TextView     
+               android:text="@string/wr_tv2"     
+               android:layout_height="wrap_content"     
+               android:layout_width="fill_parent"     
+               android:id="@+id/itemText" 
+               android:layout_toRightOf="@+id/itemImage" 
+               android:layout_below="@+id/itemTitle">    
+         </TextView>    
+</RelativeLayout>  

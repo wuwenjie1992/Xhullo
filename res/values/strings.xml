@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="hello">Hello World, HulooActivity!</string>
+    <string name="app_name">XHuloo</string>
+	<string name="ok">OK</string>
+    <string name="XA_activity_lable">XA_activity_lable[XHuloo]</string>
+    <string name="hint_checkbok">hint_checkbok</string>
+    
+    <string name="MP_activity_lable">MP_activity_lable[XHuloo]</string>
+    <string name="MP_tv">WHAT?</string>
+    
+    
+    <string name="PH_activity_lable">PH_activity_lable[XHuloo]</string>
+    
+    
+    <string name="MEM_activity_lable">MEM_activity_lable[XHuloo]</string>
+    
+    <string name="pleaseInput">pleaseInput</string>
+    <string name="notFond">notFond</string>
+    <string name="goback">GO BACK</string>
+    <string name="to_top">BACK_TO_TOP</string>
+    
+    <string name="WR_activity_lable">WR_activity_lable[XHuloo]</string>
+    <string name="wr_tv1">星期</string>
+    <string name="wr_tv2">提示</string>
+    
+    <string name="COM_activity_lable">COM_activity_lable[XHuloo]</string>
+    <string name="COM_compass">COM_compass_ImageView</string>
+    <string name="COM_TextView">compass信息：</string>
+</resources>

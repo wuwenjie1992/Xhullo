@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/main_textview"
+        android:layout_width="312dp"
+        android:layout_height="76dp"
+        android:layout_weight="0.00"
+        android:background="@drawable/ic_launcher"
+        android:text="@string/hello"
+        android:textColor="#ff0f0f"
+        android:textSize="28sp" />
+
+    <ImageView
+        android:contentDescription="@string/app_name"
+        android:id="@+id/imageView1"
+        android:layout_width="146dp"
+        android:layout_height="61dp"
+        android:src="@drawable/action"
+        android:visibility="invisible" />
+
+    <ListView
+        android:id="@+id/list1"
+        android:layout_width="fill_parent"
+        android:layout_height="46dp" >
+    </ListView>
+
+    <TextView
+        android:id="@+id/textView_sensor"
+        android:layout_width="287dp"
+        android:layout_height="71dp"
+        android:layout_weight="0.6"
+        android:textColor="#00e0ef"
+        android:textSize="9sp" />
+
+    <CheckBox
+        android:id="@+id/CheckBox_Accept"
+        android:layout_width="154dp"
+        android:layout_height="30dp"
+        android:layout_marginLeft="0dp"
+        android:layout_marginTop="0dp"
+        android:layout_weight="0.28"
+        android:hint="@string/hint_checkbok"
+        android:textColorHint="#ff0000"
+        android:textSize="10sp" />
+
+    <EditText
+        android:id="@+id/myEditText"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" >
+
+        <requestFocus />
+    </EditText>
+
+    <Button
+        android:id="@+id/widget40_button_OK"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:text="@string/ok"
+        android:textColor="#ffffff"
+        android:textSize="18sp" />
+
+</LinearLayout>
