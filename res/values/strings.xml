@@ -28,4 +28,20 @@
     <string name="COM_activity_lable">COM_activity_lable[XHuloo]</string>
     <string name="COM_compass">COM_compass_ImageView</string>
     <string name="COM_TextView">compass信息：</string>
+    
+    
+    
+	<!-- XhulooActivity_playmusic -->
+	<string name="PM_activity_lable">PM_activity_lable[XHuloo]</string>
+	<string name="music_PM">音乐</string>
+    <string name="previous_PM">上一首</string>
+    <string name="play_PM">播放</string>
+    <string name="next_PM">下一首</string>
+    <string name="pause_PM">暂停</string>
+          <string name="unbindservice_bt">unbindservice_bt</string>
+    <string name="bindservice_bt">bindservice_bt</string>
+    
+    
+    
+    
 </resources>

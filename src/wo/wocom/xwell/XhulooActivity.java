@@ -231,9 +231,9 @@ public class XhulooActivity extends Activity {
          * 4、文本，菜单的显示文本
          */
 
-        menu.add(Menu.NONE, Menu.FIRST + 1, 7, "删除").setIcon(
+        menu.add(Menu.NONE, Menu.FIRST + 1, 7, "音乐").setIcon(
 
-        android.R.drawable.ic_menu_delete);
+        android.R.drawable. ic_btn_speak_now);
 
         menu.add(Menu.NONE, Menu.FIRST + 2, 2, "保存").setIcon(
 
@@ -249,7 +249,7 @@ public class XhulooActivity extends Activity {
 
         menu.add(Menu.NONE, Menu.FIRST + 5, 4, "指南").setIcon(
 
-        R.drawable.compasslogo);
+        android.R.drawable.ic_menu_compass);
 
         menu.add(Menu.NONE, Menu.FIRST + 6, 3, "myplaces").setIcon(
 
@@ -273,7 +273,11 @@ public class XhulooActivity extends Activity {
 
         case Menu.FIRST + 1:
 
-            Toast.makeText(this, "XA_删除菜单点击", Toast.LENGTH_SHORT).show();
+        	Toast.makeText(this, "XA_音乐菜单点击", Toast.LENGTH_SHORT).show();
+        	/*跳转新界面activity */
+        	Intent intent03 = new Intent();    //新建Intent意图
+        	intent03.setClass(XhulooActivity.this, XhulooActivity_playmusic.class); 
+        	startActivity(intent03);  //跳转
 
             break;
 

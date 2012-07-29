@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+    
+ <TextView    
+     	 android:id="@+id/music_PM"
+        android:layout_width="fill_parent"   
+        android:layout_height="wrap_content"   
+        android:text="@string/music_PM"
+        />  
+    <LinearLayout  
+        android:orientation="horizontal"  
+        android:layout_width="fill_parent"  
+        android:layout_height="wrap_content"  
+    >  
+        <Button  
+            android:id="@+id/previous"  
+            android:layout_height="fill_parent"  
+            android:layout_width="wrap_content"  
+            android:layout_weight="1"  
+            android:text="@string/previous_PM"  
+        />  
+        <Button  
+            android:id="@+id/play"  
+            android:layout_height="fill_parent"  
+            android:layout_width="wrap_content"  
+            android:layout_weight="2"  
+            android:text="@string/play_PM"  
+        />  
+        <Button  
+            android:id="@+id/next"  
+            android:layout_height="fill_parent"  
+            android:layout_width="wrap_content"  
+            android:layout_weight="1"  
+            android:text="@string/next_PM"  
+        />  
+        <Button  
+            android:id="@+id/pause"  
+            android:layout_height="fill_parent"  
+            android:layout_width="wrap_content"  
+            android:layout_weight="1"  
+            android:text="@string/pause_PM"  
+        />  
+    </LinearLayout>  
+    
+    <Button
+        android:id="@+id/bindservice_bt"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/bindservice_bt" />
+    
+    <Button  
+            android:id="@+id/unbindservice_bt"  
+            android:layout_height="fill_parent"  
+            android:layout_width="wrap_content"  
+            android:text="@string/unbindservice_bt"  
+        />  
+    
+    
+</LinearLayout>

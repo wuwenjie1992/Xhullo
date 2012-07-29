@@ -13,6 +13,9 @@ import org.apache.http.util.EntityUtils;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -24,63 +27,79 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+/**
+ * @author  	wuwenjie	wuwenjie.tk
+ * @version  1.3.3
+ * @see		自定义列表模式；联网；解析JASON；
+ * 				联网、解析的耗时操作使用handler
+ */
 
 public class XhulooActivity_weatherreport extends Activity{
 
-	private static final String TAG = "MEM_Xhuloo";
+	private static final String TAG = "WR_Xhuloo";
+	
+	ListView listView; 
+	ListViewAdapter my_LVA;
+	String a1;
+	String[] titles=new String [4];//={a1,a1,a1,a1}; 
+	String[] texts={"文本内容A","文本内容B","文本内容C","文本内容D"};  
+	int[] resIds={R.drawable.action,
+			R.drawable.action,
+			R.drawable.action,
+			R.drawable.action}; 
+	
+	MyHandler myHandler;
+	
+    /*activity生命周期*/
+    public void onCreate(Bundle savedInstanceState) {    
 	
 	
-	ListView listView;  
-    String[] titles={"标题1","标题2","标题3","标题4"};  
-    String[] texts={"文本内容A","文本内容B","文本内容C","文本内容D"};  
-    int[] resIds={R.drawable.action,R.drawable.action,R.drawable.action,R.drawable.action}; 
-	
-    
-	/*activity生命周期*/
-	public void onCreate(Bundle savedInstanceState) {    
-	
-	
-	Log.i(TAG, "WR_onCreate------WR_Xhuloo");
-    super.onCreate(savedInstanceState);
-    setContentView(R.layout.wr);  //设置主布局
-    
-    listView=(ListView)this.findViewById(R.id.wr_lv);  
-    listView.setAdapter(new ListViewAdapter(titles,texts,resIds));  
-	
+    	Log.i(TAG, "WR_onCreate------WR_Xhuloo");
+    	super.onCreate(savedInstanceState);
+    	setContentView(R.layout.wr);  //设置主布局
+    	
+    	
+    	
+    	myHandler = new MyHandler();
+    	//创建新的Handler实例
+    	//绑定到当前线程和消息的队列中,开始分发数据
+    	MyThread m = new MyThread();
+    	new Thread(m).start();
+    	
+    	
+     	Log.i(TAG, "WR_main:"+a1+titles);
+     	
+     	
+     	ListView listView=(ListView)this.findViewById(R.id.wr_lv);  
+     	my_LVA=new ListViewAdapter(titles,texts,resIds);
+     	listView.setAdapter(my_LVA);  
+
+    	Log.i(TAG, "WR_main:"+a1+titles);
+        
+	//listView=(ListView)this.findViewById(R.id.wr_lv);  
+     //   listView.setAdapter(new ListViewAdapter(titles,texts,resIds));  
     //final TextView wr_tv=(TextView) findViewById(R.id.wr_tv);
     //wr_tv.setBackgroundResource(R.drawable.ic_launcher);
     
-    
-/*联网*/
-    String html_s ="html";
-    HttpGet httpGet_baoshang=new HttpGet("http://m.weather.com.cn/data/101020300.html");  
-    HttpClient httpClient=new DefaultHttpClient();  
-    try {  
-        //得到HttpResponse对象  
-        HttpResponse httpResponse=httpClient.execute(httpGet_baoshang);  
-        //HttpResponse的返回结果是不是成功  
-        if(httpResponse.getStatusLine().getStatusCode()==HttpStatus.SC_OK){  
-            //得到返回数据的字符串  
-            String dataImageStr=EntityUtils.toString(httpResponse.getEntity()); 
-            Log.i(TAG, "WR_html00-----WR_Xhuloo"+dataImageStr);
-            html_s=(dataImageStr);
-            return;
-        }  
-    } catch (ClientProtocolException e) {  e.printStackTrace(); } 
-    	catch (IOException e) { e.printStackTrace();   }  
-    
-    Log.i(TAG, "WR_html01-----WR_Xhuloo"+html_s);
-
+    //http://www.weather.com.cn/weather/101020100.shtml
+    //http://m.weather.com.cn/data/101020300.html
     
     
-    
-    
+     	
+        
+        
+        
+        
+        
+        
+        
+        
+        
 	}//oncreate
 
 	
 	
-	
-	
+    
 	
 
 
@@ -109,9 +128,11 @@ public class ListViewAdapter extends BaseAdapter {
         return position;  
     }  
 
-    private View makeItemView(String strTitle, String strText, int resId) {  
-        LayoutInflater inflater = (LayoutInflater)XhulooActivity_weatherreport.this  
-                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);  
+    private View makeItemView
+    			(String strTitle, String strText, int resId) {  
+        LayoutInflater inflater = 
+        			(LayoutInflater)XhulooActivity_weatherreport.this  
+        				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);  
 
         // 使用View的对象itemView与list_item.xml关联  
         View itemView = inflater.inflate(R.layout.list_item, null);
@@ -127,13 +148,14 @@ public class ListViewAdapter extends BaseAdapter {
         return itemView;  
     }  
 
-    public View getView(int position, View convertView, ViewGroup parent) {  
+    public View getView(int position,View convertView,ViewGroup parent){  
         if (convertView == null)  
             return itemViews[position];  
         return convertView; }  
+    
+    
+    
 				} //ListViewAdapter  
-
-
 
 
 
@@ -176,6 +198,162 @@ public boolean onOptionsItemSelected(MenuItem item) {
 public void onOptionsMenuClosed(Menu menu) {
     Toast.makeText(this, "wr_选项菜单关闭", Toast.LENGTH_SHORT).show();
 }
+
+
+
+
+
+
+//接收,处理消息,Handler与当前主线程一起运行
+
+public class MyHandler extends Handler {
+	
+	public MyHandler() {}
+
+	public MyHandler(Looper L) {super(L);}
+	
+	
+	//子类必须重写此方法,接受数据
+	public void handleMessage(Message msg) {
+  
+		Log.d("MyHandler", "handleMessage......");
+		super.handleMessage(msg);
+
+        // 传递信息以更新UI
+        Bundle b = msg.getData();
+        a1 = b.getString("a1");
+        Log.i(TAG, "WR_handleMessage:"+a1);
+        
+        
+        for(int i=0;i<4;i++){
+        titles[i]=a1; 
+        Log.i(TAG, "titles:"+titles[i]);}
+        
+        my_LVA.notifyDataSetChanged();//通知数据改变，反应该刷新视图
+     	 listView.setAdapter(my_LVA);  // 重新设置ListView的数据适配器
+
+     	 
+     	 ///////07-15 16:48:02.045: E/AndroidRuntime(7667): java.lang.NullPointerException
+     	 		//还是没有收到titles
+      	
+     	 
+    	//listView.setAdapter(new ListViewAdapter(titles,texts,resIds));
+      	
+        
+    }
+	
+	
+}
+//myhandler end
+
+
+
+
+public class MyThread implements Runnable {
+    public void run() {
+        Log.i(TAG, "MyThread_start");
+
+    	/*联网*/
+     	String html_s=a1;
+     	HttpGet httpGet=new HttpGet("http://m.weather.com.cn/data/101020300.html");  
+        HttpClient httpClient=new DefaultHttpClient();  
+        try {  
+            //得到HttpResponse对象  
+            HttpResponse httpResponse=httpClient.execute(httpGet);  
+            //HttpResponse的返回结果是不是成功  
+            if(httpResponse.getStatusLine().getStatusCode()==HttpStatus.SC_OK){  
+                //得到返回数据的字符串  
+                String data_s=EntityUtils.toString(httpResponse.getEntity());  
+                Log.i(TAG, "WR"+data_s); 
+                html_s=data_s;
+                Log.i(TAG, "WR02"+html_s.length());
+
+            }  
+        } catch (ClientProtocolException e) { e.printStackTrace();} 
+        	catch (IOException e) { e.printStackTrace();  }  
+     
+        a1=html_s.substring(0,10);
+       
+        Message msg = new Message();
+        Bundle b = new Bundle();// 存放数据
+        b.putString("a1",a1);
+        msg.setData(b);
+
+        XhulooActivity_weatherreport.this.myHandler.sendMessage(msg); 
+        //向Handler发送消息,更新UI
+
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+
+public class HttpURLConnectionActivity extends Activity {  
+    
+    private ImageView imageView;  
+    @Override  
+    protected void onCreate(Bundle savedInstanceState) {  
+        // TODO Auto-generated method stub  
+        super.onCreate(savedInstanceState);  
+        setContentView(R.layout.simple1);  
+          
+        imageView=(ImageView) this.findViewById(R.id.imageView1);  
+        //传入网络图片地址  
+        try {  
+            URL url = new URL("http://news.xinhuanet.com/photo/2012-02/09/122675973_51n.jpg");  
+            HttpURLConnection conn= (HttpURLConnection) url.openConnection();  
+            conn.setRequestMethod("GET");  
+            conn.setConnectTimeout(5*1000);  
+            conn.connect();  
+            InputStream in=conn.getInputStream();  
+            ByteArrayOutputStream bos=new ByteArrayOutputStream();  
+            byte[] buffer=new byte[1024];  
+            int len = 0;  
+            while((len=in.read(buffer))!=-1){  
+                bos.write(buffer,0,len);  
+            }  
+            byte[] dataImage=bos.toByteArray();  
+            bos.close();  
+            in.close();  
+            Bitmap bitmap=BitmapFactory.decodeByteArray(dataImage, 0, dataImage.length);  
+            //Drawable drawable=BitmapDrawable.  
+            imageView.setImageBitmap(bitmap);  
+        } catch (Exception e) {  
+            // TODO Auto-generated catch block  
+            e.printStackTrace();  
+            Toast.makeText(getApplicationContext(), "图片加载失败", 1).show();  
+        }  
+          
+    }  
+}  
+
+*/
+
+
 
 
 
