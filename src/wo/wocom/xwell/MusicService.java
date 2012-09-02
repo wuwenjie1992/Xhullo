@@ -2,6 +2,7 @@ package wo.wocom.xwell;
 
 import java.io.IOException;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Service;
 import android.content.DialogInterface;
@@ -15,7 +16,7 @@ import android.util.Log;
 
 /**
  * @author  	wuwenjie	wuwenjie.tk
- * @version  1.3.2
+ * @version  1.3.3
  * @see		音乐服务;接受其他activity的调用，返回结果
  */
 
@@ -26,6 +27,11 @@ public class MusicService extends Service {
 	public static final String PAUSE_ACTION = "wo.wocom.xwell.PAUSE_ACTION";  
 	public static final String NEXT_ACTION = "wo.wocom.xwell.NEXT_ACTION";  
 	public static final String PREVIOUS_ACTION = "wo.wocom.xwell.PREVIOUS_ACTION";
+	public static final String URL_ACTION = "wo.wocom.xwell.URL_ACTION";
+
+	@SuppressLint("SdCardPath")
+	String mp3filePath_s_P="/sdcard/music/幻听.mp3";//真实播放路径
+	String mp3filePath_s=null;
 	
 	private MediaPlayer MediaPlayer_MS;  
 	private MyBinder mBinder = new MyBinder();  
@@ -48,22 +54,39 @@ public class MusicService extends Service {
         Log.i(TAG, "onCreate MUSIC_SERVICE_Xhuloo");
         MediaPlayer_MS = new MediaPlayer();  
         
+        
+        
     }  
 	  
 	
 	public void onStart(Intent intent, int startId) {  
+		
         super.onStart(intent, startId);  
           
+        String mp3filePath_s = intent.getStringExtra("PM_URL");
+        Log.i(TAG, "onCreate MUSIC_SERVICE_Xhuloo"+mp3filePath_s);
+        
         String action = intent.getAction();  
-        if(action.equals(PLAY_ACTION)){  
-        	  inite();  
-        }else if(action.equals(PAUSE_ACTION)){  
-        	 stopSelf();  //pause();  
-        }else if(action.equals(NEXT_ACTION)){  
-        	  inite();    
-        }else if(action.equals(PREVIOUS_ACTION)){  
+        if(action.equals(PLAY_ACTION)){	
+        		inite();
+        	}
+        else if(action.equals(PAUSE_ACTION)){	
+        				stopSelf();  //pause();  
+        	}
+        else if(action.equals(NEXT_ACTION)){	
+        	inite();    
+        	}
+        else if(action.equals(PREVIOUS_ACTION))	{  
         	  inite();  //previous();  
-        }  
+        	}  
+        else if(action.equals(URL_ACTION)){
+        	
+        	if(mp3filePath_s!=null){
+        		mp3filePath_s_P =mp3filePath_s;//文件路径字符串
+        	}
+      	  inite();  //初始化 播放 音乐  
+      	
+      }  
     }  
 	
 	public void onDestroy() {  
@@ -74,15 +97,14 @@ public class MusicService extends Service {
 
 	
 	//自定义 初始化 播放 音乐
-    public void inite() {  
+    public void inite() { 
+    	
         MediaPlayer_MS.reset();  
        
         try {  
         	
-        	String mp3filePath_s ="//sdcard///music//////幻听.mp3";//文件路径字符串
         	
-        	MediaPlayer_MS.setDataSource(mp3filePath_s);
-            //MediaPlayer_MS.setDataSource(dataSource);  
+        	MediaPlayer_MS.setDataSource(mp3filePath_s_P);//文件路径字符串
           MediaPlayer_MS.prepare();
           MediaPlayer_MS.start();
          } catch (IllegalArgumentException e1) { e1.printStackTrace();  

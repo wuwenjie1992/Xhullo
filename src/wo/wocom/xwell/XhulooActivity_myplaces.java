@@ -24,7 +24,7 @@ import android.widget.Toast;
 
 /**
  * @author  	wuwenjie	wuwenjie.tk
- * @version  1.3.2
+ * @version  1.3.3
  * @see		屏幕信息，文件游览功能，PHONE，MEM
  */
 
@@ -212,10 +212,9 @@ public class XhulooActivity_myplaces extends Activity{
 
 	        R.drawable.memory); //自己提供的资源是以R开头
 
-	        menu.add(Menu.NONE, Menu.FIRST + 2, 2, "帮助").setIcon(
+	        menu.add(Menu.NONE, Menu.FIRST + 2, 2, "CPU").setIcon(
 
-	        android.R.drawable.ic_menu_help);
-
+	        android.R.drawable.dialog_frame);
 
 	        menu.add(Menu.NONE, Menu.FIRST + 3, 3, "详细").setIcon(
 
@@ -225,12 +224,13 @@ public class XhulooActivity_myplaces extends Activity{
 
 	        android.R.drawable.ic_menu_call);
 	        
-	       
+	        menu.add(Menu.NONE, Menu.FIRST + 5, 5, "水波").setIcon(
 
-	        menu.add(Menu.NONE, Menu.FIRST + 5, 5, "退出").setIcon(
+	                android.R.drawable. progress_indeterminate_horizontal);
+	        
+	        menu.add(Menu.NONE, Menu.FIRST + 6, 6, "返回").setIcon(
 
 	                android.R.drawable.ic_menu_revert);
-	        
 	        return true;
 
 	    }
@@ -249,15 +249,17 @@ public class XhulooActivity_myplaces extends Activity{
     	
     				startActivityForResult(intent2, 0);  //跳转，此处的0 OR >=0
 	        
-	        
-	        
-	        
 	            break;
 
 	        case Menu.FIRST + 2:
 
-	            Toast.makeText(this, "MP_帮助：wewenjie.tk", Toast.LENGTH_SHORT).show();
+	            Toast.makeText(this, "MP_CPU：wewenjie.tk", Toast.LENGTH_SHORT).show();
 	        
+	        	/*跳转新界面activity */
+	        	Intent intent01 = new Intent();    //新建Intent意图
+    			intent01.setClass(XhulooActivity_myplaces.this, XhulooActivity_cupinfo.class); 
+    				//方便的调用名称为,返回一个Class对象
+    			startActivity(intent01);  //跳转
 	        
 	            break;
 
@@ -276,16 +278,24 @@ public class XhulooActivity_myplaces extends Activity{
 	    		intent.setClass(XhulooActivity_myplaces.this, XhulooActivity_PHONE.class); 
 	    				//方便的调用名称为,返回一个Class对象
 	    	
-	    		startActivityForResult(intent, 0);  //跳转，此处的0 OR >=0
+	    		startActivity(intent);  //跳转
 	    	
 	            break;
 
 	        case Menu.FIRST + 5:
+	        	/*跳转新界面activity */
+	    		Intent intent3 = new Intent();    //新建Intent意图
+	    		intent3.setClass(XhulooActivity_myplaces.this, XAplasma.class); 
+	    				//方便的调用名称为,返回一个Class对象
+	    		startActivity(intent3);  //跳转
+	    		
+	        break;
+
+	        case Menu.FIRST + 6:
 	            Toast.makeText(this, "MP_退出菜单点击", Toast.LENGTH_SHORT).show();
 	             Log.i(TAG, "XhulooActivity.this.finish()");
 	        	   XhulooActivity_myplaces.this.finish();  
 	        break;
-
 	        }
 
 	        return false;

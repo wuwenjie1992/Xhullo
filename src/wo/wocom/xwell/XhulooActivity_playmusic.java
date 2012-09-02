@@ -16,8 +16,8 @@ import android.widget.Toast;
 
 /**
  * @author  	wuwenjie	wuwenjie.tk
- * @version  1.3.2
- * @see		音乐播放界面，调用服务，启动MusicService
+ * @version  1.3.3
+ * @more		音乐播放界面，调用服务，启动MusicService
  */
 
 public class XhulooActivity_playmusic extends Activity implements OnClickListener{
@@ -89,7 +89,8 @@ public class XhulooActivity_playmusic extends Activity implements OnClickListene
     //按钮监听响应
     public void onClick(View v) {
 		
-		switch(v.getId()){   
+		switch(v.getId()){
+		
 			case R.id.previous:   
 		
         	 Log.i(TAG, "PM_Previous_bt------PM_Xhuloo");
@@ -128,6 +129,20 @@ public class XhulooActivity_playmusic extends Activity implements OnClickListene
         	 Intent i  = new Intent();  
         	 i.setClass(XhulooActivity_playmusic.this, MusicService.class);  
         	 mContext.bindService(i, msc, BIND_AUTO_CREATE); //执行IBinder() 
+        	 break;  
+        	 
+         case R.id.unbindservice_bt:
+        	 
+        	 Intent mIntent05 = new Intent(MusicService.URL_ACTION);
+        	 mIntent05.setComponent(component); 
+        	 
+        	 Bundle Bundle_PM = new Bundle();    
+     		 Bundle_PM.putString("PM_URL", "/sdcard/music//22.mp3");//加入数据 参数：key-Data value  
+     		 mIntent05.putExtras(Bundle_PM);  //添加附加信息 
+     		 
+        	 startService(mIntent05); 
+        	 
+        	 break;  
         }  
 	}//onClick
 	
@@ -166,7 +181,7 @@ public class XhulooActivity_playmusic extends Activity implements OnClickListene
 			 
 			 
 	//自定义与Toast有关的函数，减少代码量，简洁		 
-	 void return_toast(String show){
+	public void return_toast(String show){
 					
 				 Toast.makeText(XhulooActivity_playmusic.this, show, Toast.LENGTH_SHORT).show();
 				 return ;

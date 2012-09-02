@@ -10,6 +10,14 @@
         android:layout_height="wrap_content"   
         android:text="@string/music_PM"
         />  
+        
+     <Button
+        android:id="@+id/unbindservice_bt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/unbindservice_bt" />
+        
+     <!-- orientation:方向,horizontal:横 -->
     <LinearLayout  
         android:orientation="horizontal"  
         android:layout_width="fill_parent"  
@@ -51,12 +59,6 @@
         android:layout_height="wrap_content"
         android:text="@string/bindservice_bt" />
     
-    <Button  
-            android:id="@+id/unbindservice_bt"  
-            android:layout_height="fill_parent"  
-            android:layout_width="wrap_content"  
-            android:text="@string/unbindservice_bt"  
-        />  
     
     
 </LinearLayout>

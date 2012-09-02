@@ -9,7 +9,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:contentDescription="@string/COM_compass"
-        android:src="@drawable/compass" />
+        android:src="@drawable/action" />
 
     <TextView
         android:id="@+id/COM_textView"

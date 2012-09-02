@@ -1,6 +1,7 @@
 package wo.wocom.xwell;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -23,14 +24,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 /**
  * @author  	wuwenjie	wuwenjie.tk
- * @version  1.3.3
- * @see		自定义列表模式；联网；解析JASON；
+ * @version  1.3.5
+ * @more		自定义列表模式；联网；解析JASON；
  * 				联网、解析的耗时操作使用handler
  */
 
@@ -49,6 +49,9 @@ public class XhulooActivity_weatherreport extends Activity{
 			R.drawable.action}; 
 	
 	MyHandler myHandler;
+	int i;
+	
+	List <weatherinfo> itemlist;
 	
     /*activity生命周期*/
     public void onCreate(Bundle savedInstanceState) {    
@@ -67,11 +70,14 @@ public class XhulooActivity_weatherreport extends Activity{
     	new Thread(m).start();
     	
     	
+    	
+    	
+    	
      	Log.i(TAG, "WR_main:"+a1+titles);
      	
      	
      	ListView listView=(ListView)this.findViewById(R.id.wr_lv);  
-     	my_LVA=new ListViewAdapter(titles,texts,resIds);
+     	my_LVA=new ListViewAdapter(titles);
      	listView.setAdapter(my_LVA);  
 
     	Log.i(TAG, "WR_main:"+a1+titles);
@@ -85,10 +91,6 @@ public class XhulooActivity_weatherreport extends Activity{
     //http://m.weather.com.cn/data/101020300.html
     
     
-     	
-        
-        
-        
         
         
         
@@ -102,18 +104,19 @@ public class XhulooActivity_weatherreport extends Activity{
     
 	
 
-
+//自定义LISTVIEW
 public class ListViewAdapter extends BaseAdapter {  
-    View[] itemViews;  
+    
+	View[] itemViews;  
+	
+	
+    public ListViewAdapter(String[]itemTitles) {  
+    	
+		itemViews = new View[itemTitles.length];  //itemViews.length=有几个图即几行
 
-    public ListViewAdapter(String[] itemTitles, String[] itemTexts,  
-            int[] itemImageRes) {  
-        itemViews = new View[itemTitles.length];  
-
-        for (int i = 0; i < itemViews.length; i++) {  
-            itemViews[i] = makeItemView(itemTitles[i], itemTexts[i],  
-                    itemImageRes[i]);  
-        }  
+        	for (i = 0; i < itemViews.length; i++) {  
+            itemViews[i] = makeItemView(texts[i],texts[i],texts[i],texts[i]);  
+        					}  //调用makeItemView自定义函数，来组织界面，返回对象
     }  
 
     public int getCount() {  
@@ -129,7 +132,8 @@ public class ListViewAdapter extends BaseAdapter {
     }  
 
     private View makeItemView
-    			(String strTitle, String strText, int resId) {  
+    			(String strweek, String strweather, String temp,String advise) {  
+    	
         LayoutInflater inflater = 
         			(LayoutInflater)XhulooActivity_weatherreport.this  
         				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);  
@@ -138,13 +142,18 @@ public class ListViewAdapter extends BaseAdapter {
         View itemView = inflater.inflate(R.layout.list_item, null);
 
         // 通过findViewById()方法实例R.layout.item内各组件  
-        TextView title = (TextView) itemView.findViewById(R.id.itemTitle);  
-        title.setText(strTitle);  
-        TextView text = (TextView) itemView.findViewById(R.id.itemText);  
-        text.setText(strText);  
-        ImageView image = (ImageView) itemView.findViewById(R.id.itemImage);  
-        image.setImageResource(resId);  
-          
+        TextView strweek_tv = (TextView) itemView.findViewById(R.id.strweek_tv);  
+        strweek_tv.setText(strweek);  
+        
+        TextView strweather_tv = (TextView) itemView.findViewById(R.id.strweather_tv);  
+        strweather_tv.setText(strweather); 
+        
+        TextView temp_tv = (TextView) itemView.findViewById(R.id.temp_tv);  
+        temp_tv.setText(temp);
+        
+        TextView advise_tv = (TextView) itemView.findViewById(R.id.advise_tv);  
+        advise_tv.setText(advise);
+        
         return itemView;  
     }  
 
@@ -161,48 +170,7 @@ public class ListViewAdapter extends BaseAdapter {
 
 
 
-
-/*菜单制作*/
-public boolean onCreateOptionsMenu(Menu menu) {
-  /*  add()四个参数
-     * 1、组别，如果不分组的话就写Menu.NONE
-    * 2、Id,根据Id来确定不同菜单
-     * 3、顺序，菜单出现的顺序
-     * 4、文本，菜单的显示文本
-     */
-	menu.add(Menu.NONE, Menu.FIRST +1,2, "返回").setIcon(
-
-            android.R.drawable.ic_menu_revert);
-    
-    return true;
-
-}
-
-@Override
-public boolean onOptionsItemSelected(MenuItem item) {
-    switch (item.getItemId()) {
-    
-    case Menu.FIRST +1:
-        
-         Log.i(TAG, "XhulooActivity.this.finish()");
-         XhulooActivity_weatherreport.this.finish();  
-    break;
-
-    }
-
-    return false;
-
-}
-
-@Override
-public void onOptionsMenuClosed(Menu menu) {
-    Toast.makeText(this, "wr_选项菜单关闭", Toast.LENGTH_SHORT).show();
-}
-
-
-
-
-
+///////////////////////////////////////////////////////////////////////////////////////////
 
 //接收,处理消息,Handler与当前主线程一起运行
 
@@ -216,7 +184,7 @@ public class MyHandler extends Handler {
 	//子类必须重写此方法,接受数据
 	public void handleMessage(Message msg) {
   
-		Log.d("MyHandler", "handleMessage......");
+		Log.i("MyHandler", "handleMessage......");
 		super.handleMessage(msg);
 
         // 传递信息以更新UI
@@ -229,13 +197,13 @@ public class MyHandler extends Handler {
         titles[i]=a1; 
         Log.i(TAG, "titles:"+titles[i]);}
         
-        my_LVA.notifyDataSetChanged();//通知数据改变，反应该刷新视图
-     	 listView.setAdapter(my_LVA);  // 重新设置ListView的数据适配器
+        
+        
+        //my_LVA=new ListViewAdapter(titles,texts,resIds);
+        
+        ///////my_LVA.notifyDataSetChanged();//通知数据改变，反应该刷新视图
+     	 //listView.setAdapter(my_LVA);  // 重新设置ListView的数据适配器
 
-     	 
-     	 ///////07-15 16:48:02.045: E/AndroidRuntime(7667): java.lang.NullPointerException
-     	 		//还是没有收到titles
-      	
      	 
     	//listView.setAdapter(new ListViewAdapter(titles,texts,resIds));
       	
@@ -287,6 +255,33 @@ public class MyThread implements Runnable {
 
 
 
+////////////////////////////////////////////////////////////////////////////////////////////
+
+
+//自定义 weatherinfo 类
+public class weatherinfo{
+	
+	private String week;		//星期几
+	private String weather;//天气
+	private String temp;//气温  
+	private String advise;//建议
+	
+	public String getweek() { return week;}  
+	public void setweek(String week) {this.week = week;} 
+   
+   public String getweather() { return weather;}  
+   public void setweather(String weather) {this.weather = weather;}  
+ 
+   public String gettemp() { return temp;}  
+   public void settemp(String temp) {this.temp = temp;} 
+   
+   public String getadvise() { return advise;}  
+   public void setadvise(String advise) {this.advise = advise;} 
+   
+}
+
+
+//http://blog.segmac.com/blog/android-google-weather-api.html
 
 
 
@@ -300,11 +295,42 @@ public class MyThread implements Runnable {
 
 
 
+/*菜单制作*/
+public boolean onCreateOptionsMenu(Menu menu) {
+  /*  add()四个参数
+     * 1、组别，如果不分组的话就写Menu.NONE
+    * 2、Id,根据Id来确定不同菜单
+     * 3、顺序，菜单出现的顺序
+     * 4、文本，菜单的显示文本
+     */
+	menu.add(Menu.NONE, Menu.FIRST +1,2, "返回").setIcon(
 
+            android.R.drawable.ic_menu_revert);
+    
+    return true;
 
+}
 
+@Override
+public boolean onOptionsItemSelected(MenuItem item) {
+    switch (item.getItemId()) {
+    
+    case Menu.FIRST +1:
+        
+         Log.i(TAG, "XhulooActivity.this.finish()");
+         XhulooActivity_weatherreport.this.finish();  
+    break;
 
+    }
 
+    return false;
+
+}
+
+@Override
+public void onOptionsMenuClosed(Menu menu) {
+    Toast.makeText(this, "wr_选项菜单关闭", Toast.LENGTH_SHORT).show();
+}
 
 
 

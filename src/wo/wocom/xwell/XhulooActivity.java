@@ -27,7 +27,7 @@ import android.widget.Toast;
 /**
  * @author  	wuwenjie	wuwenjie.tk
  * @version  1.3.2
- * @see		程序入口
+ * @more		程序入口
  */
 
 
@@ -235,9 +235,9 @@ public class XhulooActivity extends Activity {
 
         android.R.drawable. ic_btn_speak_now);
 
-        menu.add(Menu.NONE, Menu.FIRST + 2, 2, "保存").setIcon(
+        menu.add(Menu.NONE, Menu.FIRST + 2, 2, "球").setIcon(
 
-        android.R.drawable.ic_menu_edit);
+        android.R.drawable.presence_online);
 
         menu.add(Menu.NONE, Menu.FIRST + 3, 6, "帮助").setIcon(
 
@@ -259,7 +259,11 @@ public class XhulooActivity extends Activity {
 
                 android.R.drawable.ic_menu_today);
 
-        menu.add(Menu.NONE, Menu.FIRST + 8, 8, "退出").setIcon(
+        menu.add(Menu.NONE, Menu.FIRST + 8, 8, "录音").setIcon(
+
+                android.R.drawable.ic_menu_revert);
+        
+        menu.add(Menu.NONE, Menu.FIRST + 9, 9, "退出").setIcon(
 
                 android.R.drawable.ic_menu_revert);
         
@@ -284,7 +288,11 @@ public class XhulooActivity extends Activity {
         case Menu.FIRST + 2:
 
             Toast.makeText(this, "XA_保存菜单点击", Toast.LENGTH_SHORT).show();
-
+        		/*跳转新界面activity */
+    			Intent intent05 = new Intent();    //新建Intent意图
+    			intent05.setClass(XhulooActivity.this, XA_touchball.class); 
+    			startActivity(intent05);  //跳转
+    			
             break;
 
         case Menu.FIRST + 3:
@@ -362,11 +370,24 @@ public class XhulooActivity extends Activity {
             
         case Menu.FIRST + 8:
 
-             Toast.makeText(this, "XA_退出菜单点击", Toast.LENGTH_SHORT).show();
-             Log.i(TAG, "XhulooActivity.this.finish()");
-        	   XhulooActivity.this.finish(); 
-        		
-            break;
+        	Toast.makeText(this, "XA_录音菜单点击", Toast.LENGTH_SHORT).show();
+       		/*跳转新界面activity */
+        	Intent intent04 = new Intent();    //新建Intent意图
+        	intent04.setClass(XhulooActivity.this, XhulooActivity_audioRecord.class); 
+        	startActivity(intent04);  //跳转，此处的0 OR >=0
+        	
+        	break;
+            
+        case Menu.FIRST +9:
+
+        	Toast.makeText(this, "XA_退出菜单点击", Toast.LENGTH_SHORT).show();
+        	Log.i(TAG, "XhulooActivity.this.finish()");
+        	XhulooActivity.this.finish();
+        	
+        	break;  
+            
+            
+            
             
             
         }

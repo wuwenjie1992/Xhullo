@@ -13,6 +13,11 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+/**
+ * @author  	wuwenjie	wuwenjie.tk
+ * @version  1.3.1
+ * @more		通讯信息；ANDROID_ID
+ */
 public class XhulooActivity_PHONE extends Activity{
 
 	private static final String TAG = "PH_Xhuloo";
