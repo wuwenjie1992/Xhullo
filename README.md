@@ -1,10 +1,22 @@
-Xhullo
+
+##Xhullo
 ======
 
-Xhullo---a small android applicattion demo
+##What is Xhullo
 
-20120903	1. add android NDK (C code)
+* a small android application demo
 
-		2. XhulooActivity_weatherreport.java
-		   XhulooActivity_compass.java
-		   errors still exist
+
+##ChangeLog
+* 20120903
+    * Add android NDK (C code)
+* 20120909
+    * Modified README.md
+
+##Bug Reports
+* 20120903
+    * XhulooActivity_weatherreport.java
+    * XhulooActivity_compass.java
+
+##About Author 
+* WebSite:[wuwenjie.tk](http://www.wuwenjie.tk)
