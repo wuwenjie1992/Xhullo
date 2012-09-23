@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+    
+    <!-- orientation:方向,horizontal:横 
+    						vertical:竖	-->
+    
+    <!-- 命令区域 -->
+   <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" > 
+        
+    <TextView 
+			android:id="@+id/ss_cmd_tv"
+       	android:text="@string/ss_cmd_tv_s"
+       	android:textColor="#AEE3EF"
+       	android:textSize="20sp"
+       	android:layout_width="wrap_content"
+       	android:layout_height="wrap_content">
+           </TextView>
+           
+    <EditText
+        android:id="@+id/ss_cmd_et"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:inputType="text"
+        android:text="@string/ss_cmd_et_s" />
+    
+	</LinearLayout>
+    
+   <!-- 参数区域 -->
+   <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" > 
+   
+   <TextView 
+			android:id="@+id/ss_parameter_tv"
+       	android:text="@string/ss_parameter_tv_s"
+       	android:textColor="#AEE3EF"
+       	android:textSize="20sp"
+       	android:layout_width="wrap_content"
+       	android:layout_height="wrap_content">
+           </TextView>
+           
+    <EditText
+        android:id="@+id/ss_parameter_et"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:inputType="text"
+        android:text="@string/ss_parameter_et_s" />
+   
+   </LinearLayout>
+   
+   <!-- 工作域区域 -->
+   <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" > 
+   
+   <TextView 
+			android:id="@+id/ss_workdir_tv"
+       	android:text="@string/ss_workdir_tv_s"
+       	android:textColor="#AEE3EF"
+       	android:textSize="20sp"
+       	android:layout_width="wrap_content"
+       	android:layout_height="wrap_content">
+           </TextView>
+           
+    <EditText
+        android:id="@+id/ss_workdir_et"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:inputType="text"
+        android:text="@string/ss_workdir_et_s" />
+   
+   </LinearLayout>
+   
+   <!-- 提交按钮 -->
+   <Button
+        android:id="@+id/ss_update_bt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/ss_update_bt" />
+    
+    <!-- 结果 -->
+    <ScrollView 
+    		android:layout_width="fill_parent" 
+    		android:layout_height="fill_parent">
+    <TableLayout
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:stretchColumns="1">
+        
+    <TableRow>
+      <TextView
+			android:id="@+id/ss_output_tv"
+       	android:text="@string/ss_output"
+       	android:textColor="#AEE3EF"
+       	android:textSize="20sp"
+       	android:layout_width="wrap_content"
+       	android:layout_height="wrap_content">
+          </TextView>
+     </TableRow>
+
+    </TableLayout>
+ </ScrollView>
+
+</LinearLayout>

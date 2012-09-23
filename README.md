@@ -12,6 +12,9 @@
     * Add android NDK (C code)
 * 20120909
     * Modified README.md
+* 20120923
+    * New XA_smallshell.java
+    * Add Notification IN MusicService.java
 
 ##Bug Reports
 * 20120903

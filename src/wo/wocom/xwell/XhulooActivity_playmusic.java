@@ -11,13 +11,15 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 /**
  * @author  	wuwenjie	wuwenjie.tk
- * @version  1.3.3
- * @more		音乐播放界面，调用服务，启动MusicService
+ * @version  1.3.5
+ * @more		音乐播放界面，调用服务，启动MusicService,
+ * 				音乐文件路径输入框
  */
 
 public class XhulooActivity_playmusic extends Activity implements OnClickListener{
@@ -27,9 +29,12 @@ public class XhulooActivity_playmusic extends Activity implements OnClickListene
 	private Button Previous_bt,Play_bt,Next_bt,Pause_bt,bindservice_bt,unbindservice_bt;  
 	private ComponentName component;  //组件名称，intent会根据component name
 								//启动一个组件（activity,service,contentProvider）
-    private Context mContext;  
+    private Context mContext;  //上下文,主要有Activity、Service以及BroadcastReceiver
     TextView music_PM_tv;
+    EditText PM_MusicPath_et;
     private MusicService ms;	//调用服务
+    
+    String musicPath_s;
 	
 	/*activity生命周期*/
     public void onCreate(Bundle savedInstanceState) {    
@@ -49,7 +54,7 @@ public class XhulooActivity_playmusic extends Activity implements OnClickListene
     	Next_bt = (Button)findViewById(R.id.next);  
        Pause_bt = (Button)findViewById(R.id.pause); 
        bindservice_bt=(Button)findViewById(R.id.bindservice_bt);
-       unbindservice_bt=(Button)findViewById(R.id.unbindservice_bt);  
+       unbindservice_bt=(Button)findViewById(R.id.unb_bt);  
        
        //注册监听器
        Previous_bt.setOnClickListener((OnClickListener) this);  
@@ -59,7 +64,7 @@ public class XhulooActivity_playmusic extends Activity implements OnClickListene
        bindservice_bt.setOnClickListener((OnClickListener) this);
        unbindservice_bt.setOnClickListener((OnClickListener) this);
        
-       
+       PM_MusicPath_et=(EditText)findViewById(R.id.PM_MusicPath_et);//音乐文件路径输入框
        music_PM_tv = (TextView)findViewById(R.id.music_PM);
        mContext = XhulooActivity_playmusic.this;  
        
@@ -125,22 +130,27 @@ public class XhulooActivity_playmusic extends Activity implements OnClickListene
         	 
          case R.id.bindservice_bt:
         	 
-        	 Log.i(TAG, "PM_Play_bt------PM_Xhuloo");
-        	 Intent i  = new Intent();  
-        	 i.setClass(XhulooActivity_playmusic.this, MusicService.class);  
-        	 mContext.bindService(i, msc, BIND_AUTO_CREATE); //执行IBinder() 
-        	 break;  
+        	Log.i(TAG, "PM_Play_bt------PM_Xhuloo");
+        	Intent i  = new Intent();  
+        	i.setClass(XhulooActivity_playmusic.this, MusicService.class);  
+        	mContext.bindService(i, msc, BIND_AUTO_CREATE); //执行IBinder() 
+        	break;  
         	 
-         case R.id.unbindservice_bt:
+         case R.id.unb_bt:
         	 
         	 Intent mIntent05 = new Intent(MusicService.URL_ACTION);
         	 mIntent05.setComponent(component); 
         	 
-        	 Bundle Bundle_PM = new Bundle();    
-     		 Bundle_PM.putString("PM_URL", "/sdcard/music//22.mp3");//加入数据 参数：key-Data value  
-     		 mIntent05.putExtras(Bundle_PM);  //添加附加信息 
+        	 musicPath_s=PM_MusicPath_et.getText().toString();	//获得文本编框的文字
+        	 
+        	 if(musicPath_s.length()!=0){
+        		 Bundle Bundle_PM = new Bundle();    
+        		 Bundle_PM.putString("PM_URL", musicPath_s);//加入数据 参数：key-Data value  
+        		 mIntent05.putExtras(Bundle_PM);  //添加附加信息 
      		 
-        	 startService(mIntent05); 
+        		 startService(mIntent05); 
+        	 }
+        	 else{return_toast("路径为空，无法播放指定内容，请检查！"); }
         	 
         	 break;  
         }  

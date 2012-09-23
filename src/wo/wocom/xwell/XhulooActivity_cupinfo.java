@@ -1,7 +1,6 @@
 package wo.wocom.xwell;
 
 import java.io.IOException;
-
 import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
@@ -36,7 +35,7 @@ public static String fetch_cpu_info() {
 	    String result = null;
 	    CMDExecute cmdexe = new CMDExecute();//命令执行自定义类 CMDExecute.java
 	    try {
-	      String[] args = { "/system/bin/cat", "/proc/cpuinfo" };
+	      String[] args = { "cat", "/proc/cpuinfo" };
 	      result = cmdexe.run(args, "/system/bin/");
 	    	} 
 	    catch (IOException e) {e.printStackTrace();}

@@ -3,62 +3,69 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical" >
-    
- <TextView    
-     	 android:id="@+id/music_PM"
-        android:layout_width="fill_parent"   
-        android:layout_height="wrap_content"   
-        android:text="@string/music_PM"
-        />  
-        
-     <Button
-        android:id="@+id/unbindservice_bt"
-        android:layout_width="match_parent"
+
+    <TextView
+        android:id="@+id/music_PM"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="@string/unbindservice_bt" />
-        
-     <!-- orientation:方向,horizontal:横 -->
-    <LinearLayout  
-        android:orientation="horizontal"  
-        android:layout_width="fill_parent"  
-        android:layout_height="wrap_content"  
-    >  
-        <Button  
-            android:id="@+id/previous"  
-            android:layout_height="fill_parent"  
-            android:layout_width="wrap_content"  
-            android:layout_weight="1"  
-            android:text="@string/previous_PM"  
-        />  
-        <Button  
-            android:id="@+id/play"  
-            android:layout_height="fill_parent"  
-            android:layout_width="wrap_content"  
-            android:layout_weight="2"  
-            android:text="@string/play_PM"  
-        />  
-        <Button  
-            android:id="@+id/next"  
-            android:layout_height="fill_parent"  
-            android:layout_width="wrap_content"  
-            android:layout_weight="1"  
-            android:text="@string/next_PM"  
-        />  
-        <Button  
-            android:id="@+id/pause"  
-            android:layout_height="fill_parent"  
-            android:layout_width="wrap_content"  
-            android:layout_weight="1"  
-            android:text="@string/pause_PM"  
-        />  
-    </LinearLayout>  
-    
-    <Button
+        android:text="@string/music_PM" />
+
+     <Button
         android:id="@+id/bindservice_bt"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="@string/bindservice_bt" />
-    
-    
-    
+
+    <!-- orientation:方向,horizontal:横 
+    						vertical:竖	-->
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/previous"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:text="@string/previous_PM" />
+
+        <Button
+            android:id="@+id/play"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:layout_weight="2"
+            android:text="@string/play_PM" />
+
+        <Button
+            android:id="@+id/next"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:text="@string/next_PM" />
+
+        <Button
+            android:id="@+id/pause"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:text="@string/pause_PM" />
+    </LinearLayout>
+
+    <!--音乐文件路径输入框-->
+    <EditText
+        android:id="@+id/PM_MusicPath_et"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:inputType="text"
+        android:text="@string/PM_mp_s" />
+
+   
+    <Button
+        android:id="@+id/unb_bt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/unb_bt" />
+
 </LinearLayout>

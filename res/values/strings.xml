@@ -41,8 +41,12 @@
     <string name="play_PM">播放</string>
     <string name="next_PM">下一首</string>
     <string name="pause_PM">暂停</string>
-          <string name="unbindservice_bt">unbindservice_bt</string>
+    <string name="unb_bt">unb_bt</string>
     <string name="bindservice_bt">bindservice_bt</string>
+    <string name="PM_mp_s">/sdcard/music/.mp3</string>
+
+<!--  -->
+	<string name="ms_notifi_text">播放音乐ms_notifi_text</string>
     
 <!-- XhulooActivity_audioRecord -->
     <string name="AR_activity_lable">AR_activity_lable[XHuloo]</string>
@@ -53,9 +57,19 @@
 <!-- XhulooActivity_cupinfo -->
 	<string name="CI_activity_lable">CPU信息[XHuloo]</string>
 
-	<!-- XhulooActivity_cupinfo -->
-		<string name="so">so</string>
-		<string name="plasma">so</string>
-		
+<!-- XAplasma -->
+	<string name="so">so</string>
+	<string name="plasma">so</string>
+	
+<!-- XA_smallshell -->
+	<string name="XA_smallshell">smallshell</string>
+	<string name="ss_cmd_tv_s">命令</string>
+	<string name="ss_cmd_et_s">cat</string>
+	<string name="ss_parameter_tv_s">参数</string>
+	<string name="ss_parameter_et_s">/proc/cpuinfo</string>
+	<string name="ss_workdir_tv_s">目录</string>
+	<string name="ss_workdir_et_s">/system/bin/</string>
+	<string name="ss_update_bt">提交</string>
+	<string name="ss_output">输出结果。。。</string>
     
 </resources>

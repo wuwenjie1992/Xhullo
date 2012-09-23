@@ -24,8 +24,8 @@ import android.widget.Toast;
 
 /**
  * @author  	wuwenjie	wuwenjie.tk
- * @version  1.3.3
- * @see		屏幕信息，文件游览功能，PHONE，MEM
+ * @version  1.3.4
+ * @see		屏幕信息，文件游览功能，PHONE，MEM,smallshell
  */
 
 
@@ -216,9 +216,9 @@ public class XhulooActivity_myplaces extends Activity{
 
 	        android.R.drawable.dialog_frame);
 
-	        menu.add(Menu.NONE, Menu.FIRST + 3, 3, "详细").setIcon(
+	        menu.add(Menu.NONE, Menu.FIRST + 3, 3, "smallshell").setIcon(
 
-	        android.R.drawable.ic_menu_info_details);
+	        android.R.drawable. editbox_dropdown_dark_frame);
 
 	        menu.add(Menu.NONE, Menu.FIRST + 4, 4, "phone").setIcon(
 
@@ -246,14 +246,13 @@ public class XhulooActivity_myplaces extends Activity{
     				Intent intent2 = new Intent();    //新建Intent意图
     				intent2.setClass(XhulooActivity_myplaces.this, XhulooActivity_MEM.class); 
     				//方便的调用名称为,返回一个Class对象
-    	
     				startActivityForResult(intent2, 0);  //跳转，此处的0 OR >=0
 	        
 	            break;
 
 	        case Menu.FIRST + 2:
 
-	            Toast.makeText(this, "MP_CPU：wewenjie.tk", Toast.LENGTH_SHORT).show();
+	            Toast.makeText(this, "MP_CPU", Toast.LENGTH_SHORT).show();
 	        
 	        	/*跳转新界面activity */
 	        	Intent intent01 = new Intent();    //新建Intent意图
@@ -265,7 +264,11 @@ public class XhulooActivity_myplaces extends Activity{
 
 	        case Menu.FIRST + 3:
 
-	            Toast.makeText(this, "MP_详细菜单点击", Toast.LENGTH_SHORT).show();
+	        	/*跳转新界面activity */
+	    		Intent intent4 = new Intent();    //新建Intent意图
+	    		intent4.setClass(XhulooActivity_myplaces.this,XA_smallshell.class); 
+	    				//方便的调用名称为,返回一个Class对象
+	    		startActivity(intent4);  //跳转
 
 	            break;
 
