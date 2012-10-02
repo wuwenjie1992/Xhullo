@@ -26,7 +26,7 @@ import android.widget.Toast;
 
 /**
  * @author  	wuwenjie	wuwenjie.tk
- * @version  1.3.2
+ * @version  1.3.3
  * @more		程序入口
  */
 
@@ -88,28 +88,28 @@ public class XhulooActivity extends Activity {
         	
         	else{
         		ok_button.setText("ok请提交");
-        		AlertDialog.Builder my_ADialog=new AlertDialog.Builder(XhulooActivity.this); ;
+        		AlertDialog.Builder my_ADialog1=new AlertDialog.Builder(XhulooActivity.this);
         		/*设置标题*/
-        		my_ADialog.setTitle("XA_AlertDialog.Builder");
+        		my_ADialog1.setTitle("XA_AlertDialog.Builder");
         		/*设置显示消息*/
-        		my_ADialog.setMessage("请提交");
+        		my_ADialog1.setMessage("请提交");
         		/*设置不能取消*/
-        		my_ADialog.setCancelable(false);
+        		my_ADialog1.setCancelable(false);
         		
-        		my_ADialog.setPositiveButton("退出Huloo;并访问官网",new DialogInterface.OnClickListener() {  
+        		my_ADialog1.setPositiveButton("退出Huloo;并访问官网",new DialogInterface.OnClickListener() {  
         	           public void onClick(DialogInterface dialog, int id) {  
         	        	   XhulooActivity.this.finish(); 
         	        	   Uri uri=Uri.parse("http://www.wuwenjie.tk");
         					Intent intent=new Intent(Intent.ACTION_VIEW,uri);
         					startActivity(intent);}  	});
         		
-        	           my_ADialog.setNegativeButton("取消", new DialogInterface.OnClickListener() {  
+        	           my_ADialog1.setNegativeButton("取消", new DialogInterface.OnClickListener() {  
         	               public void onClick(DialogInterface dialog, int id) {  
         	                    dialog.cancel();  
         	               }  
         	           });    		
         		/*显示*/
-        		my_ADialog.show();
+        		my_ADialog1.show();
         		}
         	
         return false;
@@ -243,9 +243,9 @@ public class XhulooActivity extends Activity {
 
         android.R.drawable.ic_menu_help);
 
-        menu.add(Menu.NONE, Menu.FIRST + 4, 1, "添加").setIcon(
+        menu.add(Menu.NONE, Menu.FIRST + 4, 1, "相机").setIcon(
 
-        android.R.drawable.ic_menu_add);
+        android.R.drawable.ic_menu_camera);
 
         menu.add(Menu.NONE, Menu.FIRST + 5, 4, "指南").setIcon(
 
@@ -287,7 +287,7 @@ public class XhulooActivity extends Activity {
 
         case Menu.FIRST + 2:
 
-            Toast.makeText(this, "XA_保存菜单点击", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "XA_touchball点击", Toast.LENGTH_SHORT).show();
         		/*跳转新界面activity */
     			Intent intent05 = new Intent();    //新建Intent意图
     			intent05.setClass(XhulooActivity.this, XA_touchball.class); 
@@ -299,32 +299,51 @@ public class XhulooActivity extends Activity {
 
             Toast.makeText(this, "XA_帮助：wewenjie.tk", Toast.LENGTH_SHORT).show();
         
-        		AlertDialog.Builder my_ADialog=new AlertDialog.Builder(XhulooActivity.this); 
-				my_ADialog.setTitle("XA_AlertDialog");		//设置标题
-				my_ADialog.setMessage("帮助：访问wuwenjie.tk的项目页|访问GPL");	//设置显示消息
-				my_ADialog.setCancelable(true);	//设置能取消
+        		AlertDialog.Builder my_ADialog02=new AlertDialog.Builder(XhulooActivity.this); 
+				my_ADialog02.setTitle("XA_AlertDialog");		//设置标题
+				my_ADialog02.setMessage("帮助：访问wuwenjie.tk的项目页|访问GPL");	//设置显示消息
+				my_ADialog02.setCancelable(true);	//设置能取消
 			
-				my_ADialog.setPositiveButton("访问wwj",new DialogInterface.OnClickListener() {  
+				my_ADialog02.setPositiveButton("访问wwj",new DialogInterface.OnClickListener() {  
 					public void onClick(DialogInterface dialog, int id) {  
 						Uri uri=Uri.parse("http://www.wuwenjie.tk");
 						Intent intent=new Intent(Intent.ACTION_VIEW,uri);
 						startActivity(intent);}  	});
 		
-	           my_ADialog.setNegativeButton("访问GPL", new DialogInterface.OnClickListener() {  
+	           my_ADialog02.setNegativeButton("访问GPL", new DialogInterface.OnClickListener() {  
 	               public void onClick(DialogInterface dialog, int id) {
 	            	   Uri uri=Uri.parse("http://www.gnu.org/copyleft/gpl.html");
 						Intent intent=new Intent(Intent.ACTION_VIEW,uri);
 						startActivity(intent);									 }  
 	           																		}				);    		
 	           /*显示*/
-	           my_ADialog.show();
+	           my_ADialog02.show();
         
             break;
 
         case Menu.FIRST + 4:
-
-            Toast.makeText(this, "XA_添加菜单点击", Toast.LENGTH_SHORT).show();
-
+        	
+        	Toast.makeText(this, "XA_添加相机点击", Toast.LENGTH_SHORT).show();
+        
+        	AlertDialog.Builder my_ADialog03=new AlertDialog.Builder(XhulooActivity.this); 
+        	my_ADialog03.setTitle("相机");		//设置标题
+        	my_ADialog03.setMessage("选择不同相机");	//设置显示消息
+        	my_ADialog03.setCancelable(true);	//设置能取消
+	
+        	my_ADialog03.setPositiveButton("调用相机",new DialogInterface.OnClickListener(){  
+        		public void onClick(DialogInterface dialog, int id) {  
+        			 Intent intent = new Intent().setAction("android.media.action.STILL_IMAGE_CAMERA");//调用相机    
+        			  startActivity(intent); }//onclick end
+        		});
+        	my_ADialog03.setNegativeButton("camera", new DialogInterface.OnClickListener() {  
+        		public void onClick(DialogInterface dialog, int id) {
+        			/*跳转新界面activity */
+        			Intent intent = new Intent();    //新建Intent意图
+        			intent.setClass(XhulooActivity.this, XA_camera.class); 
+        			startActivity(intent);  					 }//onclick end
+        	});    		
+        	/*显示*/
+        	my_ADialog03.show();
             break;
 
         case Menu.FIRST + 5:

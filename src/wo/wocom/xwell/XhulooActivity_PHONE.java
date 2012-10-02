@@ -83,21 +83,11 @@ public class XhulooActivity_PHONE extends Activity{
 	        			case R.id.BC_btn_PH:
 	        				XhulooActivity_PHONE.this.finish();
 	        			break;
-	        			
 	        			default:
 	        			break;
 	        		}//switch
 	        	 						}//onclick_end
-	        													}
-	        								  );	        
-	        
-	        
-	        
-	        
-	        
-	        
-	        
-	        
+	        													});
 	        
 	 }//onCreate
 	 

@@ -44,7 +44,7 @@ public class XA_touchball extends Activity{
     	// 显示自定义的游戏View
     	CustomView = new CustomView1(this,display.getWidth(), display.getHeight());
         
-        setContentView(CustomView);
+       setContentView(CustomView);
         
         
 	}
@@ -122,14 +122,14 @@ public class XA_touchball extends Activity{
 	            return true;
 	        }//onTouchEvent
 	        
-	        
-	        private void touch_start(float x, float y) {
+	        //自定义touch模式
+	        	private void touch_start(float x, float y) {
 	            mPath.reset();	//private Path   mPath;  //路径
 	            mPath.moveTo(x, y);
 	            mX = x;
 	            mY = y;
 	        }
-	        private void touch_move(float x, float y) {
+	        	private void touch_move(float x, float y) {
 	            float dx = Math.abs(x - mX);
 	            float dy = Math.abs(y - mY);
 	            if (dx >= TOUCH_TOLERANCE || dy >= TOUCH_TOLERANCE) {
@@ -138,7 +138,7 @@ public class XA_touchball extends Activity{
 	                mY = y;
 	            }
 	        }
-	        private void touch_up() {mPath.lineTo(mX, mY); }
+	        	private void touch_up() {mPath.lineTo(mX, mY); }
 	 
 	        
 	        protected void onDraw(Canvas canvas) {
@@ -154,12 +154,10 @@ public class XA_touchball extends Activity{
 	                    if(of==graphics.size()-1){mPath.reset();}//移动完成后移除线条
 	                    invalidate();}
 	            								}
-	        														}//onDraw
+	        												}//onDraw
 	        
 	        
-	        
-	        
-	    }//View
+	    }//CustomView1 View end
 	
 	
 	

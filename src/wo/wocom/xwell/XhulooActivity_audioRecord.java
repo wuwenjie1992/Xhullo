@@ -38,6 +38,7 @@ public class XhulooActivity_audioRecord extends Activity{
     	Log.i(TAG, "AR_onCreate");
     	return_toast("AR_onCreate");//调用
     	super.onCreate(savedInstanceState);
+    	
     	setContentView(R.layout.ar);  //设置主布局
     	
     	mrec = new MediaRecorder();
