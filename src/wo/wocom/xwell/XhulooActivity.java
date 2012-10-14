@@ -26,7 +26,7 @@ import android.widget.Toast;
 
 /**
  * @author  	wuwenjie	wuwenjie.tk
- * @version  1.3.3
+ * @version  1.3.2
  * @more		程序入口
  */
 

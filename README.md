@@ -18,6 +18,8 @@
 * 20121002
     * New XA_camera.java
     * Add new Intent(select camera) IN XhulooActivity.java
+* 20121014
+    * Change XhulooActivity_audioRecord.java
 
 ##Bug Reports
 * 20120903
