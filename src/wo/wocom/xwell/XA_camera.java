@@ -141,9 +141,9 @@ class CameraView extends SurfaceView {
 					Log.i(TAG,"CameraView_surfaceChanged");
 					Camera.Parameters parameters = mCamera.getParameters();	//获得相机参数对象
 					parameters.setPictureFormat(PixelFormat.JPEG);			//设置格式
-					parameters.setPreviewSize(480,320);			//设置预览大小
+					//parameters.setPreviewSize(480,320);			//设置预览大小 android2.3 cause error
 					parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);	//设置自动对焦
-					parameters.setPictureSize(1024,480);			//设置图片保存时的分辨率大小
+					//parameters.setPictureSize(1024,480);			//设置图片保存时的分辨率大小	android2.3 cause error
 					mCamera.setParameters(parameters);		//给相机对象设置刚才设定的参数
 					mCamera.startPreview();				//开始预览
 				}//surfaceChanged end

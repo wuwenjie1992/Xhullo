@@ -20,6 +20,9 @@
     * Add new Intent(select camera) IN XhulooActivity.java
 * 20121014
     * Change XhulooActivity_audioRecord.java
+* 20121104
+    * Change XA_camera.java use android 2.3.3 maybe error
+    * Add XA_bootBroadcastRec.java TO start after boot complete
 
 ##Bug Reports
 * 20120903
