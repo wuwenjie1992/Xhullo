@@ -1,127 +1,120 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    		package="wo.wocom.xwell"
-    		android:versionCode="1"
-    		android:versionName="1.3.10.2BootBroadcast版" >
+    package="wo.wocom.xwell"
+    android:versionCode="1"
+    android:versionName="1.3.10.3compass修复版" >
 
-    <uses-sdk android:minSdkVersion="8"/>
-
-    <!--uses-permission  -->    
-    
-     <!-- 获取通话状态 Allows read only access to phone state -->
+    <!-- uses-permission -->
+    <!-- 获取通话状态 Allows read only access to phone state -->
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    
-    <!--访问CellID或WiFi热点来获取粗略的位置
-    Allows an application to access coarse(e.g. Cell-ID,WiFi)location)  -->
+
+    <!--
+    访问CellID或WiFi热点来获取粗略的位置
+    Allows an application to access coarse(e.g. Cell-ID,WiFi)location)
+    -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    
+
     <!-- 震动权限 -->
-    <uses-permission android:name="android.permission.VIBRATE"/>
-    
+    <uses-permission android:name="android.permission.VIBRATE" />
+
     <!-- 网络：允许程序打开网络套接字(Allows applications to open network sockets) -->
-    <uses-permission android:name="android.permission.INTERNET" />  
-    
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <!-- 允许程序录制音频(Allows an application to record audio) -->
-    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
 
     <!-- 允许程序写入额外存储空间（SDCARD）Allows an application to write to external storage -->
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
-    <!--使用照相设备 Required to be able to access the camera device. -->
-	<uses-permission android:name="android.permission.CAMERA"/>
-	
-	<!-- 允许程序接收到【系统启动完成的】广播
+    <!-- 使用照相设备 Required to be able to access the camera device. -->
+    <uses-permission android:name="android.permission.CAMERA" />
+
+    <!--
+         允许程序接收到【系统启动完成的】广播
 			Allows an application to receive the ACTION_BOOT_COMPLETED 
-			that is broadcast after the system finishes booting. -->
-		<uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
-	
-	<!-- uses-feature 要求的特性-->	
-	<uses-feature android:name="android.hardware.camera" android:required="true"/>
-	<uses-feature android:name="android.hardware.camera.autofocus" android:required="true"/>
-    
+			that is broadcast after the system finishes booting.
+    -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
+    <!-- uses-feature 要求的特性 -->
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="true" />
+    <uses-feature
+        android:name="android.hardware.camera.autofocus"
+        android:required="true" />
+
     <application
         android:icon="@drawable/ic_launcher"
-        android:label="@string/app_name">
-        
+        android:label="@string/app_name" >
         <activity
             android:name="wo.wocom.xwell.XhulooActivity"
             android:label="@string/XA_activity_lable" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-				  <category android:name="android.intent.category.LAUNCHER" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        
-        <activity 
+        <activity
             android:name=".XhulooActivity_myplaces"
             android:label="@string/MP_activity_lable" >
-            </activity>
-        
-        <activity 
+        </activity>
+        <activity
             android:name=".XhulooActivity_PHONE"
             android:label="@string/PH_activity_lable" >
-            </activity>
-        
-        <activity 
+        </activity>
+        <activity
             android:name=".XhulooActivity_MEM"
             android:label="@string/MEM_activity_lable" >
-            </activity>
-        
-        <activity 
+        </activity>
+        <activity
             android:name=".XhulooActivity_weatherreport"
             android:label="@string/WR_activity_lable" >
-            </activity>
-       
-        <activity 
+        </activity>
+        <activity
             android:name=".XhulooActivity_compass"
             android:label="@string/COM_activity_lable" >
-            </activity>
-       
-        <activity 
+        </activity>
+        <activity
             android:name=".XhulooActivity_playmusic"
             android:label="@string/PM_activity_lable" >
-            </activity>
-       
-        <service android:name=".MusicService"  />
-           
-		<!--Exported service does not require permission	    -->
-	
-		<activity 
+        </activity>
+        <activity
             android:name=".XhulooActivity_audioRecord"
             android:label="@string/AR_activity_lable" >
-            </activity>
-            
-    	<activity
-        	android:name=".XhulooActivity_cupinfo"
-           android:label="@string/CI_activity_lable" >
-            </activity>
-            
-    	<activity
-        	android:name=".XA_touchball">
-            </activity>
-            
-    	<activity
-        	android:name=".XAplasma"
-    		android:label="@string/pl_plasma">
-    		</activity>
-    		
-    	<activity
-        	android:name=".XA_smallshell"
-    		android:label="@string/XA_smallshell">
-    		</activity>
-    
-    	<activity
-        	android:name=".XA_camera">
-    		</activity>
-    		
-    	<!-- BroadcastReceiver -->
-     	<receiver android:name=".XA_bootBroadcastRec">   
-  			<intent-filter>   
-    			<action android:name="android.intent.action.BOOT_COMPLETED" />
-    			<!-- 过滤 启动完成 -->
-   			</intent-filter>
-  	</receiver>
-  	
-      </application>
-	
+        </activity>
+        <activity
+            android:name=".XhulooActivity_cupinfo"
+            android:label="@string/CI_activity_lable" >
+        </activity>
+        <activity android:name=".XA_touchball" >
+        </activity>
+        <activity
+            android:name=".XAplasma"
+            android:label="@string/pl_plasma" >
+        </activity>
+        <activity
+            android:name=".XA_smallshell"
+            android:label="@string/XA_smallshell" >
+        </activity>
+        <activity android:name=".XA_camera" >
+        </activity>
+
+        <!-- service -->
+        <!-- 音乐服务 -->
+        <service android:name=".MusicService" />
+
+        <!-- Receiver -->
+        <!-- BroadcastReceiver -->
+        <receiver android:name=".XA_bootBroadcastRec" >
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <!-- 过滤 启动完成 -->
+            </intent-filter>
+        </receiver>
+    </application>
+
+   <uses-sdk android:minSdkVersion="8" />
+
 </manifest>

@@ -23,9 +23,12 @@
  /home/wuwenjie/android-ndk-r8b/platforms/android-8/arch-arm/usr/include/strings.h \
  /home/wuwenjie/android-ndk-r8b/platforms/android-8/arch-arm/usr/include/memory.h \
  /home/wuwenjie/android-ndk-r8b/platforms/android-8/arch-arm/usr/include/jni.h \
- /home/wuwenjie/android-ndk-r8b/platforms/android-8/arch-arm/usr/include/sys/reboot.h \
- /home/wuwenjie/android-ndk-r8b/platforms/android-8/arch-arm/usr/include/linux/reboot.h \
- /home/wuwenjie/android-ndk-r8b/platforms/android-8/arch-arm/usr/include/android/log.h
+ /home/wuwenjie/android-ndk-r8b/platforms/android-8/arch-arm/usr/include/android/log.h \
+ /home/wuwenjie/android-ndk-r8b/platforms/android-8/arch-arm/usr/include/time.h \
+ /home/wuwenjie/android-ndk-r8b/platforms/android-8/arch-arm/usr/include/sys/time.h \
+ /home/wuwenjie/android-ndk-r8b/platforms/android-8/arch-arm/usr/include/linux/time.h \
+ /home/wuwenjie/android-ndk-r8b/platforms/android-8/arch-arm/usr/include/asm/siginfo.h \
+ /home/wuwenjie/android-ndk-r8b/platforms/android-8/arch-arm/usr/include/asm-generic/siginfo.h
 
 /home/wuwenjie/android-ndk-r8b/platforms/android-8/arch-arm/usr/include/stdio.h:
 
@@ -73,8 +76,14 @@
 
 /home/wuwenjie/android-ndk-r8b/platforms/android-8/arch-arm/usr/include/jni.h:
 
-/home/wuwenjie/android-ndk-r8b/platforms/android-8/arch-arm/usr/include/sys/reboot.h:
-
-/home/wuwenjie/android-ndk-r8b/platforms/android-8/arch-arm/usr/include/linux/reboot.h:
-
 /home/wuwenjie/android-ndk-r8b/platforms/android-8/arch-arm/usr/include/android/log.h:
+
+/home/wuwenjie/android-ndk-r8b/platforms/android-8/arch-arm/usr/include/time.h:
+
+/home/wuwenjie/android-ndk-r8b/platforms/android-8/arch-arm/usr/include/sys/time.h:
+
+/home/wuwenjie/android-ndk-r8b/platforms/android-8/arch-arm/usr/include/linux/time.h:
+
+/home/wuwenjie/android-ndk-r8b/platforms/android-8/arch-arm/usr/include/asm/siginfo.h:
+
+/home/wuwenjie/android-ndk-r8b/platforms/android-8/arch-arm/usr/include/asm-generic/siginfo.h:

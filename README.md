@@ -23,11 +23,18 @@
 * 20121104
     * Change XA_camera.java use android 2.3.3 maybe error
     * Add XA_bootBroadcastRec.java TO start after boot complete
+* 20121111
+    * solved XhulooActivity_compass.java
+    * Change XAplasma.java Add native method
+    * Change hello-ndk-jni.c Add new code TO get time
+    * Format some codes Use Eclipse Platform
 
 ##Bug Reports
 * 20120903
     * XhulooActivity_weatherreport.java
     * XhulooActivity_compass.java
+* 20121111
+    * XhulooActivity_weatherreport.java
 
 ##About Author 
 * WebSite:[wuwenjie.tk](http://www.wuwenjie.tk)

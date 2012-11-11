@@ -1,6 +1,8 @@
 package wo.wocom.xwell;
 
 import android.app.Activity;
+import android.content.Context;
+import android.graphics.Canvas;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -9,184 +11,156 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.animation.Animation;
-import android.view.animation.RotateAnimation;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
+
 /**
- * @author  	wuwenjie	wuwenjie.tk
- * @version  1.3.2
- * @see		方向传感，指南针，旋转动画
+ * @author wuwenjie wuwenjie.tk
+ * @version 1.3.3
+ * @see 方向传感,指南针,图片旋转
  */
-public abstract class XhulooActivity_compass extends Activity implements SensorEventListener{
+public class XhulooActivity_compass extends Activity implements
+		SensorEventListener {
 
 	private static final String TAG = "COM_Xhuloo";
-	
-	ImageView image;  //指南针图片
-	float currentDegree = 0; //指南针图片转过的角度
-	SensorManager mSensorManager; //管理器
-	
-	float Pitch_f =0;//绕x轴转
-	float Roll_f =0;
-	
-	
-	/*activity生命周期*/
-	public void onCreate(Bundle savedInstanceState) {    
-	
-	
+	SensorManager sensorManager; // 传感器管理器
+	Sensor sensor; // 传感器
+	Compass_imageView compassView; // 自定义view
+
+	/* activity生命周期 */
+	public void onCreate(Bundle savedInstanceState) {
+
 		Log.i(TAG, "COM_onCreate------COM_Xhuloo");
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.com); 
-    
-		image = (ImageView)findViewById(R.id.COM_ImageView);
-		mSensorManager = (SensorManager)getSystemService(SENSOR_SERVICE); //获取管理服务
-		Sensor sensor=mSensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION); //方向传感器
-    
-		TextView COM_textView=(TextView)findViewById(R.id.COM_textView);	//文字信息
-    
-    
-  //设置显示文字
-    COM_textView.setText("重力感应:"+"\n"+"Pitch:"+ReturnValue(Pitch_f)+"\n"+"Roll:"+ReturnValue(Roll_f)+"\n"
-    							+"test:"+ReturnValue((float) 5.08)+"\n"
-			  					+"Name:"+sensor.getName()+" "+"Type:"+sensor.getType()+"\n"    //得到传感器信息
-			  					+"Version:"+sensor.getVersion()+" "+"vendor:"+sensor.getVendor()+"\n"
-			  					+"MAXrange:"+sensor.getMaximumRange()+" "+"power:"+sensor.getPower()+"\n"
-			  					+"Resolution:"+sensor.getResolution()+"\n"
-			  );
-    
-    
-    
-    
-	}//oncreateEND
-	
-	 protected void onRestart() {  
-		   super.onRestart();  
-		   Log.i(TAG, "COM_onRestart"); 
-		   Toast.makeText(XhulooActivity_compass.this, "COM_onRestart", Toast.LENGTH_SHORT).show();
-		}  
 
-	 protected void onResume() {  
-		   super.onResume();  
-		   Log.i(TAG, "COM_onResume");
-		   Toast.makeText(XhulooActivity_compass.this, "COM_onResume", Toast.LENGTH_SHORT).show();
-		   
-		   //注册监听器
-	    	mSensorManager.registerListener(
-	    			this,
-	    			mSensorManager.getDefaultSensor
-	    			(Sensor.TYPE_ORIENTATION), 
-	    			SensorManager.SENSOR_DELAY_GAME);
-	 }  
+		// 全屏显示窗口
+		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+				WindowManager.LayoutParams.FLAG_FULLSCREEN);
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
 
-	 protected void onPause() {  
-		   super.onPause();  
-		   Log.i(TAG, "COM_onPause"); 
-		   Toast.makeText(XhulooActivity_compass.this, "COM_onPause", Toast.LENGTH_SHORT).show();
-		   mSensorManager.unregisterListener(this);
-	 }  
+		compassView = new Compass_imageView(this); // 实列化 自定义view
+		setContentView(compassView); // 设置【主显示View】
+		sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE); // 获取管理服务
+		sensor = sensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION); // 方向传感器
 
-	 protected void onStop() {  
-		   super.onStop();  
-		   Log.i(TAG, "COM_onStop"); 
-		   Toast.makeText(XhulooActivity_compass.this, "COM_onStop", Toast.LENGTH_SHORT).show();
-		   mSensorManager.unregisterListener(this);
-	 }  
+	}// oncreateEND
 
-	 protected void onDestroy() {  
-		   super.onDestroy();  
-		   Log.i(TAG, "COM_onDestroy");
-		   Toast.makeText(XhulooActivity_compass.this, "COM_onDestroy", Toast.LENGTH_SHORT).show();
-		   mSensorManager.unregisterListener(this);
-	 }  
-	 
-	
-	 
-	 /*菜单制作*/
-	 public boolean onCreateOptionsMenu(Menu menu) {
-	   
-	 	menu.add(Menu.NONE, Menu.FIRST +1,2, "返回").setIcon(
+	public void onRestart() {
+		super.onRestart();
+		Log.i(TAG, "COM_onRestart");
+	}
 
-	             android.R.drawable.ic_menu_revert);
-	     
-	     return true;
+	public void onResume() {
+		super.onResume();
+		Log.i(TAG, "COM_onResume");
+		// 注册监听器
+		sensorManager.registerListener(this,
+				sensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION),
+				SensorManager.SENSOR_DELAY_GAME);
+	}
 
-	 }
+	public void onPause() {
+		super.onPause();
+		Log.i(TAG, "COM_onPause");
+		sensorManager.unregisterListener(this);// 注销监听器
+	}
 
-	 @Override
-	 public boolean onOptionsItemSelected(MenuItem item) {
-	     switch (item.getItemId()) {
-	     
-	     case Menu.FIRST +1:
-	         
-	          Log.i(TAG, "XhulooActivity.this.finish()");
-	          XhulooActivity_compass.this.finish();  
-	     break;
+	public void onStop() {
+		super.onStop();
+		Log.i(TAG, "COM_onStop");
+		sensorManager.unregisterListener(this);
+	}
 
-	     }
+	public void onDestroy() {
+		super.onDestroy();
+		Log.i(TAG, "COM_onDestroy");
+		sensorManager.unregisterListener(this);
+	}
 
-	     return false;
+	/* 菜单制作 */
+	public boolean onCreateOptionsMenu(Menu menu) {
 
-	 }
+		menu.add(Menu.NONE, Menu.FIRST + 1, 2, "返回").setIcon(
 
-	 @Override
-	 public void onOptionsMenuClosed(Menu menu) {
-	     Toast.makeText(this, "wr_选项菜单关闭", Toast.LENGTH_SHORT).show();
-	 }
-	 
-	 
-	 
-	 
-	 /*方向传感骑功能*/
-	 	//当传感器准确性更改
-		public void onAccuracyChanged(Sensor sensor, int accuracy) {
-			}
-	   
-		//传感器值更改	Called when sensor values have changed.
-		public void onSensorChanged(SensorEvent event) {
-			
-			switch(event.sensor.getType()){	//获取触发event的传感器类型
+		android.R.drawable.ic_menu_revert);
 
-			case Sensor.TYPE_ORIENTATION:
-				float degree = event.values[0]; //获取z转过的角度
-				
-				float Pitch_f =event.values[1];	//绕x轴转
-				float Roll_f =event.values[2];		//绕y轴转
-				
-				ReturnValue(Pitch_f); //自定义函数
-				ReturnValue(Roll_f);
-				
-				ReturnValue((float) 5.08);
-				
-				//旋转动画,指南针的滚动
-				RotateAnimation ra = new RotateAnimation
-					(currentDegree,
-					-degree,
-					Animation.RELATIVE_TO_SELF,
-					0.5f,
-					Animation.RELATIVE_TO_SELF,
-					0.5f
-					);
+		return true;
 
+	}
 
-			 ra.setDuration(100);//动画持续时间
-			 image.startAnimation(ra);//开始动画
-			 currentDegree = -degree;
-			 break;
-			
-			}
-			 
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+
+		case Menu.FIRST + 1:
+
+			Log.i(TAG, "XhulooActivity_compass.this.finish()");
+			XhulooActivity_compass.this.finish();
+			break;
 
 		}
 
-		private float ReturnValue(float num) {
-			return num;
-			
+		return false;
+
+	}
+
+	@Override
+	public void onOptionsMenuClosed(Menu menu) {
+		Toast.makeText(this, "wr_选项菜单关闭", Toast.LENGTH_SHORT).show();
+	}
+
+	/* SensorEventListener */
+	/* 忽略精度的变化，Called when the accuracy of a sensor has changed. */
+	public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
+	}
+
+	/* 侦听【传感器】的变化并输出，Called when sensor values have changed. */
+	public void onSensorChanged(SensorEvent event) {
+		int orientation = (int) event.values[0];
+		// 方向，values[0]: 垂直于Z轴，沿Y轴正方向顺时针旋转的角度
+		compassView.setDirection(orientation);// 传入参数，旋转图片view
+	}
+
+	/*
+	 * public void onConfigurationChanged(Configuration newConfig){
+	 * super.onConfigurationChanged(newConfig); }
+	 */
+
+	/* 自定义类 表盘 */
+	public class Compass_imageView extends ImageView {
+		int direction = 0;
+
+		public Compass_imageView(Context context) {
+			super(context);
+			// TODO Auto-generated constructor stub
+			this.setImageResource(R.drawable.compasslogo);// 设置图片内容
 		}
-	 
-	 
-	 
-	 
-	 
-			 
+
+		// 在组件绘制时触发
+		public void onDraw(Canvas canvas) {
+
+			int height = this.getHeight();// Returns the height of the current
+											// drawing layer
+			int width = this.getWidth();
+			// Log.i(TAG, "Compass_imageView onDraw--heigth="+height);
+			// Log.i(TAG, "Compass_imageView onDraw--width="+width);
+			// Log.i(TAG, "Compass_imageView onDraw--density="+
+			// canvas.getDensity());//获得密度
+			// Log.i(TAG,
+			// "Compass_imageView onDraw--SaveCount="+canvas.getSaveCount());//返回的矩阵/剪辑状态
+			canvas.rotate(direction, width / 2, height / 2);// 旋转，参数1：旋转量；2、3：旋转中心
+			super.onDraw(canvas);
+		}
+
+		// 由XhulooActivity_compass对象调用，更新方向
+		public void setDirection(int direction_par) {
+			this.direction = direction_par;
+			this.invalidate(); // 要求重绘,无效的整体视图,如果可见,会调用OnDraw
+		}
+
+	}// Compass_imageView end
+
 }
