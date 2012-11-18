@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="wo.wocom.xwell"
     android:versionCode="1"
-    android:versionName="1.3.10.3compass修复版" >
+    android:versionName="1.3.10.3.1JNI图像处理版" >
 
     <!-- uses-permission -->
     <!-- 获取通话状态 Allows read only access to phone state -->

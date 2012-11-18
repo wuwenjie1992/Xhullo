@@ -13,12 +13,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 /**
  * @author wuwenjie wuwenjie.tk
- * @version 1.3.3
+ * @version 1.3.4
  * @see 方向传感,指南针,图片旋转
  */
 public class XhulooActivity_compass extends Activity implements
@@ -28,6 +30,7 @@ public class XhulooActivity_compass extends Activity implements
 	SensorManager sensorManager; // 传感器管理器
 	Sensor sensor; // 传感器
 	Compass_imageView compassView; // 自定义view
+	TextView tv;
 
 	/* activity生命周期 */
 	public void onCreate(Bundle savedInstanceState) {
@@ -40,8 +43,15 @@ public class XhulooActivity_compass extends Activity implements
 				WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 
-		compassView = new Compass_imageView(this); // 实列化 自定义view
-		setContentView(compassView); // 设置【主显示View】
+		FrameLayout fl = new FrameLayout(this); // 提供一个帧布局
+		compassView = new Compass_imageView(this); // 实列化 自定义view		
+		fl.addView(compassView); // 创建预览用子类，放于fl底层
+
+		tv = new TextView(this); // 创建文本框做特效
+		fl.addView(tv);
+
+		setContentView(fl); // 设置Activity的根内容视图
+		
 		sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE); // 获取管理服务
 		sensor = sensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION); // 方向传感器
 
@@ -121,6 +131,7 @@ public class XhulooActivity_compass extends Activity implements
 	public void onSensorChanged(SensorEvent event) {
 		int orientation = (int) event.values[0];
 		// 方向，values[0]: 垂直于Z轴，沿Y轴正方向顺时针旋转的角度
+		tv.setText("(int) event.values[0]="+orientation);
 		compassView.setDirection(orientation);// 传入参数，旋转图片view
 	}
 

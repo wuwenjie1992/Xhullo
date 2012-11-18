@@ -1,73 +1,73 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-	<string name="hello">wuwenjie,HulooActivity!</string>
-	<string name="app_name">XHuloo</string>
-	<string name="ok">OK</string>
-	<string name="XA_activity_lable">XA_activity_lable[XHuloo]</string>
-	<string name="hint_checkbok">hint_checkbok</string>
-    
+    <string name="hello">wuwenjie,HulooActivity!</string>
+    <string name="app_name">XHuloo</string>
+    <string name="ok">OK</string>
+    <string name="XA_activity_lable">XA_activity_lable[XHuloo]</string>
+    <string name="hint_checkbok">hint_checkbok</string>
     <string name="MP_activity_lable">MP_activity_lable[XHuloo]</string>
     <string name="MP_tv">WHAT?</string>
-        
     <string name="PH_activity_lable">PH_activity_lable[XHuloo]</string>
-    
     <string name="MEM_activity_lable">MEM_activity_lable[XHuloo]</string>
-    
     <string name="pleaseInput">pleaseInput</string>
     <string name="notFond">notFond</string>
     <string name="goback">GO BACK</string>
     <string name="to_top">BACK_TO_TOP</string>
 
-<!-- XhulooActivity_weatherreport -->
-    
+    <!-- XhulooActivity_weatherreport -->
+
     <string name="WR_activity_lable">WR_activity_lable[XHuloo]</string>
     <string name="strweek">星期</string>
     <string name="strweather">sunning</string>
     <string name="temp">21C</string>
     <string name="advise">advise</string>
-
     <string name="COM_activity_lable">COM_activity_lable[XHuloo]</string>
-    
-<!-- XhulooActivity_playmusic -->
-		<string name="PM_activity_lable">PM_activity_lable[XHuloo]</string>
-		<string name="music_PM">音乐</string>
-    	<string name="previous_PM">上一首</string>
-    	<string name="play_PM">播放</string>
-    	<string name="next_PM">下一首</string>
-    	<string name="pause_PM">暂停</string>
-    	<string name="unb_bt">unb_bt</string>
-    	<string name="bindservice_bt">bindservice_bt</string>
-    	<string name="PM_mp_s">/sdcard/music/.mp3</string>
 
-<!--  -->
-		<string name="ms_notifi_text">播放音乐ms_notifi_text</string>
-    
-<!-- XhulooActivity_audioRecord -->
-    	<string name="AR_activity_lable">AR_activity_lable[XHuloo]</string>
-    	<string name="ar_tv">录音</string>
-    	<string name="ar_startrecording">开始录音</string>
-    	<string name="ar_stoprecording">停止录音</string>
-    
-<!-- XhulooActivity_cupinfo -->
-		<string name="CI_activity_lable">CPU信息[XHuloo]</string>
+    <!-- XhulooActivity_playmusic -->
+    <string name="PM_activity_lable">PM_activity_lable[XHuloo]</string>
+    <string name="music_PM">音乐</string>
+    <string name="previous_PM">上一首</string>
+    <string name="play_PM">播放</string>
+    <string name="next_PM">下一首</string>
+    <string name="pause_PM">暂停</string>
+    <string name="unb_bt">unb_bt</string>
+    <string name="bindservice_bt">bindservice_bt</string>
+    <string name="PM_mp_s">/sdcard/music/.mp3</string>
 
-<!-- XAplasma -->
-		<string name="pl_so">so</string>
-		<string name="pl_plasma">so</string>
-	
-<!-- XA_smallshell -->
-		<string name="XA_smallshell">smallshell</string>
-		<string name="ss_cmd_tv_s">命令</string>
-		<string name="ss_cmd_et_s">cat</string>
-		<string name="ss_parameter_tv_s">参数</string>
-		<string name="ss_parameter_et_s">/proc/cpuinfo</string>
-		<string name="ss_workdir_tv_s">目录</string>
-		<string name="ss_workdir_et_s">/system/bin/</string>
-		<string name="ss_update_bt">提交</string>
-		<string name="ss_output">输出结果。。。</string>
-    
-<!-- XA_camera -->
-		<string name="XA_camera">输出结果。。。</string>
+    <!--  -->
+    <string name="ms_notifi_text">播放音乐ms_notifi_text</string>
+
+    <!-- XhulooActivity_audioRecord -->
+    <string name="AR_activity_lable">AR_activity_lable[XHuloo]</string>
+    <string name="ar_tv">录音</string>
+    <string name="ar_startrecording">开始录音</string>
+    <string name="ar_stoprecording">停止录音</string>
+
+    <!-- XhulooActivity_cupinfo -->
+    <string name="CI_activity_lable">CPU信息[XHuloo]</string>
+
+    <!-- XAplasma -->
+    <string name="pl_so">so</string>
+    <string name="pl_plasma">so</string>
+    <string name="pl_Reset">重置</string>
+    <string name="pl_ConvertImage">转换灰色</string>
+    <string name="pl_FindEdges">边界</string>
+    <string name="pl_Dimmer">暗</string>
+    <string name="pl_Brighter">亮</string>
+
+    <!-- XA_smallshell -->
+    <string name="XA_smallshell">smallshell</string>
+    <string name="ss_cmd_tv_s">命令</string>
+    <string name="ss_cmd_et_s">cat</string>
+    <string name="ss_parameter_tv_s">参数</string>
+    <string name="ss_parameter_et_s">/proc/cpuinfo</string>
+    <string name="ss_workdir_tv_s">目录</string>
+    <string name="ss_workdir_et_s">/system/bin/</string>
+    <string name="ss_update_bt">提交</string>
+    <string name="ss_output">输出结果。。。</string>
+
+    <!-- XA_camera -->
+    <string name="XA_camera">输出结果。。。</string>
 
 </resources>

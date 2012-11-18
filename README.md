@@ -28,6 +28,12 @@
     * Change XAplasma.java Add native method
     * Change hello-ndk-jni.c Add new code TO get time
     * Format some codes Use Eclipse Platform
+* 20121118
+    * Change XhulooActivity_compass.java Add textview
+    * Change XAplasma.java Add Image Process
+    * Change hello-ndk-jni.c Add new code TO Image Process
+    * Add Application.mk TO adjust ARMv7
+    * Some Code from Frank Ableson
 
 ##Bug Reports
 * 20120903

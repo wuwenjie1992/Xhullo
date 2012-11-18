@@ -2,13 +2,69 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
+    android:background="#ffffffff"
     android:orientation="vertical" >
 
     <TextView
         android:id="@+id/pl_tv"
-        android:layout_width="match_parent"
-        android:layout_height="0dip"
-        android:layout_weight="0.98"
+        android:layout_width="316dp"
+        android:layout_height="88dp"
         android:text="@string/pl_so" />
+
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center" >
+
+        <Button
+            android:id="@+id/pl_btnReset"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.49"
+            android:onClick="onResetImage"
+            android:text="@string/pl_Reset"
+            android:visibility="visible" />
+
+        <Button
+            android:id="@+id/pl_btnConvert"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="onConvertToGray"
+            android:text="@string/pl_ConvertImage"
+            android:visibility="visible" />
+
+        <Button
+            android:id="@+id/pl_btnFindEdges"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="onFindEdges"
+            android:text="@string/pl_FindEdges"
+            android:visibility="visible" />
+
+        <Button
+            android:id="@+id/pl_btnDimmer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="onDimmer"
+            android:text="@string/pl_Dimmer"
+            android:visibility="visible" />
+
+        <Button
+            android:id="@+id/pl_btnBrighter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.49"
+            android:onClick="onBrighter"
+            android:text="@string/pl_Brighter"
+            android:visibility="visible" />
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/pl_ivDisplay"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical|center_horizontal"
+        android:scaleType="centerCrop" />
 
 </LinearLayout>
