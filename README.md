@@ -34,6 +34,10 @@
     * Change hello-ndk-jni.c Add new code TO Image Process
     * Add Application.mk TO adjust ARMv7
     * Some Code from Frank Ableson
+* 20121125
+    * Change hello-ndk-jni.c Add annotation 
+    * Change XAplasma.java Add ImageTouchListener
+    * Add ImageTouchListener.java To listen touch action
 
 ##Bug Reports
 * 20120903

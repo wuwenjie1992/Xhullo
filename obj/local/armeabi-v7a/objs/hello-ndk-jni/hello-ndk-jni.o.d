@@ -29,7 +29,14 @@
  /home/wuwenjie/android-ndk-r8b/platforms/android-8/arch-arm/usr/include/linux/time.h \
  /home/wuwenjie/android-ndk-r8b/platforms/android-8/arch-arm/usr/include/asm/siginfo.h \
  /home/wuwenjie/android-ndk-r8b/platforms/android-8/arch-arm/usr/include/asm-generic/siginfo.h \
- /home/wuwenjie/android-ndk-r8b/platforms/android-8/arch-arm/usr/include/android/bitmap.h
+ /home/wuwenjie/android-ndk-r8b/platforms/android-8/arch-arm/usr/include/android/bitmap.h \
+ /home/wuwenjie/android-ndk-r8b/platforms/android-8/arch-arm/usr/include/math.h \
+ /home/wuwenjie/android-ndk-r8b/platforms/android-8/arch-arm/usr/include/limits.h \
+ /home/wuwenjie/android-ndk-r8b/platforms/android-8/arch-arm/usr/include/sys/limits.h \
+ /home/wuwenjie/android-ndk-r8b/platforms/android-8/arch-arm/usr/include/linux/limits.h \
+ /home/wuwenjie/android-ndk-r8b/platforms/android-8/arch-arm/usr/include/machine/internal_types.h \
+ /home/wuwenjie/android-ndk-r8b/platforms/android-8/arch-arm/usr/include/machine/limits.h \
+ /home/wuwenjie/android-ndk-r8b/platforms/android-8/arch-arm/usr/include/sys/syslimits.h
 
 /home/wuwenjie/android-ndk-r8b/platforms/android-8/arch-arm/usr/include/stdio.h:
 
@@ -90,3 +97,17 @@
 /home/wuwenjie/android-ndk-r8b/platforms/android-8/arch-arm/usr/include/asm-generic/siginfo.h:
 
 /home/wuwenjie/android-ndk-r8b/platforms/android-8/arch-arm/usr/include/android/bitmap.h:
+
+/home/wuwenjie/android-ndk-r8b/platforms/android-8/arch-arm/usr/include/math.h:
+
+/home/wuwenjie/android-ndk-r8b/platforms/android-8/arch-arm/usr/include/limits.h:
+
+/home/wuwenjie/android-ndk-r8b/platforms/android-8/arch-arm/usr/include/sys/limits.h:
+
+/home/wuwenjie/android-ndk-r8b/platforms/android-8/arch-arm/usr/include/linux/limits.h:
+
+/home/wuwenjie/android-ndk-r8b/platforms/android-8/arch-arm/usr/include/machine/internal_types.h:
+
+/home/wuwenjie/android-ndk-r8b/platforms/android-8/arch-arm/usr/include/machine/limits.h:
+
+/home/wuwenjie/android-ndk-r8b/platforms/android-8/arch-arm/usr/include/sys/syslimits.h:

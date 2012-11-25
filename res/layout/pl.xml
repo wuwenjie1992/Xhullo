@@ -65,6 +65,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical|center_horizontal"
-        android:scaleType="centerCrop" />
+        android:scaleType="matrix" />
+    <!-- 缩放类型 android:scaleType matrix矩阵-->
 
 </LinearLayout>

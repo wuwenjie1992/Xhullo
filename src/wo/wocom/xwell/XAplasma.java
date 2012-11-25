@@ -13,7 +13,7 @@ import android.widget.TextView;
 
 /**
  * @author wuwenjie wuwenjie.tk
- * @version 1.3.5
+ * @version 1.3.6
  * @more NDK(Native Development Kit) JNI(Java Native Interface)
  * @via some codes from :Author: Frank Ableson Contact Info:
  *      fableson@navitend.com
@@ -34,25 +34,28 @@ public class XAplasma extends Activity {
 		TextView textView = (TextView) findViewById(R.id.pl_tv);
 		ivDisplay = (ImageView) findViewById(R.id.pl_ivDisplay);
 
-		/*
-		 * BitmapFactory 方法有一个 options 参数， 支持您加载 ARGB 格式的图像。“A”表示 alpha 通道，
-		 * “RGB”表示红色、绿色、蓝色。许多开源图像处理库需要 24 位彩色图像， 红色、绿色和蓝色各 8 位，并且每个像素由 RGB 三元组成。
-		 * 每个值的范围为 0 至 255。Android 平台上的图像保存为 32 位整数 （alpha、红色、绿色和蓝色）。
+		/*BitmapFactory有options参数，支持您加载ARGB格式的图像。“A”表示alpha通道，
+		 * 开源图像处理库要24位彩色图像，红、绿和蓝各8位，且每像素 RGB三元组成。
+		 * 值的范围为0至255。Android上图像保存为32位整数（alpha、r,g,b）
 		 */
 		String pathName = Environment.getExternalStorageDirectory()
 				+ "/bluetooth/Image/dj.jpg";//图像的url
 		BitmapFactory.Options options = new BitmapFactory.Options();//选项
 		options.inPreferredConfig = Config.ARGB_8888;//首选配置,ARGB_8888 Each pixel is stored on 4 bytes.
-		bitmapOrig = BitmapFactory.decodeFile(pathName, options);
+		bitmapOrig = BitmapFactory.decodeFile(pathName,options);
 		if (bitmapOrig != null)
 			ivDisplay.setImageBitmap(bitmapOrig);//Sets a Bitmap as the content of this ImageView.
 
+		//图片的拖动
+		ImageTouchListener itl=new ImageTouchListener();//实例化【自定义图片触控监听器】
+		itl.setview(ivDisplay);		//将ivDisplay设置为 变化的目标图片
+		ivDisplay.setOnTouchListener(itl); //注册监听器
+		
 		String myString = stringFromNDKJNI();// stringFromNDKJNI
 		textView.setText(myString + "\n" + "time_t timer_null="
 				+ currentTimeMillis());
 
 		printLOGI();
-
 	}// oncreat end
 
 	// pl_btnReset按钮的动作；重置图像；android:onClick="onResetImage"
@@ -106,6 +109,7 @@ public class XAplasma extends Activity {
 		ivDisplay.setImageBitmap(bitmapWip);
 	}
 
+	//调用库文件
 	static {
 		try {
 			System.loadLibrary("hello-ndk-jni");
@@ -125,5 +129,7 @@ public class XAplasma extends Activity {
 	public native void changeBrightness(int direction, Bitmap bitmap);//改变亮度
 
 	public native void findEdges(Bitmap bitmapIn, Bitmap bitmapOut);//找到边界
+	
+	
 
 }
