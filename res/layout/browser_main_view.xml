@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
+
+    <EditText
+        android:id="@+id/pac_b_bmv_edit_1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_toLeftOf="@+id/pac_b_bmv_button_1"
+        android:ems="10"
+        android:inputType="textUri"
+        android:lines="1"
+        android:maxLength="100" >
+
+        <requestFocus />
+    </EditText>
+
+    <ImageButton
+        android:id="@+id/pac_b_bmv_button_1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:src="@drawable/go" />
+
+    <WebView
+        android:id="@+id/pac_b_bmv_wv1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/pac_b_bmv_edit_1" />
+
+    <ImageButton
+        android:id="@+id/pac_b_bmv_back_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:src="@drawable/back" />
+
+    <ImageButton
+        android:id="@+id/pac_b_bmv_forward_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_toRightOf="@+id/pac_b_bmv_back_btn"
+        android:src="@drawable/forward" />
+
+    <ImageButton
+        android:id="@+id/pac_b_bmv_menu_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_toRightOf="@+id/pac_b_bmv_edit_1"
+        android:src="@drawable/menu" />
+
+</RelativeLayout>

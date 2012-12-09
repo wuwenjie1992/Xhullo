@@ -38,6 +38,10 @@
     * Change hello-ndk-jni.c Add annotation 
     * Change XAplasma.java Add ImageTouchListener
     * Add ImageTouchListener.java To listen touch action
+* 20121209
+    * Add New package browser To surf the web
+    * Add New package database To manage database
+    * Add New package utility To create new tools
 
 ##Bug Reports
 * 20120903

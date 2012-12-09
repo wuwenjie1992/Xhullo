@@ -12,7 +12,7 @@
     <string name="MEM_activity_lable">MEM_activity_lable[XHuloo]</string>
     <string name="pleaseInput">pleaseInput</string>
     <string name="notFond">notFond</string>
-    <string name="goback">GO BACK</string>
+    <string name="goback">返回</string>
     <string name="to_top">BACK_TO_TOP</string>
 
     <!-- XhulooActivity_weatherreport -->
@@ -69,5 +69,25 @@
 
     <!-- XA_camera -->
     <string name="XA_camera">输出结果。。。</string>
+
+    <!-- package browser -->
+    <!-- browser_main_view -->
+    <string name="pac_b_bmv_history">历史</string>
+    <string name="pac_b_bmv_about">关于</string>
+    <string name="pac_b_bmv_dia_about">测试浏览器</string>
+    <string name="pac_b_bmv_close_btn">关闭</string>
+    <string name="pac_b_bmv_open_btn">打开</string>
+    <string name="pac_b_bmv_del_btn">删除</string>
+    <string name="pac_b_bmv_ok_btn">是</string>
+    <string name="pac_b_bmv_no_btn">否</string>
+    <string name="pac_b_bmv_fav_name">收藏夹</string>
+    <string name="pac_b_bmv_shortcut">快捷方式</string>
+    <string name="pac_b_bmv_addFavorite">收藏网页</string>
+    <string name="pac_b_bmv_favorite">管理收藏夹</string>
+    <string name="pac_b_bmv_preference">设置</string>
+    <string name="pac_b_bmv_http_name">网页属性</string>
+    <string name="pac_b_bmv_long_press">长按操作</string>
+    <string name="pac_b_bmv_exit_title">提示</string>
+    <string name="pac_b_bmv_exit_message">是否要退出?</string>
 
 </resources>

@@ -23,13 +23,11 @@ import android.widget.ListView;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 /**
  * @author wuwenjie wuwenjie.tk
  * @version 1.3.2
  * @more 程序入口
  */
-
 public class XhulooActivity extends Activity {
 	/** Called when the activity is first created. */
 
@@ -269,13 +267,13 @@ public class XhulooActivity extends Activity {
 
 		android.R.drawable.ic_menu_help);
 
-		menu.add(Menu.NONE, Menu.FIRST + 4, 1, "相机").setIcon(
+		menu.add(Menu.NONE, Menu.FIRST + 4, 4, "相机").setIcon(
 
 		android.R.drawable.ic_menu_camera);
 
-		menu.add(Menu.NONE, Menu.FIRST + 5, 4, "指南").setIcon(
+		menu.add(Menu.NONE, Menu.FIRST + 5, 5, "Tbrowser").setIcon(
 
-		android.R.drawable.ic_menu_compass);
+		R.drawable.browser_icon);
 
 		menu.add(Menu.NONE, Menu.FIRST + 6, 3, "myplaces").setIcon(
 
@@ -289,7 +287,11 @@ public class XhulooActivity extends Activity {
 
 		android.R.drawable.ic_menu_revert);
 
-		menu.add(Menu.NONE, Menu.FIRST + 9, 9, "退出").setIcon(
+		menu.add(Menu.NONE, Menu.FIRST + 9, 9, "指南").setIcon(
+
+		android.R.drawable.ic_menu_compass);
+
+		menu.add(Menu.NONE, Menu.FIRST + 10, 10, "退出").setIcon(
 
 		android.R.drawable.ic_menu_revert);
 
@@ -390,12 +392,12 @@ public class XhulooActivity extends Activity {
 
 		case Menu.FIRST + 5:
 
-			Toast.makeText(this, "XA_指南菜单点击", Toast.LENGTH_SHORT).show();
-
+			Toast.makeText(this, "XA_browser", Toast.LENGTH_SHORT).show();
 			/* 跳转新界面activity */
-			Intent intent02 = new Intent(); // 新建Intent意图
-			intent02.setClass(XhulooActivity.this, XhulooActivity_compass.class);
-			startActivity(intent02); // 跳转
+			Intent intent06 = new Intent(); // 新建Intent意图
+			intent06.setClass(XhulooActivity.this,
+					wo.wocom.xwell.browser.browser_main_view.class);
+			startActivity(intent06); // 跳转，此处的0 OR >=0
 
 			break;
 
@@ -439,6 +441,16 @@ public class XhulooActivity extends Activity {
 			break;
 
 		case Menu.FIRST + 9:
+
+			Toast.makeText(this, "XA_指南菜单点击", Toast.LENGTH_SHORT).show();
+
+			/* 跳转新界面activity */
+			Intent intent02 = new Intent(); // 新建Intent意图
+			intent02.setClass(XhulooActivity.this, XhulooActivity_compass.class);
+			startActivity(intent02); // 跳转
+			break;
+
+		case Menu.FIRST + 10:
 
 			Toast.makeText(this, "XA_退出菜单点击", Toast.LENGTH_SHORT).show();
 			Log.i(TAG, "XhulooActivity.this.finish()");
