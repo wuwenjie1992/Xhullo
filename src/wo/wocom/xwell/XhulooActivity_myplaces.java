@@ -212,7 +212,11 @@ public class XhulooActivity_myplaces extends Activity {
 
 		android.R.drawable.progress_indeterminate_horizontal);
 
-		menu.add(Menu.NONE, Menu.FIRST + 6, 6, "返回").setIcon(
+		menu.add(Menu.NONE, Menu.FIRST + 6, 6, "GPS").setIcon(
+
+		android.R.drawable.ic_menu_mylocation);
+
+		menu.add(Menu.NONE, Menu.FIRST + 7, 7, "返回").setIcon(
 
 		android.R.drawable.ic_menu_revert);
 		return true;
@@ -282,6 +286,16 @@ public class XhulooActivity_myplaces extends Activity {
 			break;
 
 		case Menu.FIRST + 6:
+			/* 跳转新界面activity */
+			Intent intent5 = new Intent(); // 新建Intent意图
+			intent5.setClass(XhulooActivity_myplaces.this,
+					wo.wocom.xwell.location.XA_p_lo_simpleGPS.class);
+			// 方便的调用名称为,返回一个Class对象
+			startActivity(intent5); // 跳转
+
+			break;
+
+		case Menu.FIRST + 7:
 			Toast.makeText(this, "MP_退出菜单点击", Toast.LENGTH_SHORT).show();
 			Log.i(TAG, "XhulooActivity.this.finish()");
 			XhulooActivity_myplaces.this.finish();

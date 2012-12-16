@@ -3,8 +3,15 @@ package wo.wocom.xwell.utility;
 import android.app.ProgressDialog;
 import android.content.Context;
 
+/**
+ * @author wuwenjie wuwenjie.tk
+ * @version 1.3.1
+ * @more 自定义 进程对话框
+ */
 public class XA_util_ProgressDialog extends ProgressDialog {
 
+	// private XA_util_ProgressDialog XA_util_pd ; // 自定义进度对话框
+	// XA_util_pd = new XA_util_ProgressDialog(context); //实例化 自定义
 	public XA_util_ProgressDialog(Context context) {
 		super(context);
 	}
@@ -20,7 +27,7 @@ public class XA_util_ProgressDialog extends ProgressDialog {
 		return;
 	}
 
-	// ProgressDialog this=new ProgressDialog(this);
+	// 取消对话框
 	public void util_pDialogCancel() {
 		this.cancel();
 	}

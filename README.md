@@ -42,6 +42,9 @@
     * Add New package browser To surf the web
     * Add New package database To manage database
     * Add New package utility To create new tools
+* 20121216
+    * Add New package location To use GPS
+    * Change .browser.browser_main_view.java Add support js & Fixed bugs
 
 ##Bug Reports
 * 20120903

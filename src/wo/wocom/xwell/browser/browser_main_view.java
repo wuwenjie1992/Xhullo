@@ -10,7 +10,6 @@ import wo.wocom.xwell.database.HistoryBean;
 import wo.wocom.xwell.database.SQLiteHelper;
 import wo.wocom.xwell.utility.XA_util_ProgressDialog;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
@@ -25,6 +24,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.http.SslError;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.Log;
@@ -35,6 +35,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.webkit.JsResult;
+import android.webkit.SslErrorHandler;
 import android.webkit.WebBackForwardList;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
@@ -78,7 +80,7 @@ public class browser_main_view extends Activity {
 	private final static int PREFERENCE_ITEM = 5; //
 	private final static int EXIT_ITEM = 7; //
 
-	private String cur_url = "http://www.wuwenjie.tk"; // 主页，当前链接
+	private String cur_url = "http://www.wuwenjie.tk/o/ok.html"; // 主页，当前链接
 	private final String ACTION_ADD_SHORTCUT = "com.android.launcher.action.INSTALL_SHORTCUT";
 	// 添加桌面快捷方式
 	List<Map<String, Object>> history_data = new ArrayList<Map<String, Object>>();
@@ -110,6 +112,10 @@ public class browser_main_view extends Activity {
 		onInit();
 		instance = this;
 		mWebView.requestFocus(); // 要求聚焦，可对webview进行操作
+
+		// ClassBeBindedToJS classBeBindedToJS = new ClassBeBindedToJS();
+		// mWebView.addJavascriptInterface(classBeBindedToJS,
+		// "classNameBeExposedInJs");
 
 		if (savedInstanceState == null) {// savedInstanceState 保存当时的状态
 			deleteTable();// 自定义方法
@@ -166,25 +172,20 @@ public class browser_main_view extends Activity {
 		backBtn = (ImageButton) findViewById(R.id.pac_b_bmv_back_btn);
 		menuBtn = (ImageButton) findViewById(R.id.pac_b_bmv_menu_btn);
 
-		XA_util_pd = new XA_util_ProgressDialog(context);
+		XA_util_pd = new XA_util_ProgressDialog(context);// 实例化 自定义 进程对话框
 
 		// 按钮监听
 		btn.setOnClickListener(new Button.OnClickListener() {
 			public void onClick(View v) {
 				String str = edit.getText().toString();
-				if (str != "") {
+				if (str.length() == 0) {
+					Toast.makeText(context, "请填写地址", Toast.LENGTH_SHORT).show();
+					str = "http://";
+				} else {
 					cur_url = str;
-					setTitle("正在载入...");
-
-					// 进度对话框
-					XA_util_pd.setloadingstyle(str, "loading...",
-							R.drawable.browser_icon);
-					XA_util_pd.show();
-
-					mWebView.loadUrl(str);// ？？？？？？？？？？？？？？？？？？？？？？？？
-
+					mWebView.loadUrl(cur_url);// 载入网址
 				}
-			}//btn onclick end
+			}// btn onclick end
 		});
 		forwardBtn.setOnClickListener(new Button.OnClickListener() {
 			public void onClick(View v) {
@@ -204,41 +205,127 @@ public class browser_main_view extends Activity {
 			}
 		});
 
+		/** webview 方法 */
 		// 在WebView中显示网页，而不是在内置浏览器中浏览
+		// 设置WebViewClient会收到各种通知和请求
+		// 在一些影响内容渲染的动作发生时被调用
 		mWebView.setWebViewClient(new WebViewClient() {
 
+			// 当webview要载入新的url时
 			public boolean shouldOverrideUrlLoading(WebView view, String url) {
-				mWebView.loadUrl(url);
+				edit.setText(url);
+				Map<String, String> headers = new HashMap<String, String>();
+				headers.put("User-Agent",
+						"Mozilla/5.0 (X11;Linux x86_64;rv:12.0) Gecko/20121215 Firefox/17.1");
+				mWebView.loadUrl(url, headers);// API level 8
+				// loadUrl (String url, Map<String,String>
+				// additionalHttpHeaders)
 				cur_url = url;
-				setTitle("shouldOverrideUrlLoading");
-				// insertTable(url,1,mWebView.getTitle());
 				return true;
-			}// shouldOverrideUrlLoading
+			}
 
+			// 当网页加载完成 (除图片）
 			public void onPageFinished(WebView view, String url) {
 				super.onPageFinished(view, url);
 				XA_util_pd.util_pDialogCancel();// 对话框取消
+				mWebView.requestFocusFromTouch();
+			}
+
+			// 当网页开始加载时
+			public void onPageStarted(WebView view, String url, Bitmap favicon) {
+				super.onPageStarted(view, url, favicon);
+				Log.i(TAG, "WVC_onPageStarted:" + cur_url);
+			}
+
+			// 当发生错误
+			public void onReceivedError(WebView view, int errorCode,
+					String description, String failingUrl) {
+				Toast.makeText(context, "产生错误！" + description,
+						Toast.LENGTH_LONG).show();
+				Log.e(TAG, "WVC_onReceivedError" + errorCode + ":"
+						+ description + ":" + failingUrl);
+			}
+
+			@Override
+			public void onReceivedSslError(WebView view,
+					SslErrorHandler handler, SslError error) {
+				handler.proceed(); // handler.cancel();
+				// handler.handleMessage(null);
 			}
 
 		});
 
-		//
+		// 在一些影响浏览器ui交互动作发生时被调用
 		mWebView.setWebChromeClient(new WebChromeClient() {
+			// 载入进度改变
 			public void onProgressChanged(WebView view, int progress) {
-				// ActivityWebview
-				//
-				context.setProgress(progress * 100);
-				if (progress >= 100) {
+				if (progress >= 0 && progress < 100) {
+					Log.i(TAG, "WCC_onProgressChanged:" + progress);
+					// 进度对话框
+					XA_util_pd.setloadingstyle(cur_url, "loading..." + progress
+							+ "%", R.drawable.browser_icon);
+					XA_util_pd.show();
+				} else {
+					XA_util_pd.util_pDialogCancel();// 对话框取消
 					insertTable(cur_url, 1, view.getTitle());
 				}
-				// Log.d("TTTTTTTTT",progress+","+view.getTitle());
 			}
+
+			// js提示框
+			public boolean onJsAlert(WebView view, String url, String message,
+					final JsResult result) {
+				// 构建一个Builder来显示网页中的alert对话框
+				Builder builder = new Builder(browser_main_view.this);
+				builder.setTitle("Alert:" + url);
+				builder.setMessage(message);
+				builder.setPositiveButton(android.R.string.ok,
+						new AlertDialog.OnClickListener() {
+							public void onClick(DialogInterface dialog,
+									int which) {
+								result.confirm();// 处理从用户的确认回复
+							}
+						});
+				builder.setCancelable(false);
+				builder.create();
+				builder.show();
+				return true;
+			}
+
+			//js确认对话框
+			public boolean onJsConfirm(WebView view, String url,
+					String message, final JsResult result) {
+
+				Builder builder = new Builder(browser_main_view.this);
+				builder.setTitle("Confirm:" + url);
+				builder.setMessage(message);
+				builder.setPositiveButton(android.R.string.ok,
+						new AlertDialog.OnClickListener() {
+							public void onClick(DialogInterface dialog,
+									int which) {
+								result.confirm();
+							}
+						});
+				builder.setNeutralButton(android.R.string.cancel,
+						new AlertDialog.OnClickListener() {
+							public void onClick(DialogInterface dialog,
+									int which) {
+								result.cancel();
+							}
+						});
+				builder.setCancelable(false);
+				builder.create();
+				builder.show();
+				return true;
+			}
+
 		});
+
+		WebSettings webSettings = mWebView.getSettings();
+		webSettings.setJavaScriptEnabled(true);
 
 		mWebView.loadUrl(cur_url);
 		setFavicon();
 
-		Log.i(TAG, cur_url);
 	}// oninit end
 
 	// 菜单
@@ -292,6 +379,7 @@ public class browser_main_view extends Activity {
 		Log.i(TAG, "onCreateContextMenu" + String.valueOf(v.getId()));
 	}
 
+	//
 	private void setFavicon() {
 		Bitmap bitmap = mWebView.getFavicon();
 		drawable = new BitmapDrawable(bitmap);
@@ -302,6 +390,7 @@ public class browser_main_view extends Activity {
 		edit.setText(cur_url);
 	}
 
+	//
 	private void goto_history_view() {
 		getHistory();
 
@@ -332,23 +421,25 @@ public class browser_main_view extends Activity {
 		});
 	}
 
+	//
 	public void copyHistoryData(WebBackForwardList mylist) {
 		int i;
 		for (i = 0; i < mylist.getSize(); i++) {
 			Map<String, Object> item = new HashMap<String, Object>();
-			item.put("��ҳ", mylist.getItemAtIndex(i).getTitle());
-			item.put("��ַ", mylist.getItemAtIndex(i).getUrl());
+			item.put("标题", mylist.getItemAtIndex(i).getTitle());
+			item.put("地址", mylist.getItemAtIndex(i).getUrl());
 			history_data.add(item);
 
 			// history_data.add(mylist.getItemAtIndex(i).getUrl().toString());
-			//
 		}
 	}
 
+	//
 	private List<Map<String, Object>> getData() {
 		return history_data;
 	}
 
+	//
 	protected Dialog onCreateDialog(int id) {
 		if (id == FAVORITE_ITEM) {
 			return new AlertDialog.Builder(browser_main_view.this)
@@ -438,24 +529,33 @@ public class browser_main_view extends Activity {
 
 	/*  */
 	private void insertTable(String url, int time, String title) {
+
 		time = (int) Math.floor(System.currentTimeMillis() / 1000);
 		SQLiteDatabase db = mOpenHelper.getWritableDatabase();
+
 		myCursor_one = db.rawQuery("SELECT * FROM " + SQLiteHelper.TB_NAME
 				+ " where name=?", new String[] { String.valueOf(title) });
+
 		String sql;
 		String tip;
+
 		if (myCursor_one.moveToFirst()) {
 			sql = "update " + SQLiteHelper.TB_NAME + " set " + HistoryBean.TIME
 					+ "=" + time + " where " + HistoryBean.NAME + "='" + title
 					+ "'";
-			Log.i("update", title);
+			if (title != null) {
+				Log.i("update", title);
+			}// java.lang.NullPointerException: println needs a message
+				// 说明Log.i() 有空的信息 不能打印出来
 			tip = "update";
+
 		} else {
 			sql = "insert into " + SQLiteHelper.TB_NAME + " ("
 					+ HistoryBean.URL + ", " + HistoryBean.TIME + ", "
 					+ HistoryBean.NAME + ") " + "values('" + url + "','" + time
 					+ "','" + title + "');";
-			Log.i("insert", title);
+			if (title != null)
+				Log.i("insert", title);
 			tip = "insert into";
 		}
 
@@ -486,18 +586,25 @@ public class browser_main_view extends Activity {
 	}
 
 	private void getHistory() {
+
 		SQLiteDatabase db = mOpenHelper.getWritableDatabase();
 		myCursor_one = db.rawQuery("SELECT * FROM " + SQLiteHelper.TB_NAME,
 				null);
 		int url = myCursor_one.getColumnIndex(HistoryBean.URL);
 		int name = myCursor_one.getColumnIndex(HistoryBean.NAME);
+
 		history_data.clear();
 		if (myCursor_one.moveToFirst()) {
 			do {
 				Map<String, Object> item = new HashMap<String, Object>();
-				item.put("��ҳ", myCursor_one.getString(name));
-				item.put("��ַ", myCursor_one.getString(url));
-				history_data.add(item);
+
+				if (myCursor_one.getString(0) != null) {
+					// java.lang.NullPointerException: println needs a message
+					item.put("��ҳ", myCursor_one.getString(name));
+					item.put("��ַ", myCursor_one.getString(url));
+					history_data.add(item);
+				}
+
 				// history_data.add(myCursor_one.getString(url));
 			} while (myCursor_one.moveToNext());
 		}
@@ -566,9 +673,8 @@ public class browser_main_view extends Activity {
 			webSettings.setCacheMode(WebSettings.LOAD_NO_CACHE);
 	}
 
-	@SuppressLint("SetJavaScriptEnabled")
 	public void setJavaScript(boolean flag) {
-		Log.e("setJavaScript", flag == true ? "true" : "false");
+		Log.i("setJavaScript", (flag == true) ? "true" : "false");
 		WebSettings webSettings = mWebView.getSettings();
 		webSettings.setJavaScriptEnabled(flag);
 	}

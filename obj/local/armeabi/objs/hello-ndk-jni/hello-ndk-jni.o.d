@@ -1,5 +1,5 @@
-/home/wuwenjie/Xhullo/obj/local/armeabi/objs/hello-ndk-jni/hello-ndk-jni.o: \
- /home/wuwenjie/Xhullo/jni/hello-ndk-jni.c \
+/home/wuwenjie/workspace/Xhullo/obj/local/armeabi/objs/hello-ndk-jni/hello-ndk-jni.o: \
+ /home/wuwenjie/workspace/Xhullo/jni/hello-ndk-jni.c \
  /home/wuwenjie/android-ndk-r8b/platforms/android-8/arch-arm/usr/include/stdio.h \
  /home/wuwenjie/android-ndk-r8b/platforms/android-8/arch-arm/usr/include/sys/cdefs.h \
  /home/wuwenjie/android-ndk-r8b/platforms/android-8/arch-arm/usr/include/sys/cdefs_elf.h \

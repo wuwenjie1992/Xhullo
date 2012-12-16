@@ -2,17 +2,15 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="wo.wocom.xwell"
     android:versionCode="1"
-    android:versionName="1.3.10.3.2small_browser" >
-            <uses-sdk android:minSdkVersion="4" />
-    
+    android:versionName="1.3.10.3.3small_browser_improved" >
+
+    <uses-sdk android:minSdkVersion="8" />
+
     <!-- uses-permission -->
     <!-- 获取通话状态 Allows read only access to phone state -->
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
-    <!--
-    访问CellID或WiFi热点来获取粗略的位置
-    Allows an application to access coarse(e.g. Cell-ID,WiFi)location)
-    -->
+    <!-- 访问CellID或WiFi热点来获取粗略的位置Allows an application to access coarse(e.g. Cell-ID,WiFi)location) -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <!-- 震动权限 -->
@@ -31,17 +29,19 @@
     <uses-permission android:name="android.permission.CAMERA" />
 
     <!--
-         允许程序接收到【系统启动完成的】广播
-			Allows an application to receive the ACTION_BOOT_COMPLETED 
-			that is broadcast after the system finishes booting.
+    允许程序接收到【系统启动完成的】广播
+    Allows an application to receive the ACTION_BOOT_COMPLETED that is broadcast after the system finishes booting.
     -->
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <!-- 在应用程序中添加快捷方式 -->
     <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />
 
-    <!-- 允许挂载和反挂载文可移动存储文件系统 mounting and unmounting file systems for removable storage-->
+    <!-- 允许挂载和反挂载文可移动存储文件系统 mounting and unmounting file systems for removable storage -->
     <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
+
+    <!-- 允许一个程序访问精良位置(如 GPS) (Allows an application to access fine (e.g., GPS) location) -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <!-- uses-feature 要求的特性 -->
     <uses-feature
@@ -116,6 +116,9 @@
             android:launchMode="singleTask" />
         <activity android:name=".browser.WebPreference" />
         <activity android:name=".browser.HttpData" />
+        
+        <!-- pac_location -->
+		<activity android:name=".location.XA_p_lo_simpleGPS"></activity>
 
         <!-- service -->
         <!-- 音乐服务 -->
@@ -129,8 +132,6 @@
                 <!-- 过滤 启动完成 -->
             </intent-filter>
         </receiver>
-        
-        
     </application>
 
 </manifest>
