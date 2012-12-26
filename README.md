@@ -44,7 +44,10 @@
     * Add New package utility To create new tools
 * 20121216
     * Add New package location To use GPS
-    * Change .browser.browser_main_view.java Add support js & Fixed bugs
+    * Change .browser/browser_main_view.java Add support js & Fixed bugs
+* 20121226
+    * Change drawable's resource file
+    * Change XA_p_lo_simpleGPS.java Add To remove update GPS
 
 ##Bug Reports
 * 20120903
@@ -52,6 +55,9 @@
     * XhulooActivity_compass.java
 * 20121111
     * XhulooActivity_weatherreport.java
+* 20121226
+    * XhulooActivity_weatherreport.java
+    * XhulooActivity_playmusic.java
 
 ##About Author 
 * WebSite:[wuwenjie.tk](http://www.wuwenjie.tk)

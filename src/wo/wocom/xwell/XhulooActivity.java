@@ -23,6 +23,7 @@ import android.widget.ListView;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
 /**
  * @author wuwenjie wuwenjie.tk
  * @version 1.3.2
@@ -52,9 +53,8 @@ public class XhulooActivity extends Activity {
 		final Button ok_button = (Button) findViewById(R.id.widget40_button_OK);
 		final EditText mEditText01 = (EditText) findViewById(R.id.myEditText);
 		final CheckBox iAccept = (CheckBox) findViewById(R.id.CheckBox_Accept);
-		final String[] data = { "心怔煩亂敵若云", "有炎百刃月無暈", "靈威震怒鼓徹天", "犀甲迸裂矣厥劍",
-				"永思故原遙難反", "遠峙疊巒久無還", "埋骨鬼雄血浸袍", "藏懷青絲志誠傲", "顧往舊徑櫻爛漫",
-				"逸鸞鳳鹮面桃然", "雯華琉白馨而靨" };
+		final String[] data = { "冰绡", "夜来幽梦,柔肠难成", "流景伤年,高楼危倚", "月华如练,蕊珠未眠",
+				"哀萧飘飘,一路烟霞" };
 
 		/* 按钮监听 */
 		ok_button.setOnClickListener(new Button.OnClickListener() {
@@ -332,7 +332,7 @@ public class XhulooActivity extends Activity {
 			AlertDialog.Builder my_ADialog02 = new AlertDialog.Builder(
 					XhulooActivity.this);
 			my_ADialog02.setTitle("XA_AlertDialog"); // 设置标题
-			my_ADialog02.setMessage("帮助：访问wuwenjie.tk的项目页|访问GPL"); // 设置显示消息
+			my_ADialog02.setMessage("帮助：访问wwj|访问GitHub项目"); // 设置显示消息
 			my_ADialog02.setCancelable(true); // 设置能取消
 
 			my_ADialog02.setPositiveButton("访问wwj",
@@ -344,11 +344,11 @@ public class XhulooActivity extends Activity {
 						}
 					});
 
-			my_ADialog02.setNegativeButton("访问GPL",
+			my_ADialog02.setNegativeButton("访问GitHub",
 					new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog, int id) {
 							Uri uri = Uri
-									.parse("http://www.gnu.org/copyleft/gpl.html");
+									.parse("https://github.com/wuwenjie1992/Xhullo");
 							Intent intent = new Intent(Intent.ACTION_VIEW, uri);
 							startActivity(intent);
 						}
