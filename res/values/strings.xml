@@ -33,7 +33,7 @@
     <string name="pause_PM">暂停</string>
     <string name="unb_bt">unb_bt</string>
     <string name="bindservice_bt">bindservice_bt</string>
-    <string name="PM_mp_s">/sdcard/music/.mp3</string>
+    <string name="PM_mp_s">/sdcard/music/王力宏_花田错.mp3</string>
 
     <!--  -->
     <string name="ms_notifi_text">播放音乐ms_notifi_text</string>

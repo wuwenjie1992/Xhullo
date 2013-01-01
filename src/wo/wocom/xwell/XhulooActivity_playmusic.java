@@ -1,5 +1,7 @@
 package wo.wocom.xwell;
 
+import wo.wocom.xwell.utility.XA_util_ADialog;
+import wo.wocom.xwell.utility.XA_util_fileExits;
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
@@ -139,15 +141,18 @@ public class XhulooActivity_playmusic extends Activity implements
 
 			musicPath_s = PM_MusicPath_et.getText().toString(); // 获得文本编框的文字
 
-			if (musicPath_s.length() != 0) {
+			if (XA_util_fileExits.dofExits(musicPath_s)) {// 判断文件是否存在
 				Bundle Bundle_PM = new Bundle();
-				Bundle_PM.putString("PM_URL", musicPath_s);// 加入数据 参数：key-Data
-															// value
+				Bundle_PM.putString("PM_URL", musicPath_s);// 加入数据
+															// 参数：key-Data&value
 				mIntent05.putExtras(Bundle_PM); // 添加附加信息
 
 				startService(mIntent05);
-			} else {
-				return_toast("路径为空，无法播放指定内容，请检查！");
+			}
+
+			else {
+				XA_util_ADialog adialog = new XA_util_ADialog(this);
+				adialog.show1ADialog("出错", "音频文件不存在:" + musicPath_s, "知道了");
 			}
 
 			break;

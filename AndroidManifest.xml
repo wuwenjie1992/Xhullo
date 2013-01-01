@@ -42,6 +42,8 @@
 
     <!-- 允许一个程序访问精良位置(如 GPS) (Allows an application to access fine (e.g., GPS) location) -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    
+    
 
     <!-- uses-feature 要求的特性 -->
     <uses-feature

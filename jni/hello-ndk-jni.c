@@ -19,7 +19,7 @@ int currentTimeMillis() {
 
 //返回一个字符串
 jstring Java_wo_wocom_xwell_XAplasma_stringFromNDKJNI(JNIEnv* env, jobject thiz) {
-	return (*env)->NewStringUTF(env, "well,hello-ndk-jni!!! 李泰珉");
+	return (*env)->NewStringUTF(env, "well,hello-ndk-jni!!!");
 	//Constructs a new java.lang.String object from an array of UTF-8 characters.
 }
 

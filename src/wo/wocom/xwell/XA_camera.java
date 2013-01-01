@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Locale;
 import android.app.Activity;
 import android.content.Context;
@@ -12,6 +13,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.PixelFormat;
 import android.hardware.Camera;
+import android.hardware.Camera.Size;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.text.format.DateFormat;
@@ -41,7 +43,7 @@ public class XA_camera extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
-
+		
 		requestWindowFeature(Window.FEATURE_NO_TITLE); // 窗口无标题
 		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
 				WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -49,7 +51,7 @@ public class XA_camera extends Activity {
 		getWindow().setFormat(PixelFormat.TRANSLUCENT);// 设置窗口格式为半透明
 
 		FrameLayout fl = new FrameLayout(this); // 提供一个帧布局
-		cv = new CameraView(this);
+		cv = new CameraView(this); // 在新建视图的同时，实例化了Camera
 		fl.addView(cv); // 创建预览用子类，放于fl底层
 
 		TextView tv = new TextView(this); // 创建文本框做特效
@@ -90,8 +92,7 @@ public class XA_camera extends Activity {
 			mCamera.startPreview();// 再次 开始预览，无此，view停留takpicture图像
 
 		} // on picture taken end
-	};
-	// 实列化 end
+	};// 实列化 end
 
 	// 回调接口,实际捕捉信号图像时,快门
 	public Camera.ShutterCallback shutterCallback = new Camera.ShutterCallback() {
@@ -141,6 +142,9 @@ public class XA_camera extends Activity {
 					try {
 						mCamera.setPreviewDisplay(holder);// 设置用于实时预览
 					} catch (IOException e) {
+						Log.i(TAG,
+								"surfaceCreated_setPreviewDisplay"
+										+ e.toString());
 						mCamera.release();
 						mCamera = null;
 					}// 释放相机资源并置空
@@ -151,13 +155,28 @@ public class XA_camera extends Activity {
 						int width, int height) {
 
 					Log.i(TAG, "CameraView_surfaceChanged");
+					
+					
 					Camera.Parameters parameters = mCamera.getParameters(); // 获得相机参数对象
 					parameters.setPictureFormat(PixelFormat.JPEG); // 设置格式
-					// parameters.setPreviewSize(480,320); //设置预览大小 android2.3
-					// cause error
+					parameters.set("jpeg-quality", 85);// 照片质量
 					parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO); // 设置自动对焦
-					// parameters.setPictureSize(1024,480); //设置图片保存时的分辨率大小
-					// android2.3 cause error
+					parameters.setPreviewSize(width, height);
+					parameters.setPreviewFrameRate(24);// 每秒24帧
+					
+					// setDisplayOrientation
+
+					//----设置图片保存时的分辨率大小
+					List<Size> previewSizes_L = parameters
+							.getSupportedPreviewSizes();
+					Log.i(TAG,
+							previewSizes_L.toString() + "\n"
+									+ previewSizes_L.size() + "\n"
+									+ previewSizes_L.get(0));
+					Size s=previewSizes_L.get(0);// 640 480 ;0 320 240
+					Log.i(TAG, s.width+"X"+s.height);
+					//parameters.setPictureSize(s.width,s.height);//默认分辨率高
+					
 					mCamera.setParameters(parameters); // 给相机对象设置刚才设定的参数
 					mCamera.startPreview(); // 开始预览
 				}// surfaceChanged end

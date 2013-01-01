@@ -1,6 +1,8 @@
 package wo.wocom.xwell;
 
 import java.io.IOException;
+
+import wo.wocom.xwell.utility.XA_util_fileExits;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Notification;
@@ -16,10 +18,11 @@ import android.os.IBinder;
 import android.text.format.Time;
 import android.util.Log;
 import android.widget.RemoteViews;
+import android.widget.Toast;
 
 /**
  * @author wuwenjie wuwenjie.tk
- * @version 1.3.5
+ * @version 1.3.6
  * @see 音乐服务;接受其他activity的调用，返回结果；播放通知
  */
 
@@ -33,8 +36,8 @@ public class MusicService extends Service {
 	public static final String URL_ACTION = "wo.wocom.xwell.URL_ACTION";
 
 	@SuppressLint("SdCardPath")
-	String mp3filePath_s_P = "/sdcard/music/千纸鹤.mp3";// 真实播放路径
-	String mp3filePath_s = null;
+	String mp3filePath_s_P = "/sdcard/music/q.mp3";// 真实播放路径
+	String mp3filePath_s = null;// 文件路径字符串
 
 	private MediaPlayer MediaPlayer_MS;
 	private MyBinder mBinder = new MyBinder();
@@ -62,65 +65,72 @@ public class MusicService extends Service {
 		super.onStart(intent, startId);
 
 		String mp3filePath_s = intent.getStringExtra("PM_URL");
-		Log.i(TAG, "onCreate MUSIC_SERVICE_Xhuloo" + mp3filePath_s);
+		Log.i(TAG, "onStart MUSIC_SERVICE_Xhuloo" + mp3filePath_s);
 
 		String action = intent.getAction();
 
 		if (action.equals(PLAY_ACTION)) {
 
-			// ---------------通知---------------------
-			NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-			// 得到系统NOTIFICATION_SERVICE服务，通知栏
+			if (XA_util_fileExits.dofExits(mp3filePath_s_P)) {// 判断文件是否存在
+				Log.i(TAG, "PLAY_ACTION MUSIC_SERVICE_Xhuloo" + mp3filePath_s_P);
 
-			Notification notification = new Notification(
-					R.drawable.ic_launcher, "播放音乐", System.currentTimeMillis());
-			// 实列化 Notifiction，图标，tickerText，when何时
+				// -----------------------------通知---------------------
+				NotificationManager nomanager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+				// 得到系统NOTIFICATION_SERVICE服务，通知栏
 
-			RemoteViews remoteViews = new RemoteViews(getPackageName(),
-					R.layout.notification);
-			// 远程视图 可显示于另一个进程 String packageName, int layoutId
-			// public abstract String getPackageName () 获得该应用的包名
+				Notification notification = new Notification(
+						R.drawable.ic_launcher, "播放音乐",
+						System.currentTimeMillis());
+				// 实列化 Notifiction，图标，tickerText，when何时
 
-			// remoteViews.setImageViewResource
-			// (R.id.ms_notifi_image,android.R.drawable.ic_lock_silent_mode_off);
-			// remoteViews.setTextViewText(R.id.ms_notifi_text,
-			// "播放音乐ms_notifi_text");
+				RemoteViews remoteViews = new RemoteViews(getPackageName(),
+						R.layout.notification);
+				// 远程视图 可显示于另一个进程 String packageName, int layoutId
+				// public abstract String getPackageName () 获得该应用的包名
 
-			notification.contentView = remoteViews;// remoteViews将在状态栏里代表本通知视图
+				// remoteViews.setImageViewResource
+				// (R.id.ms_notifi_image,android.R.drawable.ic_lock_silent_mode_off);
+				// remoteViews.setTextViewText(R.id.ms_notifi_text,
+				// "播放音乐ms_notifi_text");
 
-			notification.contentIntent = PendingIntent.getActivity(
-					MusicService.this, 0, new Intent(MusicService.this,
-							XhulooActivity_playmusic.class), 0);
-			// 启动一个新的活动
+				notification.contentView = remoteViews;// remoteViews将在状态栏里代表本通知视图
 
-			notification.flags = Notification.FLAG_AUTO_CANCEL;// 按了自动消除通知
-			notification.defaults = Notification.DEFAULT_SOUND;// 提示声为默认
-			long[] vibrate = { 0, 100, 200, 300 };// 颤动
-			notification.vibrate = vibrate;
+				notification.contentIntent = PendingIntent.getActivity(
+						MusicService.this, 0, new Intent(MusicService.this,
+								XhulooActivity_playmusic.class), 0);
+				// 启动一个新的活动
 
-			manager.notify(1, notification);
+				notification.flags = Notification.FLAG_AUTO_CANCEL;// 按了自动消除通知
+				notification.defaults = Notification.DEFAULT_SOUND;// 提示声为默认
+				long[] vibrate = { 0, 100, 200, 300 };// 颤动
+				notification.vibrate = vibrate;
 
-			inite();// 初始化播放
+				nomanager.notify(1, notification);
+				// ------------------------------------------------------------
+
+				inite(mp3filePath_s_P);// 初始化播放
+
+			} else {
+				Toast.makeText(getBaseContext(), "不存在" + mp3filePath_s_P,
+						Toast.LENGTH_LONG).show();
+				Log.i(TAG, "不存在" + mp3filePath_s_P);
+			}
 
 		}
 
 		else if (action.equals(PAUSE_ACTION)) {
 			stopSelf(); // pause();
-		}
-
-		else if (action.equals(NEXT_ACTION)) {
-			inite();
-		}
-
-		else if (action.equals(PREVIOUS_ACTION)) {
-			inite(); // previous();
+		} else if (action.equals(NEXT_ACTION)) {
+			// inite(mp3filePath_s_P);
+			Toast.makeText(getBaseContext(), "NEXT_ACTION", Toast.LENGTH_LONG)
+					.show();
+		} else if (action.equals(PREVIOUS_ACTION)) {
+			// inite(mp3filePath_s_P); // previous();
+			Toast.makeText(getBaseContext(), "PREVIOUS_ACTION",
+					Toast.LENGTH_LONG).show();
 		} else if (action.equals(URL_ACTION)) {
-
-			if (mp3filePath_s != null) {
-				mp3filePath_s_P = mp3filePath_s;// 文件路径字符串
-			}
-			inite(); // 初始化 播放 音乐
-
+			mp3filePath_s_P = mp3filePath_s; // 【得到的字符串】赋给【播放字符】
+			inite(mp3filePath_s_P); // 初始化 播放 音乐
 		}
 
 	}// onstart end
@@ -132,11 +142,11 @@ public class MusicService extends Service {
 	}
 
 	// 自定义 初始化 播放 音乐
-	public void inite() {
+	public void inite(String filePath_s_P) {
 		MediaPlayer_MS.reset();
 
 		try {
-			MediaPlayer_MS.setDataSource(mp3filePath_s_P);// 文件路径字符串
+			MediaPlayer_MS.setDataSource(filePath_s_P);// 文件路径
 			MediaPlayer_MS.prepare();
 			MediaPlayer_MS.start();
 		} catch (IllegalArgumentException e1) {
@@ -147,7 +157,6 @@ public class MusicService extends Service {
 			e1.printStackTrace();
 			AlertDialog.Builder my_ADialog = new AlertDialog.Builder(
 					MusicService.this);
-			;
 			my_ADialog.setTitle("出错");
 			my_ADialog.setMessage(e1.toString());
 			my_ADialog.setCancelable(true);
