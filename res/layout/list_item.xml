@@ -1,45 +1,48 @@
-<?xml version="1.0" encoding="utf-8"?>    
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:paddingBottom="4dip"
-    android:paddingLeft="12dip" >
 
-    <!--
-         paddingBottom="4dip"	Layout底部留出3像素空白区域
-		  paddingLeft="12dip"	Layout左边留出12像素空白
-		  textSize="30dip"		TextView的字体为30像素
-    -->
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" >
 
-    <TextView
-        android:id="@+id/strweek_tv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:text="@string/strweek" />
+        <TextView
+            android:id="@+id/strweek_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:text="@string/strweek" />
 
-    <TextView
-        android:id="@+id/strweather_tv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:text="@string/strweather" />
+        <TextView
+            android:id="@+id/strweather_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/strweek_tv"
+            android:layout_toRightOf="@+id/strweek_tv"
+            android:text="@string/strweather" />
 
-    <TextView
-        android:id="@+id/temp_tv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_below="@+id/strweather_tv"
-        android:text="@string/temp" />
+        <TextView
+            android:id="@+id/temp_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/strweather_tv"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:text="@string/temp"
+            android:textSize="30sp" />
 
-    <TextView
-        android:id="@+id/advise_tv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/strweek_tv"
-        android:layout_below="@+id/temp_tv"
-        android:text="@string/advise" />
+        <TextView
+            android:id="@+id/wind_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/strweather_tv"
+            android:layout_below="@+id/strweather_tv"
+            android:text="@string/wind" />
 
-</RelativeLayout>  
+        <TextView
+            android:id="@+id/advise_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/wind_tv"
+            android:text="@string/advise" />
+
+    </RelativeLayout>

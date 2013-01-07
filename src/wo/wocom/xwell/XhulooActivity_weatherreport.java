@@ -1,7 +1,8 @@
 package wo.wocom.xwell;
 
 import java.io.IOException;
-import java.util.List;
+import java.net.UnknownHostException;
+import java.util.ArrayList;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -10,6 +11,9 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
+
+import wo.wocom.xwell.utility.XA_util_ADialog;
+import wo.wocom.xwell.utility.XA_util_readStrByregEx;
 
 import android.app.Activity;
 import android.content.Context;
@@ -30,7 +34,7 @@ import android.widget.Toast;
 
 /**
  * @author wuwenjie wuwenjie.tk
- * @version 1.3.5
+ * @version 1.3.6
  * @more 自定义列表模式；联网；解析JASON； 联网、解析的耗时操作使用handler
  */
 
@@ -38,18 +42,15 @@ public class XhulooActivity_weatherreport extends Activity {
 
 	private static final String TAG = "WR_Xhuloo";
 
-	ListView listView;
-	ListViewAdapter my_LVA;
-	String a1;
-	String[] titles = new String[4];// ={a1,a1,a1,a1};
-	String[] texts = { "文本内容A", "文本内容B", "文本内容C", "文本内容D" };
-	int[] resIds = { R.drawable.action, R.drawable.action, R.drawable.action,
-			R.drawable.action };
-
+	myListViewAdapter my_LVA;// 自定义LISTVIEW
+	
+	String[][] newtext = new String[6][5];
+	String title = "联网数据..";
+	String get_url = "http://m.weather.com.cn/data/101020900.html"; // 请求地址
+	
 	MyHandler myHandler;
-	int i;
-
-	List<weatherinfo> itemlist;
+	weatherinfo wi;
+	int i, j;
 
 	/* activity生命周期 */
 	public void onCreate(Bundle savedInstanceState) {
@@ -58,42 +59,47 @@ public class XhulooActivity_weatherreport extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.wr); // 设置主布局
 
+		wi = new weatherinfo();
+
+		// 初始化List<String[]>,以输出结果
+		for (j = 0; j <= 5; j++) {
+			for (i = 0; i <= 4; i++) {
+				newtext[j][i] = title;
+			}
+		}
+
 		myHandler = new MyHandler();
 		// 创建新的Handler实例
 		// 绑定到当前线程和消息的队列中,开始分发数据
 		MyThread m = new MyThread();
 		new Thread(m).start();
 
-		Log.i(TAG, "WR_main:" + a1 + titles);
-
-		ListView listView = (ListView) this.findViewById(R.id.wr_lv);
-		my_LVA = new ListViewAdapter(titles);
-		listView.setAdapter(my_LVA);
-
-		Log.i(TAG, "WR_main:" + a1 + titles);
-
-		// listView=(ListView)this.findViewById(R.id.wr_lv);
-		// listView.setAdapter(new ListViewAdapter(titles,texts,resIds));
-		// final TextView wr_tv=(TextView) findViewById(R.id.wr_tv);
-		// wr_tv.setBackgroundResource(R.drawable.ic_launcher);
-
-		// http://www.weather.com.cn/weather/101020100.shtml
-		// http://m.weather.com.cn/data/101020300.html
+		showMyLV(true);
 
 	}// oncreate
 
+	public void showMyLV(boolean i) {
+		ListView listView = (ListView) this.findViewById(R.id.wr_lv);
+		my_LVA = new myListViewAdapter(6);
+		listView.setAdapter(my_LVA);
+		if (i)
+			my_LVA.notifyDataSetChanged();// 通知数据改变，反应该刷新视图
+	}
+
 	// 自定义LISTVIEW
-	public class ListViewAdapter extends BaseAdapter {
+	public class myListViewAdapter extends BaseAdapter {
 
 		View[] itemViews;
 
-		public ListViewAdapter(String[] itemTitles) {
+		public myListViewAdapter(int j) {
 
-			itemViews = new View[itemTitles.length]; // itemViews.length=有几个图即几行
+			itemViews = new View[j]; // 有jjjj个图
 
-			for (i = 0; i < itemViews.length; i++) {
-				itemViews[i] = makeItemView(texts[i], texts[i], texts[i],
-						texts[i]);
+			for (i = 0; i < j; i++) { // j==6
+
+				itemViews[i] = makeItemView(newtext[i][0], newtext[i][1],
+						newtext[i][2], newtext[i][3], newtext[i][4]);
+
 			} // 调用makeItemView自定义函数，来组织界面，返回对象
 		}
 
@@ -110,7 +116,7 @@ public class XhulooActivity_weatherreport extends Activity {
 		}
 
 		private View makeItemView(String strweek, String strweather,
-				String temp, String advise) {
+				String temp, String wind, String advise) {
 
 			LayoutInflater inflater = (LayoutInflater) XhulooActivity_weatherreport.this
 					.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -130,6 +136,9 @@ public class XhulooActivity_weatherreport extends Activity {
 			TextView temp_tv = (TextView) itemView.findViewById(R.id.temp_tv);
 			temp_tv.setText(temp);
 
+			TextView wind_tv = (TextView) itemView.findViewById(R.id.wind_tv);
+			wind_tv.setText(wind);
+
 			TextView advise_tv = (TextView) itemView
 					.findViewById(R.id.advise_tv);
 			advise_tv.setText(advise);
@@ -143,12 +152,11 @@ public class XhulooActivity_weatherreport extends Activity {
 			return convertView;
 		}
 
-	} // ListViewAdapter
+	} // myListViewAdapter
 
-	// /////////////////////////////////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////////////////
 
 	// 接收,处理消息,Handler与当前主线程一起运行
-
 	public class MyHandler extends Handler {
 
 		public MyHandler() {
@@ -161,82 +169,166 @@ public class XhulooActivity_weatherreport extends Activity {
 		// 子类必须重写此方法,接受数据
 		public void handleMessage(Message msg) {
 
-			Log.i("MyHandler", "handleMessage......");
 			super.handleMessage(msg);
 
 			// 传递信息以更新UI
 			Bundle b = msg.getData();
-			a1 = b.getString("a1");
-			Log.i(TAG, "WR_handleMessage:" + a1);
+			if (b.getString("DONE") != null) {
 
-			for (int i = 0; i < 4; i++) {
-				titles[i] = a1;
-				Log.i(TAG, "titles:" + titles[i]);
-			}
+				title = wi.getcity() + " 今天" + wi.getdate_y() + "		" + "发布于"
+						+ wi.getfchh() + ":00";
+				XhulooActivity_weatherreport.this.setTitle(title);// 设置标题
 
-			// my_LVA=new ListViewAdapter(titles,texts,resIds);
+				newtext[0][0] = wi.getweek();// 获得星期
+				newtext[0][4]=wi.getadvise();// 获得建议
+				
+				// 顺序以list_item.xml为准，设置温度，天气,风
+				for (i = 0; i <= 5; i++) {
+					newtext[i][2] = wi.gettemp(i);
+					newtext[i][1] = wi.getweather(i);
+					newtext[i][3] = wi.getwind(i);
+				}
 
-			// /////my_LVA.notifyDataSetChanged();//通知数据改变，反应该刷新视图
-			// listView.setAdapter(my_LVA); // 重新设置ListView的数据适配器
+				showMyLV(true);// notify changed 刷新视图
+			}// if end
 
-			// listView.setAdapter(new ListViewAdapter(titles,texts,resIds));
+		}// handleMessage end
 
-		}
-
-	}
-
-	// myhandler end
+	}// myHandler end
 
 	public class MyThread implements Runnable {
 		public void run() {
 			Log.i(TAG, "MyThread_start");
-
+			Looper.prepare();
 			/* 联网 */
-			String html_s = a1;
-			HttpGet httpGet = new HttpGet(
-					"http://m.weather.com.cn/data/101020300.html");
+			String html_s = null;
+			HttpGet httpGet = new HttpGet(get_url);
 			HttpClient httpClient = new DefaultHttpClient();
 			try {
 				// 得到HttpResponse对象
 				HttpResponse httpResponse = httpClient.execute(httpGet);
-				// HttpResponse的返回结果是不是成功
+				// HttpResponse的返回结果若成功
 				if (httpResponse.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
 					// 得到返回数据的字符串
 					String data_s = EntityUtils.toString(httpResponse
 							.getEntity());
-					Log.i(TAG, "WR" + data_s);
 					html_s = data_s;
-					Log.i(TAG, "WR02" + html_s.length());
-
+					Log.i(TAG, "data_s" + data_s);
 				}
-			} catch (ClientProtocolException e) {
+			} catch (java.net.UnknownHostException e) {
 				e.printStackTrace();
+				Log.i(TAG, "UnknownHost：" + e.toString());
+				html_s = null;
 			} catch (IOException e) {
+				// TODO Auto-generated catch block
 				e.printStackTrace();
+				html_s = null;
 			}
 
-			a1 = html_s.substring(0, 10);
+			if (html_s != null) {
+				// 处理数据
+				wi.setcity(returnJValue(html_s, "city", 2));
+				wi.setdate_y(returnJValue(html_s, "date_y", 9));
+				wi.setweek(returnJValue(html_s, "week", 3));
+				wi.setfchh(returnJValue(html_s, "fchh", 2));
+				wi.setadvise(returnJValue(html_s, "index_d", 20));
+				
+				// 初始化,ArrayList<String> temp;
+				for (i = 0; i <= 5; i++) {
+					wi.addtemp("temp" + i);
+					wi.addweather("wea" + i);
+					wi.addwind("win" + i);
+				}
 
-			Message msg = new Message();
-			Bundle b = new Bundle();// 存放数据
-			b.putString("a1", a1);
-			msg.setData(b);
+				// 处理气温，天气，风
+				for (i = 0; i <= 5; i++) {
+					wi.settemp(returnJValue(html_s, "temp" + (i + 1), 5), i);
+					wi.setweather(returnByJM(html_s, "weather" + (i + 1)), i);
+					wi.setwind(returnByJM(html_s, "wind" + (i + 1)), i);
+				}
 
-			XhulooActivity_weatherreport.this.myHandler.sendMessage(msg);
-			// 向Handler发送消息,更新UI
+				// 向Handler发送消息,更新UI
+				Message msg = new Message();
+				Bundle b = new Bundle();// 存放数据
+				b.putString("DONE", wi.getcity());
+				msg.setData(b);
 
-		}
+				XhulooActivity_weatherreport.this.myHandler.sendMessage(msg);
+
+			}
+
+			else {
+				XA_util_ADialog alog = new XA_util_ADialog(
+						XhulooActivity_weatherreport.this);
+				alog.show1ADialog("出错", "网络问题", "好的");
+			}
+
+		}// run end 
+	}	//my thread end
+
+	/**
+	 * @see XA_util_readStrByregEx
+	 * @param input
+	 *            输入字符串
+	 * @param key
+	 *            关键词
+	 * 
+	 * @param regEX_i
+	 *            取得字个数
+	 */
+	public String returnJValue(String input, String key, int regEX_i) {
+
+		String regEX = key + "\":\"(.{" + regEX_i + "})";// city":"(.{2})
+
+		String out = XA_util_readStrByregEx.readout(input, regEX, 1);
+		return out;
+
 	}
 
-	// //////////////////////////////////////////////////////////////////////////////////////////
+	public String returnByJM(String input, String key) {
+
+		// int i=0;int j=0;
+		// j = input.indexOf(key);
+		// i = input.indexOf("\"", j + key.length() + 3);
+		// String out = input.substring(j + key.length() + 3, i);
+
+		String out = input.substring(input.indexOf(key) + key.length() + 3,
+				input.indexOf("\"", input.indexOf(key) + key.length() + 3));
+
+		return out;
+	}
+
+	////////////////////////////////////////////////
 
 	// 自定义 weatherinfo 类
 	public class weatherinfo {
 
+		private String date_y;// 日期,设置到title
+		private String city; // 城市
 		private String week; // 星期几
-		private String weather;// 天气
-		private String temp;// 气温
+		private String fchh; // 发布时间，设置到title
+		private ArrayList<String> weather = new ArrayList<String>();// 天气
+		private ArrayList<String> temp = new ArrayList<String>();// 气温
+		private ArrayList<String> wind = new ArrayList<String>();// 风
+		// private ArrayList<Integer> img; //图片
+
 		private String advise;// 建议
+
+		public String getdate_y() {
+			return date_y;
+		}
+
+		public void setdate_y(String date_y) {
+			this.date_y = date_y;
+		}
+
+		public String getcity() {
+			return city;
+		}
+
+		public void setcity(String city) {
+			this.city = city;
+		}
 
 		public String getweek() {
 			return week;
@@ -246,20 +338,48 @@ public class XhulooActivity_weatherreport extends Activity {
 			this.week = week;
 		}
 
-		public String getweather() {
-			return weather;
+		public String getfchh() {
+			return fchh;
 		}
 
-		public void setweather(String weather) {
-			this.weather = weather;
+		public void setfchh(String fchh) {
+			this.fchh = fchh;
 		}
 
-		public String gettemp() {
-			return temp;
+		public String getweather(int index) {
+			return weather.get(index);
 		}
 
-		public void settemp(String temp) {
-			this.temp = temp;
+		public void setweather(String weather, int index) {
+			this.weather.set(index, weather);
+		}
+
+		public void addweather(String wea) {
+			this.weather.add(wea);
+		}
+
+		public String gettemp(int index) {
+			return temp.get(index);
+		}
+
+		public void settemp(String tmp, int index) {
+			this.temp.set(index, tmp);
+		}
+
+		public void addtemp(String tmp) {
+			this.temp.add(tmp);
+		}
+
+		public String getwind(int index) {
+			return wind.get(index);
+		}
+
+		public void setwind(String wind, int index) {
+			this.wind.set(index, wind);
+		}
+
+		public void addwind(String win) {
+			this.wind.add(win);
 		}
 
 		public String getadvise() {
@@ -270,16 +390,19 @@ public class XhulooActivity_weatherreport extends Activity {
 			this.advise = advise;
 		}
 
-	}
+		// public Integer getImg(int index) {
+		// return img.get(index);
+		// }
 
-	// http://blog.segmac.com/blog/android-google-weather-api.html
+		// public void setImg(ArrayList<Integer> img) {
+		// this.img = img;
+		// }
+
+	}
 
 	/* 菜单制作 */
 	public boolean onCreateOptionsMenu(Menu menu) {
-		/*
-		 * add()四个参数 1、组别，如果不分组的话就写Menu.NONE 2、Id,根据Id来确定不同菜单 3、顺序，菜单出现的顺序
-		 * 4、文本，菜单的显示文本
-		 */
+		
 		menu.add(Menu.NONE, Menu.FIRST + 1, 2, "返回").setIcon(
 
 		android.R.drawable.ic_menu_revert);
@@ -288,7 +411,6 @@ public class XhulooActivity_weatherreport extends Activity {
 
 	}
 
-	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 
@@ -304,13 +426,7 @@ public class XhulooActivity_weatherreport extends Activity {
 
 	}
 
-	@Override
-	public void onOptionsMenuClosed(Menu menu) {
-		Toast.makeText(this, "wr_选项菜单关闭", Toast.LENGTH_SHORT).show();
-	}
-
 	/*
-	 * 
 	 * public class HttpURLConnectionActivity extends Activity {
 	 * 
 	 * private ImageView imageView;

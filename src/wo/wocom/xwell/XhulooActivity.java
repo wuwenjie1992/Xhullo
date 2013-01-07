@@ -287,7 +287,7 @@ public class XhulooActivity extends Activity {
 
 		android.R.drawable.ic_menu_revert);
 
-		menu.add(Menu.NONE, Menu.FIRST + 9, 9, "指南").setIcon(
+		menu.add(Menu.NONE, Menu.FIRST + 9, 9, "传感").setIcon(
 
 		android.R.drawable.ic_menu_compass);
 
@@ -442,11 +442,12 @@ public class XhulooActivity extends Activity {
 
 		case Menu.FIRST + 9:
 
-			Toast.makeText(this, "XA_指南菜单点击", Toast.LENGTH_SHORT).show();
+			Toast.makeText(this, "XA_传感菜单点击", Toast.LENGTH_SHORT).show();
 
 			/* 跳转新界面activity */
 			Intent intent02 = new Intent(); // 新建Intent意图
-			intent02.setClass(XhulooActivity.this, XhulooActivity_compass.class);
+			intent02.setClass(XhulooActivity.this,
+					wo.wocom.xwell.sensor.XA_sens_sensorExits.class);
 			startActivity(intent02); // 跳转
 			break;
 

@@ -6,11 +6,14 @@ import android.content.DialogInterface;
 
 /**
  * @author wuwenjie wuwenjie.tk
- * @version 1.3.1
+ * @version 1.3.2
  * @more 自定义 警告对话框
  */
 public class XA_util_ADialog extends AlertDialog {
-
+	
+	//XA_util_ADialog alog=new XA_util_ADialog(XA_sens_sensorExits.this);
+	//	alog.show1ADialog("出错", "传感器不存在或未知","好的");
+	
 	public XA_util_ADialog(Context context) {
 		super(context);
 	}

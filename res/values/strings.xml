@@ -22,6 +22,7 @@
     <string name="strweather">sunning</string>
     <string name="temp">21C</string>
     <string name="advise">advise</string>
+    <string name="wind">wind</string>
     <string name="COM_activity_lable">COM_activity_lable[XHuloo]</string>
 
     <!-- XhulooActivity_playmusic -->

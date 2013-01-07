@@ -48,6 +48,14 @@
 * 20121226
     * Change drawable's resource file
     * Change XA_p_lo_simpleGPS.java Add To remove update GPS
+* 20130101
+    * Change drawable's resource file
+    * Add New XA_uitl_ADialog.java&XA_util_fileExite.java
+    * Change XhulloActivity_playmusic.java&MusicService.java Fixed bugs
+    * Change XA_camera.java Fixed bugs
+* 20130107
+    * Change XhulooActivity_weatherreport.java TODO Get weatherinfo
+    * Add New package sensor TODO Get sensor list & Get sensor values
 
 ##Bug Reports
 * 20120903
