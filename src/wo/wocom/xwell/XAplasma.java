@@ -13,7 +13,7 @@ import android.widget.TextView;
 
 /**
  * @author wuwenjie wuwenjie.tk
- * @version 1.3.6
+ * @version 1.3.7
  * @more NDK(Native Development Kit) JNI(Java Native Interface)
  * @via some codes from :Author: Frank Ableson Contact Info:
  *      fableson@navitend.com
@@ -30,30 +30,36 @@ public class XAplasma extends Activity {
 		Log.i(TAG, "XA_PL_oncreate!!");
 		super.onCreate(savedInstanceState);
 
-		setContentView(R.layout.pl);//设置界面布局
+		setContentView(R.layout.pl);// 设置界面布局
 		TextView textView = (TextView) findViewById(R.id.pl_tv);
 		ivDisplay = (ImageView) findViewById(R.id.pl_ivDisplay);
 
-		/*BitmapFactory有options参数，支持您加载ARGB格式的图像。“A”表示alpha通道，
+		/*
+		 * BitmapFactory有options参数，支持您加载ARGB格式的图像。“A”表示alpha通道，
 		 * 开源图像处理库要24位彩色图像，红、绿和蓝各8位，且每像素 RGB三元组成。
 		 * 值的范围为0至255。Android上图像保存为32位整数（alpha、r,g,b）
 		 */
 		String pathName = Environment.getExternalStorageDirectory()
-				+ "/bluetooth/Image/dj.jpg";//图像的url
-		BitmapFactory.Options options = new BitmapFactory.Options();//选项
-		options.inPreferredConfig = Config.ARGB_8888;//首选配置,ARGB_8888 Each pixel is stored on 4 bytes.
-		bitmapOrig = BitmapFactory.decodeFile(pathName,options);
+				+ "/bluetooth/Image/dj.jpg";// 图像的url
+		BitmapFactory.Options options = new BitmapFactory.Options();// 选项
+		options.inPreferredConfig = Config.ARGB_8888;// 首选配置,ARGB_8888 Each
+														// pixel is stored on 4
+														// bytes.
+		bitmapOrig = BitmapFactory.decodeFile(pathName, options);
 		if (bitmapOrig != null)
-			ivDisplay.setImageBitmap(bitmapOrig);//Sets a Bitmap as the content of this ImageView.
+			ivDisplay.setImageBitmap(bitmapOrig);// Sets a Bitmap as the content
+													// of this ImageView.
 
-		//图片的拖动
-		ImageTouchListener itl=new ImageTouchListener();//实例化【自定义图片触控监听器】
-		itl.setview(ivDisplay);		//将ivDisplay设置为 变化的目标图片
-		ivDisplay.setOnTouchListener(itl); //注册监听器
-		
+		// 图片的拖动
+		ImageTouchListener itl = new ImageTouchListener();// 实例化【自定义图片触控监听器】
+		itl.setview(ivDisplay); // 将ivDisplay设置为 变化的目标图片
+		ivDisplay.setOnTouchListener(itl); // 注册监听器
+
 		String myString = stringFromNDKJNI();// stringFromNDKJNI
 		textView.setText(myString + "\n" + "time_t timer_null="
-				+ currentTimeMillis());
+				+ currentTimeMillis() + "\n" + "进程号:" + returnid(0) + "用户号:"
+				+ returnid(1) + "有效用户:" + returnid(2) + "\n" + "父进程:"
+				+ returnid(3) + "组:" + returnid(4) + "有效组:" + returnid(5));
 
 		printLOGI();
 	}// oncreat end
@@ -62,38 +68,38 @@ public class XAplasma extends Activity {
 	public void onResetImage(View v) {
 		Log.i(TAG, "onResetImage");
 		ivDisplay.setImageBitmap(bitmapOrig);
-		//Sets a Bitmap as the content of this ImageView
+		// Sets a Bitmap as the content of this ImageView
 	}
 
-    //pl_btnFindEdges；找到边界；android:onClick="onFindEdges"
+	// pl_btnFindEdges；找到边界；android:onClick="onFindEdges"
 	public void onFindEdges(View v) {
 		Log.i(TAG, "onFindEdges");
 
-		//保存图像的灰度副本
+		// 保存图像的灰度副本
 		bitmapGray = Bitmap.createBitmap(bitmapOrig.getWidth(),
 				bitmapOrig.getHeight(), Config.ALPHA_8);
-		//保存修改亮度值时的灰度图像
+		// 保存修改亮度值时的灰度图像
 		bitmapWip = Bitmap.createBitmap(bitmapOrig.getWidth(),
 				bitmapOrig.getHeight(), Config.ALPHA_8);
 		// 在【找到边界】前，将其转换图像为灰色
 		convertToGray(bitmapOrig, bitmapGray);
 		// 找到边界，find edges in the image
-		findEdges(bitmapGray,bitmapWip);
-		ivDisplay.setImageBitmap(bitmapWip);//修改亮度值时的灰度图像
+		findEdges(bitmapGray, bitmapWip);
+		ivDisplay.setImageBitmap(bitmapWip);// 修改亮度值时的灰度图像
 	}
 
-	//pl_btnConvert；转换灰色
+	// pl_btnConvert；转换灰色
 	public void onConvertToGray(View v) {
 		Log.i(TAG, "onConvertToGray");
-		
-		//保存修改亮度值时的灰度图像
+
+		// 保存修改亮度值时的灰度图像
 		bitmapWip = Bitmap.createBitmap(bitmapOrig.getWidth(),
 				bitmapOrig.getHeight(), Config.ALPHA_8);
 		convertToGray(bitmapOrig, bitmapWip);
 		ivDisplay.setImageBitmap(bitmapWip);
 	}
 
-	//调光；pl_btnDimmer
+	// 调光；pl_btnDimmer
 	public void onDimmer(View v) {
 		Log.i(TAG, "onDimmer");
 
@@ -101,7 +107,7 @@ public class XAplasma extends Activity {
 		ivDisplay.setImageBitmap(bitmapWip);
 	}
 
-	//明亮的，pl_btnBrighter
+	// 明亮的，pl_btnBrighter
 	public void onBrighter(View v) {
 		Log.i(TAG, "onBrighter");
 
@@ -109,7 +115,7 @@ public class XAplasma extends Activity {
 		ivDisplay.setImageBitmap(bitmapWip);
 	}
 
-	//调用库文件
+	// 调用库文件
 	static {
 		try {
 			System.loadLibrary("hello-ndk-jni");
@@ -124,12 +130,12 @@ public class XAplasma extends Activity {
 
 	public native int currentTimeMillis();// 返回秒数
 
-	public native void convertToGray(Bitmap bitmapIn, Bitmap bitmapOut);//转换到灰色
+	public native void convertToGray(Bitmap bitmapIn, Bitmap bitmapOut);// 转换到灰色
 
-	public native void changeBrightness(int direction, Bitmap bitmap);//改变亮度
+	public native void changeBrightness(int direction, Bitmap bitmap);// 改变亮度
 
-	public native void findEdges(Bitmap bitmapIn, Bitmap bitmapOut);//找到边界
-	
-	
+	public native void findEdges(Bitmap bitmapIn, Bitmap bitmapOut);// 找到边界
+
+	public native int returnid(int i); // 返回进程id信息
 
 }

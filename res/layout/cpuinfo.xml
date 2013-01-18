@@ -1,25 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent" android:layout_height="fill_parent">
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
 
     <TableLayout
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:stretchColumns="1">
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:stretchColumns="1" >
 
-    <TableRow>
+        <TableRow>
 
-      <TextView
-          android:id="@+id/ci_tv"
-       	android:text="@string/hello"
-       	android:textColor="#AEE3EF"
-       	android:textSize="20sp"
-       	android:layout_width="wrap_content"
-       	android:layout_height="wrap_content">
-          </TextView>
-      
-     </TableRow>
-
-    
+            <TextView
+                android:id="@+id/ci_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/hello"
+                android:textColor="#AEE3EF"
+                android:textSize="20sp" >
+            </TextView>
+        </TableRow>
     </TableLayout>
- </ScrollView>
+
+</ScrollView>

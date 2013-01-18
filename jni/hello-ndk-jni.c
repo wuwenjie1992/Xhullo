@@ -6,7 +6,14 @@
 #include <time.h>
 #include <android/bitmap.h>
 #include <math.h>
-
+#include <unistd.h>
+/**
+ * @author wuwenjie wuwenjie.tk
+ * @version 1.3.7(20130116)
+ * @more NDK(Native Development Kit) JNI(Java Native Interface)
+ * @via some codes from :Author: Frank Ableson Contact Info:
+ *      fableson@navitend.com
+ */
 #define LOG_TAG "hello-ndk-jni" //自定义的变量，相当于logcat函数中的tag
 #undef LOG
 #define LOGI(...) ((void)__android_log_print(ANDROID_LOG_INFO,LOG_TAG,__VA_ARGS__))	//宏定义
@@ -18,7 +25,7 @@ int currentTimeMillis() {
 }
 
 //返回一个字符串
-jstring Java_wo_wocom_xwell_XAplasma_stringFromNDKJNI(JNIEnv* env, jobject thiz) {
+jstring Java_wo_wocom_xwell_XAplasma_stringFromNDKJNI(JNIEnv* env, jobject obj) {
 	return (*env)->NewStringUTF(env, "well,hello-ndk-jni!!!");
 	//Constructs a new java.lang.String object from an array of UTF-8 characters.
 }
@@ -29,9 +36,40 @@ void Java_wo_wocom_xwell_XAplasma_printLOGI(JNIEnv * env, jobject jobj) {
 }
 
 //返回秒数
-jint Java_wo_wocom_xwell_XAplasma_currentTimeMillis(JNIEnv* env, jobject thiz) {
+jint Java_wo_wocom_xwell_XAplasma_currentTimeMillis(JNIEnv* env, jobject obj) {
 	return currentTimeMillis();
 }
+
+//进程信息,unistd.h
+int returnid(int i) {
+	switch (i) {
+	case 0:
+		return getpid(); //进程号
+		break;
+	case 1:
+		return getuid(); //用户号
+		break;
+	case 2:
+		return geteuid(); //有效用户
+		break;
+	case 3:
+		return getppid(); //父进程号
+		break;
+	case 4:
+		return getgid(); // 组号
+		break;
+	case 5:
+		return getegid(); //有效组号
+		break;
+
+	}
+}
+jint Java_wo_wocom_xwell_XAplasma_returnid(JNIEnv* env, jobject obj,int i) {
+	return returnid(i);
+}
+
+
+
 
 /* http://www.ibm.com/developerworks/cn/opensource/tutorials/os-androidndk/index.html
  * convertToGray 		参数：颜色Bitmap，二是灰度版本填充的Bitmap。
@@ -85,22 +123,23 @@ JNIEXPORT void JNICALL Java_wo_wocom_xwell_XAplasma_convertToGray(JNIEnv* env, j
 	 */
 
 	    LOGI("convertToGray");
-	    //AndroidBitmap_getInfo 函数，在 jnigraphics 库中，获取有关具体 Bitmap 对象的信息
-	    if ((ret = AndroidBitmap_getInfo(env, bitmapcolor, &infocolor)) < 0) {
+//AndroidBitmap_getInfo 函数，在 jnigraphics 库中，获取有关具体 Bitmap 对象的信息
+if ((ret = AndroidBitmap_getInfo(env, bitmapcolor, &infocolor)) < 0) {
 	        LOGE("AndroidBitmap_getInfo() failed ! error=%d", ret);
-	        return;
+return;
 	    }
 
 	    if ((ret = AndroidBitmap_getInfo(env, bitmapgray, &infogray)) < 0) {
 	        LOGE("AndroidBitmap_getInfo() failed ! error=%d", ret);
-	        return;
+return;
 	    }
 
 
-	    LOGI("color img:width %d;height %d;stride %d;format %d;flags %d",infocolor.width,infocolor.height,infocolor.stride,infocolor.format,infocolor.flags);
-	    if (infocolor.format != ANDROID_BITMAP_FORMAT_RGBA_8888) {
+	    LOGI(
+		"color img:width %d;height %d;stride %d;format %d;flags %d", infocolor.width, infocolor.height, infocolor.stride, infocolor.format, infocolor.flags);
+if (infocolor.format != ANDROID_BITMAP_FORMAT_RGBA_8888) {
 	        LOGE("Bitmap format is not RGBA_8888 !");
-	        return;
+return;
 	    }
 
 	    /*enum AndroidBitmapFormat {
@@ -112,20 +151,21 @@ JNIEXPORT void JNICALL Java_wo_wocom_xwell_XAplasma_convertToGray(JNIEnv* env, j
 			};
 	     */
 
-	    LOGI("gray img:width %d;height %d;stride %d;format %d;flags %d",infogray.width,infogray.height,infogray.stride,infogray.format,infogray.flags);
-	    if (infogray.format != ANDROID_BITMAP_FORMAT_A_8) {
+	    LOGI(
+		"gray img:width %d;height %d;stride %d;format %d;flags %d", infogray.width, infogray.height, infogray.stride, infogray.format, infogray.flags);
+if (infogray.format != ANDROID_BITMAP_FORMAT_A_8) {
 	        LOGE("Bitmap format is not A_8 !");
-	        return;
+return;
 	    }
 
 	    //对像素缓存上锁，即获得该缓存的指针，可以直接在数据上执行操作
 	    if ((ret = AndroidBitmap_lockPixels(env, bitmapcolor, &pixelscolor)) < 0) {
 	        LOGE("AndroidBitmap_lockPixels() failed ! error=%d", ret);
-	    }
+}
 	    //对像素缓存上锁，即获得该缓存的指针
 	    if ((ret = AndroidBitmap_lockPixels(env, bitmapgray, &pixelsgray)) < 0) {
 	        LOGE("AndroidBitmap_lockPixels() failed ! error=%d", ret);
-	    }
+}
 
 	    //处理算法processing algorithm
 
@@ -144,7 +184,7 @@ JNIEXPORT void JNICALL Java_wo_wocom_xwell_XAplasma_convertToGray(JNIEnv* env, j
 	    }
 
 	    LOGI("unlocking pixels");
-	    AndroidBitmap_unlockPixels(env, bitmapcolor);//解锁，解锁之前锁定的像素数据
+AndroidBitmap_unlockPixels(env, bitmapcolor);//解锁，解锁之前锁定的像素数据
 	    AndroidBitmap_unlockPixels(env, bitmapgray);
 }
 
@@ -173,162 +213,163 @@ JNIEXPORT void JNICALL Java_wo_wocom_xwell_XAplasma_changeBrightness(JNIEnv
 
 	if ((ret = AndroidBitmap_getInfo(env, bitmap, &infogray)) < 0) {
 	        LOGE("AndroidBitmap_getInfo() failed ! error=%d", ret);
-	        return;
+return;
 	    }
 
-	LOGI("gray img:width %d; height %d; stride %d; format %d;flags %d",infogray.width,infogray.height,infogray.stride,infogray.format,infogray.flags);
-	if (infogray.format != ANDROID_BITMAP_FORMAT_A_8) {
+	LOGI(
+		"gray img:width %d; height %d; stride %d; format %d;flags %d", infogray.width, infogray.height, infogray.stride, infogray.format, infogray.flags);
+if (infogray.format != ANDROID_BITMAP_FORMAT_A_8) {
 	        LOGE("Bitmap format is not A_8 !");
-	        return;
+return;
 	    }
 
 	if ((ret = AndroidBitmap_lockPixels(env, bitmap, &pixelsgray)) < 0) {
 	        LOGE("AndroidBitmap_lockPixels() failed ! error=%d", ret);
-		}
+}
 
 	    // modify pixels with image processing algorithm
 	    LOGI("time to modify pixels....");
-	    for (y=0;y<infogray.height;y++) {
-	    	uint8_t * grayline = (uint8_t *) pixelsgray;
-	    	int v;
-	    	for (x=0;x<infogray.width;x++) {
+for (y=0;y<infogray.height;y++) {
+	uint8_t * grayline = (uint8_t *) pixelsgray;
+	int v;
+	for (x=0;x<infogray.width;x++) {
 
-	    			v = (int) grayline[x];
-	    			if (direction == 1) v-=5;
-	    			else v+= 5;
-	    		//
-	    			if (v >= 255) {grayline[x] = 255;}
-	    			else if (v <= 0) {grayline[x] = 0;}
-	    			else {grayline[x] = (uint8_t) v;}
-	    		}
+		v = (int) grayline[x];
+		if (direction == 1) v-=5;
+		else v+= 5;
+		//
+		if (v >= 255) {grayline[x] = 255;}
+		else if (v <= 0) {grayline[x] = 0;}
+		else {grayline[x] = (uint8_t) v;}
+	}
 
-	    	pixelsgray = (char *)pixelsgray+infogray.stride;//指针指向下一行
-	    }
-	    AndroidBitmap_unlockPixels(env, bitmap);//解锁
+	pixelsgray = (char *)pixelsgray+infogray.stride; //指针指向下一行
+}
+AndroidBitmap_unlockPixels(env, bitmap); //解锁
 }
 
 /*
  findEdges
  Sobel边缘检测算法
  Sobel算子 3*3邻域
-	灰度矩阵 * Sobel算子
+ 灰度矩阵 * Sobel算子
 
  bitmapgray 灰度bitmap  输入
  bitmapedges 边界bitmap	输出
 
  参考：http://baike.baidu.com/view/676368.htm
- 	 	 http://zh.wikipedia.org/wiki/Sobel%E7%AE%97%E5%AD%90
- 	 	 http://blog.csdn.net/tianhai110/article/details/5663756
- 	 	 http://zh.wikipedia.org/wiki/%E8%BE%B9%E7%BC%98%E6%A3%80%E6%B5%8B
+ http://zh.wikipedia.org/wiki/Sobel%E7%AE%97%E5%AD%90
+ http://blog.csdn.net/tianhai110/article/details/5663756
+ http://zh.wikipedia.org/wiki/%E8%BE%B9%E7%BC%98%E6%A3%80%E6%B5%8B
  */
 JNIEXPORT void JNICALL Java_wo_wocom_xwell_XAplasma_findEdges(JNIEnv * env, jobject obj, jobject bitmapgray,jobject bitmapedges)
 {
-	AndroidBitmapInfo infogray;
-	void* pixelsgray;
-	AndroidBitmapInfo infoedges;
-	void* pixelsedge;
-	int ret,y,x;
-	int sumX,sumY,sum;
-	int i,j;
-	int Gx[3][3];//纵向算子
-	int Gy[3][3];//横向算子
-	uint8_t *graydata;//指针
-	uint8_t *edgedata;//指针
+AndroidBitmapInfo infogray;
+void* pixelsgray;
+AndroidBitmapInfo infoedges;
+void* pixelsedge;
+int ret,y,x;
+int sumX,sumY,sum;
+int i,j;
+int Gx[3][3]; //纵向算子
+int Gy[3][3];//横向算子
+uint8_t *graydata;//指针
+uint8_t *edgedata;//指针
 
-	/*typedef struct {
-	    	uint32_t    width;
-	    	uint32_t    height;
-	    	uint32_t    stride;	//Stride:步幅  每行字节数
-	    	int32_t     format;
-	    	uint32_t    flags;      // 0 for now
-			} AndroidBitmapInfo;
-		 */
+/*typedef struct {
+ uint32_t    width;
+ uint32_t    height;
+ uint32_t    stride;	//Stride:步幅  每行字节数
+ int32_t     format;
+ uint32_t    flags;      // 0 for now
+ } AndroidBitmapInfo;
+ */
 
-	LOGI("findEdges running");
+LOGI("findEdges running");
 
-	Gx[0][0] = -1;Gx[0][1] = 0;Gx[0][2] = 1;//Sobel卷积因子 纵向
-	Gx[1][0] = -3;Gx[1][1] = 0;Gx[1][2] = 3;	//	-1 0 1
-	Gx[2][0] = -1;Gx[2][1] = 0;Gx[2][2] = 1;	//	-2 0 2
-													//	-1  0 1
-	Gy[0][0] = 1;Gy[0][1] = 3;Gy[0][2] = 1;//横向
-	Gy[1][0] = 0;Gy[1][1] = 0;Gy[1][2] = 0;
-	Gy[2][0] =-1;Gy[2][1] =-3;Gy[2][2] =-1;
+Gx[0][0] = -1;Gx[0][1] = 0;Gx[0][2] = 1;//Sobel卷积因子 纵向
+Gx[1][0] = -3;Gx[1][1] = 0;Gx[1][2] = 3;//	-1 0 1
+Gx[2][0] = -1;Gx[2][1] = 0;Gx[2][2] = 1;//	-2 0 2
+//	-1  0 1
+Gy[0][0] = 1;Gy[0][1] = 3;Gy[0][2] = 1;//横向
+Gy[1][0] = 0;Gy[1][1] = 0;Gy[1][2] = 0;
+Gy[2][0] =-1;Gy[2][1] =-3;Gy[2][2] =-1;
 
-	if ((ret = AndroidBitmap_getInfo(env, bitmapgray, &infogray)) < 0) {
-		LOGE("AndroidBitmap_getInfo() failed error=%d", ret);
-		return;
-	}
+if ((ret = AndroidBitmap_getInfo(env, bitmapgray, &infogray)) < 0) {
+	LOGE("AndroidBitmap_getInfo() failed error=%d", ret);
+	return;
+}
 
-	if ((ret = AndroidBitmap_getInfo(env, bitmapedges, &infoedges)) < 0) {
-		LOGE("AndroidBitmap_getInfo() failed error=%d", ret);
-		return;
-	}
+if ((ret = AndroidBitmap_getInfo(env, bitmapedges, &infoedges)) < 0) {
+	LOGE("AndroidBitmap_getInfo() failed error=%d", ret);
+	return;
+}
 
-	LOGI("gray img: width %d;height %d;stride %d;format %d;flags %d",infogray.width,infogray.height,infogray.stride,infogray.format,infogray.flags);
-	if (infogray.format != ANDROID_BITMAP_FORMAT_A_8) {
-		LOGE("Bitmap format is not A_8 !");
-		return;
-	}
+LOGI("gray img: width %d;height %d;stride %d;format %d;flags %d",infogray.width,infogray.height,infogray.stride,infogray.format,infogray.flags);
+if (infogray.format != ANDROID_BITMAP_FORMAT_A_8) {
+	LOGE("Bitmap format is not A_8 !");
+	return;
+}
 
-	LOGI("color img:width %d;height %d;stride %d;format %d;flags %d",infoedges.width,infoedges.height,infoedges.stride,infoedges.format,infoedges.flags);
-		if (infoedges.format != ANDROID_BITMAP_FORMAT_A_8) {
-			LOGE("Bitmap format is not A_8 !");
-			return;
+LOGI("color img:width %d;height %d;stride %d;format %d;flags %d",infoedges.width,infoedges.height,infoedges.stride,infoedges.format,infoedges.flags);
+if (infoedges.format != ANDROID_BITMAP_FORMAT_A_8) {
+	LOGE("Bitmap format is not A_8 !");
+	return;
+}
+
+if ((ret = AndroidBitmap_lockPixels(env, bitmapgray,&pixelsgray)) < 0) {
+	LOGE("AndroidBitmap_lockPixels() failed error=%d",ret);
+}
+
+if ((ret = AndroidBitmap_lockPixels(env, bitmapedges,&pixelsedge)) < 0) {
+	LOGE("AndroidBitmap_lockPixels() failed error=%d",ret);
+}
+
+// modify pixels with image processing algorithm
+
+LOGI("time to modify pixels....");
+
+graydata = (uint8_t *) pixelsgray;//灰度bitmap的指针；void* pixelsgray;
+edgedata = (uint8_t *) pixelsedge;//uint8_t *graydata;AndroidBitmapInfo infogray;
+
+for (y=0;y<=infogray.height - 1;y++) {
+	for (x=0;x<infogray.width -1;x++) {
+		sumX = 0;
+		sumY = 0;
+		// 边界检测 check boundaries
+		if (y== 0|| y== infogray.height-1) {sum = 0;}
+		else if(x == 0||x== infogray.width-1) {sum = 0;}
+		else {
+			// calc X gradient
+			for (i=-1;i<=1;i++) {
+				for (j=-1;j<=1;j++) {
+					sumX += (int)( (*(graydata+x+i+(y+j)*infogray.stride))*Gx[i+1][j+1] );
+					//sumX+= 图像某点灰度值*算子
+					//Stride:步幅，每行字节数 (y+j)*infogray.stride 高度*每行字节数=已经计算的行数的字节数
+					//x 已计算此行字节数；graydata：灰度bitmap的指针（地址）
+					//(graydata+x+i+(y+j)*infogray.stride) //当前应计算的【灰度bitmap的指针】；*：取值
+				}
+			}
+
+			// calc Y gradient
+			for (i=-1;i<=1;i++) {
+				for (j=-1;j<=1;j++) {
+					sumY += (int)((*(graydata+x+i+(y+j)*infogray.stride))*Gy[i+1][j+1]);
+				}
+			}
+
+			sum = sqrt(sumX*sumX+sumY*sumY); //sum = abs(sumX) + abs(sumY);
+			//图像的每一个像素的横向及纵向梯度近似值
 		}
 
-		if ((ret = AndroidBitmap_lockPixels(env, bitmapgray,&pixelsgray)) < 0) {
-			LOGE("AndroidBitmap_lockPixels() failed error=%d",ret);
-		}
-
-		if ((ret = AndroidBitmap_lockPixels(env, bitmapedges,&pixelsedge)) < 0) {
-			LOGE("AndroidBitmap_lockPixels() failed error=%d",ret);
-		}
-
-		// modify pixels with image processing algorithm
-
-		LOGI("time to modify pixels....");
-
-		graydata = (uint8_t *) pixelsgray;//灰度bitmap的指针；void* pixelsgray;
-		edgedata = (uint8_t *) pixelsedge;//uint8_t *graydata;AndroidBitmapInfo infogray;
-
-		for (y=0;y<=infogray.height - 1;y++) {
-			for (x=0;x<infogray.width -1;x++) {
-				sumX = 0;
-				sumY = 0;
-				// 边界检测 check boundaries
-				if (y== 0|| y== infogray.height-1) {sum = 0;}
-				else if(x == 0||x== infogray.width-1){sum = 0;}
-				else {
-						// calc X gradient
-						for (i=-1;i<=1;i++) {
-							for (j=-1;j<=1;j++) {
-								sumX += (int)( (*(graydata+x+i+(y+j)*infogray.stride))*Gx[i+1][j+1] );
-								//sumX+= 图像某点灰度值*算子
-								//Stride:步幅，每行字节数 (y+j)*infogray.stride 高度*每行字节数=已经计算的行数的字节数
-								//x 已计算此行字节数；graydata：灰度bitmap的指针（地址）
-								//(graydata+x+i+(y+j)*infogray.stride) //当前应计算的【灰度bitmap的指针】；*：取值
-							}
-						}
-
-						// calc Y gradient
-						for (i=-1;i<=1;i++) {
-							for (j=-1;j<=1;j++) {
-								sumY += (int)((*(graydata+x+i+(y+j)*infogray.stride))*Gy[i+1][j+1]);
-								}
-							}
-
-						sum = sqrt(sumX*sumX+sumY*sumY);//sum = abs(sumX) + abs(sumY);
-						//图像的每一个像素的横向及纵向梯度近似值
-					}
-
-		if (sum>255) sum = 255;//不能超出边界
+		if (sum>255) sum = 255; //不能超出边界
 		if (sum<0) sum = 0;
 
 		*(edgedata+x+y*infogray.width) = 255-(uint8_t)sum;//对边界bitmap赋值；历遍每个像素
-	}//横向的某一行完成
-}//infogray.height行完成
+	} //横向的某一行完成
+} //infogray.height行完成
 
-		AndroidBitmap_unlockPixels(env, bitmapgray);//解锁
-		AndroidBitmap_unlockPixels(env, bitmapedges);
+AndroidBitmap_unlockPixels(env, bitmapgray);//解锁
+AndroidBitmap_unlockPixels(env, bitmapedges);
 
 }

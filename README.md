@@ -56,6 +56,9 @@
 * 20130107
     * Change XhulooActivity_weatherreport.java TODO Get weatherinfo
     * Add New package sensor TODO Get sensor list & Get sensor values
+* 20130118
+    * Change XhulloActivity_weatherreport.java TODO Get real-time weatherinfo
+    * Add New package net TODO Get info from Internet
 
 ##Bug Reports
 * 20120903

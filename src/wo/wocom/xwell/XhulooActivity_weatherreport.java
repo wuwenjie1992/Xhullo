@@ -1,17 +1,16 @@
 package wo.wocom.xwell;
 
 import java.io.IOException;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 
+import wo.wocom.xwell.net.isConnectNet;
 import wo.wocom.xwell.utility.XA_util_ADialog;
 import wo.wocom.xwell.utility.XA_util_readStrByregEx;
 
@@ -34,8 +33,9 @@ import android.widget.Toast;
 
 /**
  * @author wuwenjie wuwenjie.tk
- * @version 1.3.6
- * @more 自定义列表模式；联网；解析JASON； 联网、解析的耗时操作使用handler
+ * @version 1.3.7
+ * @more 自定义列表模式；联网；解析JASON；
+ * 			联网、解析的耗时操作使用handler;实现天气预报和实时预报
  */
 
 public class XhulooActivity_weatherreport extends Activity {
@@ -43,13 +43,18 @@ public class XhulooActivity_weatherreport extends Activity {
 	private static final String TAG = "WR_Xhuloo";
 
 	myListViewAdapter my_LVA;// 自定义LISTVIEW
-	
+
 	String[][] newtext = new String[6][5];
 	String title = "联网数据..";
-	String get_url = "http://m.weather.com.cn/data/101020900.html"; // 请求地址
-	
+	String get_url_weaReport = "http://m.weather.com.cn/data/101020300.html"; // 未来天气
+	String get_url_weaAlarm = "http://product.weather.com.cn/alarm/grepalarm.php?areaid=1012808";// 天气预警
+	// http://www.weather.com.cn/alarm/newalarmcontent.shtml?file=1012808-20130118164411-9102.html
+	String get_url_weaNow = "http://www.weather.com.cn/data/sk/101020300.html";// 实时天气
+	// 省份代码：http://www.weather.com.cn/data/city3jdata/china.html
+	// 城市代码：http://www.weather.com.cn/data/city3jdata/station/1010200.html
 	MyHandler myHandler;
-	weatherinfo wi;
+	weatherinfo wi; // 声明 天气预报类
+	weatherNow wn; // 声明 实时天气类
 	int i, j;
 
 	/* activity生命周期 */
@@ -59,9 +64,11 @@ public class XhulooActivity_weatherreport extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.wr); // 设置主布局
 
-		wi = new weatherinfo();
+		// 初始化---------------
+		wi = new weatherinfo();// 天气预报类
+		wn = new weatherNow();// 实时天气类
 
-		// 初始化List<String[]>,以输出结果
+		// List<String[]>,以输出结果
 		for (j = 0; j <= 5; j++) {
 			for (i = 0; i <= 4; i++) {
 				newtext[j][i] = title;
@@ -80,13 +87,13 @@ public class XhulooActivity_weatherreport extends Activity {
 
 	public void showMyLV(boolean i) {
 		ListView listView = (ListView) this.findViewById(R.id.wr_lv);
-		my_LVA = new myListViewAdapter(6);
+		my_LVA = new myListViewAdapter(6); // 自定义的列表试图适配器
 		listView.setAdapter(my_LVA);
 		if (i)
 			my_LVA.notifyDataSetChanged();// 通知数据改变，反应该刷新视图
 	}
 
-	// 自定义LISTVIEW
+	// 自定义LISTVIEW适配器
 	public class myListViewAdapter extends BaseAdapter {
 
 		View[] itemViews;
@@ -154,7 +161,7 @@ public class XhulooActivity_weatherreport extends Activity {
 
 	} // myListViewAdapter
 
-	///////////////////////////////////////////////////////////////////////////
+	// /////////////////////////////////////////////////////////////////////////
 
 	// 接收,处理消息,Handler与当前主线程一起运行
 	public class MyHandler extends Handler {
@@ -175,13 +182,14 @@ public class XhulooActivity_weatherreport extends Activity {
 			Bundle b = msg.getData();
 			if (b.getString("DONE") != null) {
 
+				// weatherReport------------------------------
 				title = wi.getcity() + " 今天" + wi.getdate_y() + "		" + "发布于"
 						+ wi.getfchh() + ":00";
 				XhulooActivity_weatherreport.this.setTitle(title);// 设置标题
 
 				newtext[0][0] = wi.getweek();// 获得星期
-				newtext[0][4]=wi.getadvise();// 获得建议
-				
+				newtext[0][4] = wi.getadvise();// 获得建议
+
 				// 顺序以list_item.xml为准，设置温度，天气,风
 				for (i = 0; i <= 5; i++) {
 					newtext[i][2] = wi.gettemp(i);
@@ -190,6 +198,14 @@ public class XhulooActivity_weatherreport extends Activity {
 				}
 
 				showMyLV(true);// notify changed 刷新视图
+
+				// weatherReport------------------------------
+				showDialog(
+						wn.getcity() + "实时天气 " + "发布于" + wn.gettime(),
+						"气温：" + wn.gettemp() + "°C\n风向：" + wn.getwind()
+								+ "\n风力：" + wn.getwindPower() + "\n相对湿度："
+								+ wn.getRelativeHumidity(), "知道了");
+
 			}// if end
 
 		}// handleMessage end
@@ -200,71 +216,54 @@ public class XhulooActivity_weatherreport extends Activity {
 		public void run() {
 			Log.i(TAG, "MyThread_start");
 			Looper.prepare();
-			/* 联网 */
+			/* 开始联网处理数据 */
 			String html_s = null;
-			HttpGet httpGet = new HttpGet(get_url);
-			HttpClient httpClient = new DefaultHttpClient();
-			try {
-				// 得到HttpResponse对象
-				HttpResponse httpResponse = httpClient.execute(httpGet);
-				// HttpResponse的返回结果若成功
-				if (httpResponse.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
-					// 得到返回数据的字符串
-					String data_s = EntityUtils.toString(httpResponse
-							.getEntity());
-					html_s = data_s;
-					Log.i(TAG, "data_s" + data_s);
-				}
-			} catch (java.net.UnknownHostException e) {
-				e.printStackTrace();
-				Log.i(TAG, "UnknownHost：" + e.toString());
-				html_s = null;
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-				html_s = null;
+
+			html_s = GetHtml2Str(html_s, get_url_weaReport);
+
+			// 处理数据
+			// weatherReport------------------------------
+			wi.setcity(returnJValue(html_s, "city", 2));
+			wi.setdate_y(returnJValue(html_s, "date_y", 9));
+			wi.setweek(returnJValue(html_s, "week", 3));
+			wi.setfchh(returnJValue(html_s, "fchh", 2));
+			wi.setadvise(returnJValue(html_s, "index_d", 20));
+
+			// 初始化,ArrayList<String> temp;
+			for (i = 0; i <= 5; i++) {
+				wi.addtemp("temp" + i);
+				wi.addweather("wea" + i);
+				wi.addwind("win" + i);
 			}
 
-			if (html_s != null) {
-				// 处理数据
-				wi.setcity(returnJValue(html_s, "city", 2));
-				wi.setdate_y(returnJValue(html_s, "date_y", 9));
-				wi.setweek(returnJValue(html_s, "week", 3));
-				wi.setfchh(returnJValue(html_s, "fchh", 2));
-				wi.setadvise(returnJValue(html_s, "index_d", 20));
-				
-				// 初始化,ArrayList<String> temp;
-				for (i = 0; i <= 5; i++) {
-					wi.addtemp("temp" + i);
-					wi.addweather("wea" + i);
-					wi.addwind("win" + i);
-				}
-
-				// 处理气温，天气，风
-				for (i = 0; i <= 5; i++) {
-					wi.settemp(returnJValue(html_s, "temp" + (i + 1), 5), i);
-					wi.setweather(returnByJM(html_s, "weather" + (i + 1)), i);
-					wi.setwind(returnByJM(html_s, "wind" + (i + 1)), i);
-				}
-
-				// 向Handler发送消息,更新UI
-				Message msg = new Message();
-				Bundle b = new Bundle();// 存放数据
-				b.putString("DONE", wi.getcity());
-				msg.setData(b);
-
-				XhulooActivity_weatherreport.this.myHandler.sendMessage(msg);
-
+			// 处理气温，天气，风
+			for (i = 0; i <= 5; i++) {
+				wi.settemp(returnByJM(html_s, "temp" + (i + 1)), i);
+				wi.setweather(returnByJM(html_s, "weather" + (i + 1)), i);
+				wi.setwind(returnByJM(html_s, "wind" + (i + 1)), i);
 			}
 
-			else {
-				XA_util_ADialog alog = new XA_util_ADialog(
-						XhulooActivity_weatherreport.this);
-				alog.show1ADialog("出错", "网络问题", "好的");
-			}
+			// weatherNow------------------------------
+			html_s = GetHtml2Str(html_s, get_url_weaNow);
+			wn.setcity(returnByJM(html_s, "city"));
+			wn.setRelativeHumidity(returnByJM(html_s, "SD"));
+			wn.settemp(returnByJM(html_s, "temp"));
+			wn.settime(returnJValue(html_s, "time", 5));
+			wn.setwind(returnByJM(html_s, "WD"));
+			wn.setwindPower(returnByJM(html_s, "WS"));
 
-		}// run end 
-	}	//my thread end
+			Log.i(TAG, wn.toString());
+
+			// 向Handler发送消息,更新UI
+			Message msg = new Message();
+			Bundle b = new Bundle();// 存放数据
+			b.putString("DONE", wi.getcity());
+			msg.setData(b);
+
+			XhulooActivity_weatherreport.this.myHandler.sendMessage(msg);
+
+		}// run end
+	} // my thread end
 
 	/**
 	 * @see XA_util_readStrByregEx
@@ -298,9 +297,126 @@ public class XhulooActivity_weatherreport extends Activity {
 		return out;
 	}
 
-	////////////////////////////////////////////////
+	/**
+	 * @param html_s
+	 *            返回字符串
+	 * @param url
+	 *            请求地址
+	 * 
+	 */
+	public String GetHtml2Str(String html_s, String url) {
+		if (isConnectNet.isConInt(XhulooActivity_weatherreport.this)) {
 
-	// 自定义 weatherinfo 类
+			HttpGet httpGet = new HttpGet(url);
+			HttpClient httpClient = new DefaultHttpClient();
+			try {
+				// 得到HttpResponse对象
+				HttpResponse httpResponse = httpClient.execute(httpGet);
+				// HttpResponse的返回结果若成功
+				if (httpResponse.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+					// 得到返回数据的字符串
+					String data_s = EntityUtils.toString(httpResponse
+							.getEntity());
+					html_s = data_s;
+					Log.i(TAG, "data_s" + data_s);
+				}
+			} catch (java.net.UnknownHostException e) {
+				e.printStackTrace();
+				Log.i(TAG, "UnknownHost：" + e.toString());
+				html_s = null;
+			} catch (IOException e) {
+				e.printStackTrace();
+				html_s = null;
+			}// catch
+		}// if
+
+		else {
+
+			Log.i(TAG, "elsetoast");
+			Toast.makeText(XhulooActivity_weatherreport.this, "网络不可达",
+					Toast.LENGTH_LONG).show();
+
+			// finish();
+		}
+		return html_s;
+	}
+
+	/**
+	 * @see XA_util_ADialog
+	 * @param ti
+	 * @param msg
+	 * @param bnt
+	 */
+	public void showDialog(String ti, String msg, String bnt) {
+		XA_util_ADialog alog = new XA_util_ADialog(
+				XhulooActivity_weatherreport.this);
+		alog.show1ADialog(ti, msg, bnt);
+	}
+
+	// /////////////////////////////////////////////
+	// 自定义 weatherAlarm
+
+	// 自定义 weatherNow
+	public class weatherNow {
+
+		private String city;
+		private String time;
+		private String temp;
+		private String wind;
+		private String windPower;
+		private String RelativeHumidity;
+
+		public String getcity() {
+			return city;
+		}
+
+		public void setcity(String ci) {
+			this.city = ci;
+		}// city
+
+		public String gettime() {
+			return time;
+		}
+
+		public void settime(String ti) {
+			this.time = ti;
+		}// time
+
+		public String gettemp() {
+			return temp;
+		}
+
+		public void settemp(String te) {
+			this.temp = te;
+		}// temp
+
+		public String getwind() {
+			return wind;
+		}
+
+		public void setwind(String wi) {
+			this.wind = wi;
+		}// wind
+
+		public String getwindPower() {
+			return windPower;
+		}
+
+		public void setwindPower(String wp) {
+			this.windPower = wp;
+		}// windPower
+
+		public String getRelativeHumidity() {
+			return RelativeHumidity;
+		}
+
+		public void setRelativeHumidity(String rh) {
+			this.RelativeHumidity = rh;
+		}// RelativeHumidity
+
+	}
+
+	// 自定义 weatherinfo 类,天气预报
 	public class weatherinfo {
 
 		private String date_y;// 日期,设置到title
@@ -402,7 +518,7 @@ public class XhulooActivity_weatherreport extends Activity {
 
 	/* 菜单制作 */
 	public boolean onCreateOptionsMenu(Menu menu) {
-		
+
 		menu.add(Menu.NONE, Menu.FIRST + 1, 2, "返回").setIcon(
 
 		android.R.drawable.ic_menu_revert);
@@ -426,32 +542,62 @@ public class XhulooActivity_weatherreport extends Activity {
 
 	}
 
-	/*
-	 * public class HttpURLConnectionActivity extends Activity {
-	 * 
-	 * private ImageView imageView;
-	 * 
-	 * @Override protected void onCreate(Bundle savedInstanceState) { // TODO
-	 * Auto-generated method stub super.onCreate(savedInstanceState);
-	 * setContentView(R.layout.simple1);
-	 * 
-	 * imageView=(ImageView) this.findViewById(R.id.imageView1); //传入网络图片地址 try
-	 * { URL url = new
-	 * URL("http://news.xinhuanet.com/photo/2012-02/09/122675973_51n.jpg");
-	 * HttpURLConnection conn= (HttpURLConnection) url.openConnection();
-	 * conn.setRequestMethod("GET"); conn.setConnectTimeout(5*1000);
-	 * conn.connect(); InputStream in=conn.getInputStream();
-	 * ByteArrayOutputStream bos=new ByteArrayOutputStream(); byte[] buffer=new
-	 * byte[1024]; int len = 0; while((len=in.read(buffer))!=-1){
-	 * bos.write(buffer,0,len); } byte[] dataImage=bos.toByteArray();
-	 * bos.close(); in.close(); Bitmap
-	 * bitmap=BitmapFactory.decodeByteArray(dataImage, 0, dataImage.length);
-	 * //Drawable drawable=BitmapDrawable. imageView.setImageBitmap(bitmap); }
-	 * catch (Exception e) { // TODO Auto-generated catch block
-	 * e.printStackTrace(); Toast.makeText(getApplicationContext(), "图片加载失败",
-	 * 1).show(); }
-	 * 
-	 * } }
-	 */
-
 }
+
+/*
+ * 
+ * 
+ * 
+ * 
+ * public class HttpURLConnectionActivity extends Activity {
+ * 
+ * private ImageView imageView;
+ * 
+ * protected void onCreate(Bundle savedInstanceState) {
+ * super.onCreate(savedInstanceState); setContentView(R.layout.simple1);
+ * 
+ * imageView=(ImageView) this.findViewById(R.id.imageView1); //传入网络图片地址 try {
+ * URL url = new
+ * URL("http://news.xinhuanet.com/photo/2012-02/09/122675973_51n.jpg");
+ * 
+ * HttpURLConnection conn= (HttpURLConnection) url.openConnection();
+ * 
+ * conn.setRequestMethod("GET"); conn.setConnectTimeout(5*1000);
+ * 
+ * conn.connect(); InputStream in=conn.getInputStream();
+ * 
+ * ByteArrayOutputStream bos=new ByteArrayOutputStream(); byte[] buffer=new
+ * byte[1024]; int len = 0; while((len=in.read(buffer))!=-1){
+ * bos.write(buffer,0,len); } byte[] dataImage=bos.toByteArray(); bos.close();
+ * in.close(); Bitmap bitmap=BitmapFactory.decodeByteArray(dataImage, 0,
+ * dataImage.length); //Drawable drawable=BitmapDrawable.
+ * imageView.setImageBitmap(bitmap); }
+ * 
+ * catch (Exception e) { e.printStackTrace();
+ * Toast.makeText(getApplicationContext(), "图片加载失败", 1).show(); }
+ * 
+ * } }
+ * 
+ * 
+ * 
+ * 
+ * void downFile(final String paramString) { this.pBar.show(); new Thread() {
+ * public void run() { File localFile1 = new File("/sdcard/update"); if
+ * (!localFile1.exists()) localFile1.mkdir(); File localFile2 = new
+ * File("/sdcard/update/SH_AQI.apk"); try { URL localURL = new URL(paramString);
+ * try { HttpURLConnection localHttpURLConnection = (HttpURLConnection) localURL
+ * .openConnection(); localHttpURLConnection.connect(); InputStream
+ * localInputStream = localHttpURLConnection .getInputStream(); FileOutputStream
+ * localFileOutputStream = new FileOutputStream( localFile2); byte[] arrayOfByte
+ * = new byte[256]; if (localHttpURLConnection.getResponseCode() >= 400)
+ * Toast.makeText(SH_AQIActivity.this, "连接超时", 0) .show(); while (true) {
+ * localHttpURLConnection.disconnect(); localFileOutputStream.close();
+ * localInputStream.close(); SH_AQIActivity.this.down(); return; if
+ * (localInputStream != null) { int i = localInputStream.read(arrayOfByte); if
+ * (i > 0) { localFileOutputStream.write(arrayOfByte, 0, i); if (0.0D <= 100.0D)
+ * break; } } } } catch (IOException localIOException) {
+ * SH_AQIActivity.this.pBar.cancel(); localIOException.printStackTrace(); } }
+ * catch (MalformedURLException localMalformedURLException) {
+ * SH_AQIActivity.this.pBar.cancel();
+ * localMalformedURLException.printStackTrace(); } } }.start(); }
+ */

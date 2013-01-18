@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.DisplayMetrics;
@@ -12,6 +13,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
@@ -23,7 +25,7 @@ import android.widget.Toast;
 
 /**
  * @author wuwenjie wuwenjie.tk
- * @version 1.3.4
+ * @version 1.3.5
  * @see 屏幕信息，文件游览功能，PHONE，MEM,smallshell
  */
 
@@ -38,6 +40,7 @@ public class XhulooActivity_myplaces extends Activity {
 
 		Log.i(TAG, "MP_onCreate------MP_Xhuloo");
 		super.onCreate(savedInstanceState);
+		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.myplaces);
 
 		final Button BC_btn_MP = (Button) findViewById(R.id.BC_btn_MP);
@@ -61,34 +64,44 @@ public class XhulooActivity_myplaces extends Activity {
 		String ScreenInfo_s = new String("screeninfo:" + "分辨率：" + height_screen
 				+ "*" + width_screen + "\n" + "密度density" + density_screen
 				+ "\n" + "densityDpi" + densityDpi_screen + "\n" + "xdpi"
-				+ xdpi_screen + "\n" + "ydpi" + ydpi_screen);
-
-		/* 得到SD卡PATH */
-		String SD_PATH_S = Environment.getExternalStorageDirectory().toString();
-		Log.i(TAG, "SD_PATH_S------MP_Xhuloo" + SD_PATH_S);
+				+ xdpi_screen + "::" + "ydpi" + ydpi_screen);
 
 		/* 获取OS信息 */
 		String OS_Build_info = new String("底层驱动控制板:" + android.os.Build.BOARD
 				+ "\n" + "brand:" + "android.os.Build.BRAND" + "\n"
-				+ "CPU_ABI:" + android.os.Build.CPU_ABI + "\n" + "DEVICE:"
+				+ "CPU_ABI:" + android.os.Build.CPU_ABI + ":" + "DEVICE:"
 				+ android.os.Build.DEVICE + "\n" + "DISPLAY:"
 				+ android.os.Build.DISPLAY + "\n" + "FINGERPRINT:"
 				+ android.os.Build.FINGERPRINT + "\n" + "HOST:"
-				+ android.os.Build.HOST + "\n" + "ID:" + android.os.Build.ID
+				+ android.os.Build.HOST + "::" + "ID:" + android.os.Build.ID
 				+ "\n" + "MANUFACTURER:" + android.os.Build.MANUFACTURER + "\n"
 				+ "MODEL:" + android.os.Build.MODEL + "\n" + "PRODUCT:"
 				+ android.os.Build.PRODUCT + "\n" + "TAGS:"
 				+ android.os.Build.TAGS + "\n" + "TIME:"
 				+ android.os.Build.TIME + "\n" + "TYPE:"
 				+ android.os.Build.TYPE + "\n" + "USER:"
-				+ android.os.Build.USER);
+				+ android.os.Build.USER + "\n" + "BOOTLOADER:"
+				+ android.os.Build.BOOTLOADER + "\n" + "CPU_ABI2:"
+				+ android.os.Build.CPU_ABI2 + "\n" + "HARDWARE:"
+				+ android.os.Build.HARDWARE + "\n" + "RADIO:"
+				+ android.os.Build.RADIO + "\n" + "SERIAL:"
+				+ android.os.Build.SERIAL + "\n" + "UNKNOWN:"
+				+ android.os.Build.UNKNOWN + "\n" + "CODENAME:"
+				+ Build.VERSION.CODENAME + "\n" + "INCREMENTAL:"
+				+ Build.VERSION.INCREMENTAL + "\n" + "RELEASE:"
+				+ Build.VERSION.RELEASE + "\n" + "SDK:" + Build.VERSION.SDK
+				+ "\n" + "SDK_INT:" + Build.VERSION.SDK_INT);
 
 		/* 利用Bundle传递通信 */
 		Bundle bundle = getIntent().getExtras(); // 得到传过来的bundle
 		String data_MP = bundle.getString("XA_Data");// 读出数据
-		Log.i(TAG, "MP_Data:" + data_MP);
-		mp_textview.setText(data_MP + "\n\n" + ScreenInfo_s + "\n"
+		Log.i(TAG, "OS_Build_info:" + OS_Build_info);
+		mp_textview.setText(data_MP + "\n" + ScreenInfo_s
 				+ OS_Build_info);
+
+		/* 得到SD卡PATH */
+		String SD_PATH_S = Environment.getExternalStorageDirectory().toString();
+		Log.i(TAG, "SD_PATH_S------MP_Xhuloo" + SD_PATH_S);
 
 		/* 文件游览功能 */
 		open_path("/", items_AL); // 调用自定义函数，return items (ArrayList<String>)
