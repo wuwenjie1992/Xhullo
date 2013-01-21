@@ -1,18 +1,11 @@
 package wo.wocom.xwell;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.util.EntityUtils;
-
-import wo.wocom.xwell.net.isConnectNet;
+import wo.wocom.xwell.net.GetHtml2Str;
 import wo.wocom.xwell.utility.XA_util_ADialog;
 import wo.wocom.xwell.utility.XA_util_readStrByregEx;
+import wo.wocom.xwell.utility.startACIntent;
 
 import android.app.Activity;
 import android.content.Context;
@@ -29,13 +22,11 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 /**
  * @author wuwenjie wuwenjie.tk
- * @version 1.3.7
- * @more 自定义列表模式；联网；解析JASON；
- * 			联网、解析的耗时操作使用handler;实现天气预报和实时预报
+ * @version 1.3.8
+ * @more 自定义列表模式；联网；解析JASON； 联网、解析的耗时操作使用handler;实现天气预报和实时预报
  */
 
 public class XhulooActivity_weatherreport extends Activity {
@@ -60,7 +51,7 @@ public class XhulooActivity_weatherreport extends Activity {
 	/* activity生命周期 */
 	public void onCreate(Bundle savedInstanceState) {
 
-		Log.i(TAG, "WR_onCreate------WR_Xhuloo");
+		Log.i(TAG, "WR_onCreate");
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.wr); // 设置主布局
 
@@ -180,7 +171,20 @@ public class XhulooActivity_weatherreport extends Activity {
 
 			// 传递信息以更新UI
 			Bundle b = msg.getData();
-			if (b.getString("DONE") != null) {
+
+			switch (b.getInt("DONE")) {
+			case 0:
+				showDialog("问题", "网络不达", "好的");
+				break;
+
+			case 1:
+
+				// weatherNow------------------------------
+				showDialog(
+						wn.getcity() + "实时天气 " + "发布于" + wn.gettime(),
+						"气温：" + wn.gettemp() + "°C\n风向：" + wn.getwind()
+								+ "\n风力：" + wn.getwindPower() + "\n相对湿度："
+								+ wn.getRelativeHumidity(), "知道了");
 
 				// weatherReport------------------------------
 				title = wi.getcity() + " 今天" + wi.getdate_y() + "		" + "发布于"
@@ -199,14 +203,8 @@ public class XhulooActivity_weatherreport extends Activity {
 
 				showMyLV(true);// notify changed 刷新视图
 
-				// weatherReport------------------------------
-				showDialog(
-						wn.getcity() + "实时天气 " + "发布于" + wn.gettime(),
-						"气温：" + wn.gettemp() + "°C\n风向：" + wn.getwind()
-								+ "\n风力：" + wn.getwindPower() + "\n相对湿度："
-								+ wn.getRelativeHumidity(), "知道了");
-
-			}// if end
+				break;
+			}
 
 		}// handleMessage end
 
@@ -216,51 +214,62 @@ public class XhulooActivity_weatherreport extends Activity {
 		public void run() {
 			Log.i(TAG, "MyThread_start");
 			Looper.prepare();
-			/* 开始联网处理数据 */
-			String html_s = null;
-
-			html_s = GetHtml2Str(html_s, get_url_weaReport);
-
-			// 处理数据
-			// weatherReport------------------------------
-			wi.setcity(returnJValue(html_s, "city", 2));
-			wi.setdate_y(returnJValue(html_s, "date_y", 9));
-			wi.setweek(returnJValue(html_s, "week", 3));
-			wi.setfchh(returnJValue(html_s, "fchh", 2));
-			wi.setadvise(returnJValue(html_s, "index_d", 20));
-
-			// 初始化,ArrayList<String> temp;
-			for (i = 0; i <= 5; i++) {
-				wi.addtemp("temp" + i);
-				wi.addweather("wea" + i);
-				wi.addwind("win" + i);
-			}
-
-			// 处理气温，天气，风
-			for (i = 0; i <= 5; i++) {
-				wi.settemp(returnByJM(html_s, "temp" + (i + 1)), i);
-				wi.setweather(returnByJM(html_s, "weather" + (i + 1)), i);
-				wi.setwind(returnByJM(html_s, "wind" + (i + 1)), i);
-			}
-
-			// weatherNow------------------------------
-			html_s = GetHtml2Str(html_s, get_url_weaNow);
-			wn.setcity(returnByJM(html_s, "city"));
-			wn.setRelativeHumidity(returnByJM(html_s, "SD"));
-			wn.settemp(returnByJM(html_s, "temp"));
-			wn.settime(returnJValue(html_s, "time", 5));
-			wn.setwind(returnByJM(html_s, "WD"));
-			wn.setwindPower(returnByJM(html_s, "WS"));
-
-			Log.i(TAG, wn.toString());
-
+			String html_s = null; // 网页字符串
 			// 向Handler发送消息,更新UI
 			Message msg = new Message();
 			Bundle b = new Bundle();// 存放数据
-			b.putString("DONE", wi.getcity());
-			msg.setData(b);
 
-			XhulooActivity_weatherreport.this.myHandler.sendMessage(msg);
+			html_s = GetHtml2Str.reStr(html_s, get_url_weaNow,
+					XhulooActivity_weatherreport.this);
+			// 联网处理数据,返回字符串
+
+			if (html_s != null) {
+				// 处理数据
+				// weatherNow------------------------------
+
+				wn.setcity(returnByJM(html_s, "city"));
+				wn.setRelativeHumidity(returnByJM(html_s, "SD"));
+				wn.settemp(returnByJM(html_s, "temp"));
+				wn.settime(returnJValue(html_s, "time", 5));
+				wn.setwind(returnByJM(html_s, "WD"));
+				wn.setwindPower(returnByJM(html_s, "WS"));
+
+				// weatherReport------------------------------
+				html_s = GetHtml2Str.reStr(html_s, get_url_weaReport,
+						XhulooActivity_weatherreport.this);// 联网处理数据,返回字符串
+				//if (html_s != null) {
+				wi.setcity(returnJValue(html_s, "city", 2));
+				wi.setdate_y(returnJValue(html_s, "date_y", 9));
+				wi.setweek(returnJValue(html_s, "week", 3));
+				wi.setfchh(returnJValue(html_s, "fchh", 2));
+				wi.setadvise(returnJValue(html_s, "index_d", 20));
+
+				// 初始化,ArrayList<String> temp;
+				for (i = 0; i <= 5; i++) {
+					wi.addtemp("temp" + i);
+					wi.addweather("wea" + i);
+					wi.addwind("win" + i);
+				}
+
+				// 处理气温，天气，风
+				for (i = 0; i <= 5; i++) {
+					wi.settemp(returnByJM(html_s, "temp" + (i + 1)), i);
+					wi.setweather(returnByJM(html_s, "weather" + (i + 1)), i);
+					wi.setwind(returnByJM(html_s, "wind" + (i + 1)), i);
+				}
+
+				// 向Handler发送消息,更新UI
+				b.putInt("DONE", 1);// 1表示成功；可用putString
+				msg.setData(b);
+
+				XhulooActivity_weatherreport.this.myHandler.sendMessage(msg);
+
+			}// if end
+			else {
+				// 向Handler发送消息,更新UI
+				b.putInt("DONE", 0);// 0表示不成功
+				msg.setData(b);
+			}
 
 		}// run end
 	} // my thread end
@@ -295,50 +304,6 @@ public class XhulooActivity_weatherreport extends Activity {
 				input.indexOf("\"", input.indexOf(key) + key.length() + 3));
 
 		return out;
-	}
-
-	/**
-	 * @param html_s
-	 *            返回字符串
-	 * @param url
-	 *            请求地址
-	 * 
-	 */
-	public String GetHtml2Str(String html_s, String url) {
-		if (isConnectNet.isConInt(XhulooActivity_weatherreport.this)) {
-
-			HttpGet httpGet = new HttpGet(url);
-			HttpClient httpClient = new DefaultHttpClient();
-			try {
-				// 得到HttpResponse对象
-				HttpResponse httpResponse = httpClient.execute(httpGet);
-				// HttpResponse的返回结果若成功
-				if (httpResponse.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
-					// 得到返回数据的字符串
-					String data_s = EntityUtils.toString(httpResponse
-							.getEntity());
-					html_s = data_s;
-					Log.i(TAG, "data_s" + data_s);
-				}
-			} catch (java.net.UnknownHostException e) {
-				e.printStackTrace();
-				Log.i(TAG, "UnknownHost：" + e.toString());
-				html_s = null;
-			} catch (IOException e) {
-				e.printStackTrace();
-				html_s = null;
-			}// catch
-		}// if
-
-		else {
-
-			Log.i(TAG, "elsetoast");
-			Toast.makeText(XhulooActivity_weatherreport.this, "网络不可达",
-					Toast.LENGTH_LONG).show();
-
-			// finish();
-		}
-		return html_s;
 	}
 
 	/**
@@ -519,9 +484,13 @@ public class XhulooActivity_weatherreport extends Activity {
 	/* 菜单制作 */
 	public boolean onCreateOptionsMenu(Menu menu) {
 
-		menu.add(Menu.NONE, Menu.FIRST + 1, 2, "返回").setIcon(
+		menu.add(Menu.NONE, Menu.FIRST + 1, 1, "返回").setIcon(
 
 		android.R.drawable.ic_menu_revert);
+
+		menu.add(Menu.NONE, Menu.FIRST + 2, 2, "空气").setIcon(
+
+		R.drawable.pm2_5);
 
 		return true;
 
@@ -532,8 +501,12 @@ public class XhulooActivity_weatherreport extends Activity {
 
 		case Menu.FIRST + 1:
 
-			Log.i(TAG, "XhulooActivity.this.finish()");
 			XhulooActivity_weatherreport.this.finish();
+			break;
+		case Menu.FIRST + 2:
+
+			startACIntent.stAcIntent(XhulooActivity_weatherreport.this,
+					XA_AirQuality.class);
 			break;
 
 		}

@@ -59,6 +59,10 @@
 * 20130118
     * Change XhulloActivity_weatherreport.java TODO Get real-time weatherinfo
     * Add New package net TODO Get info from Internet
+* 20130121
+    * Add XA_AirQuality.java TODO Get AQI Because bad weather
+    * Add .net/GetHtml2Str.java TODO Get html
+    * Add a 7zip file TODO project file
 
 ##Bug Reports
 * 20120903
@@ -69,6 +73,10 @@
 * 20121226
     * XhulooActivity_weatherreport.java
     * XhulooActivity_playmusic.java
+* 20130121
+    * XhulooActivity_weatherreport.java
+    * XhulooActivity_playmusic.java
+    * XA_AirQuality.java
 
 ##About Author 
 * WebSite:[wuwenjie.tk](http://www.wuwenjie.tk)

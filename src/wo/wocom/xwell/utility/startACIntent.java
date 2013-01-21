@@ -8,11 +8,16 @@ import android.content.Intent;
  * @see 跳转新activity
  */
 public class startACIntent {
+	/**
+	 * 
+	 * @param con  所在Activity的Context(上下文):	Activity.this
+	 * @param cls  新建的Activity:					Activity.class
+	 */
 	public static void stAcIntent(Context con, Class<?> cls) {
 		/* 跳转新界面activity */
 		Intent in = new Intent(); // 新建Intent意图
 		in.setClass(con, cls);
-		// 方便的调用名称为,返回一个Class对象
+		//返回一个Class对象
 		con.startActivity(in); // 跳转
 	}
 }
