@@ -3,6 +3,7 @@ package wo.wocom.xwell;
 import java.util.ArrayList;
 
 import wo.wocom.xwell.net.GetHtml2Str;
+import wo.wocom.xwell.utility.Util_Notifiy;
 import wo.wocom.xwell.utility.XA_util_ADialog;
 import wo.wocom.xwell.utility.XA_util_readStrByregEx;
 import wo.wocom.xwell.utility.startACIntent;
@@ -25,7 +26,7 @@ import android.widget.TextView;
 
 /**
  * @author wuwenjie wuwenjie.tk
- * @version 1.3.8
+ * @version 1.3.9
  * @more 自定义列表模式；联网；解析JASON； 联网、解析的耗时操作使用handler;实现天气预报和实时预报
  */
 
@@ -38,7 +39,7 @@ public class XhulooActivity_weatherreport extends Activity {
 	String[][] newtext = new String[6][5];
 	String title = "联网数据..";
 	String get_url_weaReport = "http://m.weather.com.cn/data/101020300.html"; // 未来天气
-	String get_url_weaAlarm = "http://product.weather.com.cn/alarm/grepalarm.php?areaid=1012808";// 天气预警
+	String get_url_weaAlarm = "http://product.weather.com.cn/alarm/grepalarm.php?areaid=10102";// 天气预警
 	// http://www.weather.com.cn/alarm/newalarmcontent.shtml?file=1012808-20130118164411-9102.html
 	String get_url_weaNow = "http://www.weather.com.cn/data/sk/101020300.html";// 实时天气
 	// 省份代码：http://www.weather.com.cn/data/city3jdata/china.html
@@ -47,6 +48,7 @@ public class XhulooActivity_weatherreport extends Activity {
 	weatherinfo wi; // 声明 天气预报类
 	weatherNow wn; // 声明 实时天气类
 	int i, j;
+	boolean hasnotify = false;
 
 	/* activity生命周期 */
 	public void onCreate(Bundle savedInstanceState) {
@@ -204,8 +206,17 @@ public class XhulooActivity_weatherreport extends Activity {
 				showMyLV(true);// notify changed 刷新视图
 
 				break;
-			}
+			}// SWITCH end
 
+			// 预警信息的UI革新
+			if (hasnotify) {
+				Util_Notifiy nf = new Util_Notifiy(
+						XhulooActivity_weatherreport.this);
+
+				nf.Util_simpleNotifiy(XhulooActivity_weatherreport.this,
+						XhulooActivity_weatherreport.class, "预警",
+						get_url_weaAlarm);
+			}
 		}// handleMessage end
 
 	}// myHandler end
@@ -237,7 +248,7 @@ public class XhulooActivity_weatherreport extends Activity {
 				// weatherReport------------------------------
 				html_s = GetHtml2Str.reStr(html_s, get_url_weaReport,
 						XhulooActivity_weatherreport.this);// 联网处理数据,返回字符串
-				//if (html_s != null) {
+				// if (html_s != null) {
 				wi.setcity(returnJValue(html_s, "city", 2));
 				wi.setdate_y(returnJValue(html_s, "date_y", 9));
 				wi.setweek(returnJValue(html_s, "week", 3));
@@ -256,6 +267,18 @@ public class XhulooActivity_weatherreport extends Activity {
 					wi.settemp(returnByJM(html_s, "temp" + (i + 1)), i);
 					wi.setweather(returnByJM(html_s, "weather" + (i + 1)), i);
 					wi.setwind(returnByJM(html_s, "wind" + (i + 1)), i);
+				}
+
+				// weather alarm---------------------------
+				html_s = null; // 置空
+				html_s = GetHtml2Str.reStr(html_s, get_url_weaAlarm,
+						XhulooActivity_weatherreport.this);// 联网处理数据,返回字符串
+
+				if (returnJValue(html_s, "count", 1).equals("0")) {
+					hasnotify = false;
+				} else {
+					hasnotify = true;
+					get_url_weaAlarm = html_s;
 				}
 
 				// 向Handler发送消息,更新UI

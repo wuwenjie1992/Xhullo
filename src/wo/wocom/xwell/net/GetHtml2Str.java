@@ -34,7 +34,8 @@ public class GetHtml2Str {
 		if (isConnectNet.isConInt(con)) {// 判断是否联网
 
 			HttpGet httpGet = new HttpGet(url);
-			HttpClient httpClient = new DefaultHttpClient();
+			Log.i(TAG, httpGet.getMethod());
+			HttpClient httpClient = new DefaultHttpClient();//HTTP客户端
 			try {
 				// 得到HttpResponse对象
 				HttpResponse httpResponse = httpClient.execute(httpGet);

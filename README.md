@@ -63,6 +63,9 @@
     * Add XA_AirQuality.java TODO Get AQI Because bad weather
     * Add .net/GetHtml2Str.java TODO Get html
     * Add a 7zip file TODO project file
+* 20130124
+    * Add Util_Notifiy.java TODO a tool for notification
+    * Change XhulooActivity_weatherreport.java TODO new weather alarm
 
 ##Bug Reports
 * 20120903
