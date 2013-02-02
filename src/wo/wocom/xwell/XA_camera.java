@@ -43,7 +43,7 @@ public class XA_camera extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
-		
+
 		requestWindowFeature(Window.FEATURE_NO_TITLE); // 窗口无标题
 		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
 				WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -55,7 +55,7 @@ public class XA_camera extends Activity {
 		fl.addView(cv); // 创建预览用子类，放于fl底层
 
 		TextView tv = new TextView(this); // 创建文本框做特效
-		tv.setText("请按\"相机\"按钮ORVOLUME_DOWN");
+		tv.setText(R.string.XA_camera_note);// "请按\"相机\"按钮ORVOLUME_DOWN"
 		fl.addView(tv);
 
 		setContentView(fl); // 设置Activity的根内容视图
@@ -66,7 +66,7 @@ public class XA_camera extends Activity {
 
 		public void onPictureTaken(byte[] data, Camera camera) {
 			Log.i(TAG, "onPictureTaken");
-			Toast.makeText(getApplicationContext(), "正在保存……",
+			Toast.makeText(getApplicationContext(), R.string.XA_camera_save,
 					Toast.LENGTH_SHORT).show();
 			mBitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
 			// BitmapFactory.decodeByteArray()将相机传回数据转换成Bitmap对象，解码字节数组
@@ -83,8 +83,8 @@ public class XA_camera extends Activity {
 				mBitmap.compress(Bitmap.CompressFormat.JPEG, 100, os);// 将一个压缩为特定版本的位图写到OutputStream
 				os.flush();// 刷新该流的保证所有未决数据被写入目标流
 				os.close();// Closes this stream.
-				Toast.makeText(getApplicationContext(), "图片保存",
-						Toast.LENGTH_SHORT).show();
+				Toast.makeText(getApplicationContext(),
+						R.string.XA_camera_savef, Toast.LENGTH_SHORT).show();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -155,28 +155,27 @@ public class XA_camera extends Activity {
 						int width, int height) {
 
 					Log.i(TAG, "CameraView_surfaceChanged");
-					
-					
+
 					Camera.Parameters parameters = mCamera.getParameters(); // 获得相机参数对象
 					parameters.setPictureFormat(PixelFormat.JPEG); // 设置格式
 					parameters.set("jpeg-quality", 85);// 照片质量
 					parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO); // 设置自动对焦
 					parameters.setPreviewSize(width, height);
 					parameters.setPreviewFrameRate(24);// 每秒24帧
-					
+
 					// setDisplayOrientation
 
-					//----设置图片保存时的分辨率大小
+					// ----设置图片保存时的分辨率大小
 					List<Size> previewSizes_L = parameters
 							.getSupportedPreviewSizes();
 					Log.i(TAG,
 							previewSizes_L.toString() + "\n"
 									+ previewSizes_L.size() + "\n"
 									+ previewSizes_L.get(0));
-					Size s=previewSizes_L.get(0);// 640 480 ;0 320 240
-					Log.i(TAG, s.width+"X"+s.height);
-					//parameters.setPictureSize(s.width,s.height);//默认分辨率高
-					
+					Size s = previewSizes_L.get(0);// 640 480 ;0 320 240
+					Log.i(TAG, s.width + "X" + s.height);
+					// parameters.setPictureSize(s.width,s.height);//默认分辨率高
+
 					mCamera.setParameters(parameters); // 给相机对象设置刚才设定的参数
 					mCamera.startPreview(); // 开始预览
 				}// surfaceChanged end

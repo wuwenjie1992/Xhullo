@@ -1,12 +1,13 @@
 package wo.wocom.xwell;
 
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
 /**
  * @author wuwenjie wuwenjie.tk
- * @version 1.3.1
+ * @version 1.3.2
  * @more 命令执行【自定义类】，传入【作为【命令【CMD】】执行的】参数
  */
 public class CMDExecute {
@@ -38,6 +39,30 @@ public class CMDExecute {
 		}
 
 		return result;// 返回结果
+	}
+
+	public static boolean Rootrun(String cmd) {
+		Process process = null;
+		DataOutputStream os = null;
+		try {
+			process = Runtime.getRuntime().exec("su");
+			os = new DataOutputStream(process.getOutputStream());
+			os.writeBytes(cmd + "\n");
+			os.writeBytes("exit\n");
+			os.flush();
+			process.waitFor();
+		} catch (Exception e) {
+			return false;
+		} finally {
+			try {
+				if (os != null) {
+					os.close();
+				}
+				process.destroy();
+			} catch (Exception e) {
+			}
+		}
+		return true;
 	}
 
 }

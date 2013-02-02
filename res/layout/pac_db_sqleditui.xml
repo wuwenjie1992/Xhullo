@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <EditText
+        android:id="@+id/pac_db_sqlui_et"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_toLeftOf="@+id/pac_db_sqlui_bt"
+        android:ems="10"
+        android:inputType="text" >
+
+        <requestFocus />
+    </EditText>
+
+    <Button
+        android:id="@+id/pac_db_sqlui_bt"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/pac_db_sqlui_et"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:onClick="bt_onClick"
+        android:text="@string/pac_db_bt" />
+
+    <ScrollView
+        android:id="@+id/scrollView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/pac_db_sqlui_et" >
+
+        <TextView
+            android:id="@+id/pac_db_sqlui_tv"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="@string/ss_output"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="#00D800" />
+    </ScrollView>
+
+</RelativeLayout>

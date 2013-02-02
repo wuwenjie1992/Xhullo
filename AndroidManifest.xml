@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="wo.wocom.xwell"
     android:versionCode="1"
-    android:versionName="1.3.10.3.10预警版" >
+    android:versionName="1.3.10.3.11DataBase版" >
 
     <uses-sdk android:minSdkVersion="9" />
 
@@ -106,7 +106,8 @@
         </activity>
         <activity android:name=".XA_camera" >
         </activity>
-        <activity android:name=".XA_AirQuality"></activity>
+        <activity android:name=".XA_AirQuality" >
+        </activity>
 
         <!-- pac_b -->
         <activity android:name=".browser.browser_main_view" >
@@ -127,6 +128,10 @@
         <activity android:name=".sensor.XA_sens_orientation" >
         </activity>
         <activity android:name=".sensor.XA_sens_magnetic_field" >
+        </activity>
+
+        <!-- pac_database -->
+        <activity android:name=".database.SQLEditUI" >
         </activity>
 
         <!-- service -->

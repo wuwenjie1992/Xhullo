@@ -66,6 +66,8 @@
 * 20130124
     * Add Util_Notifiy.java TODO a tool for notification
     * Change XhulooActivity_weatherreport.java TODO new weather alarm
+* 20130203
+    * Add .database/SQLEditUI.java TODO exec SQL & change db value
 
 ##Bug Reports
 * 20120903
@@ -80,6 +82,10 @@
     * XhulooActivity_weatherreport.java
     * XhulooActivity_playmusic.java
     * XA_AirQuality.java
-
+* 20130203
+    * XhulooActivity_weatherreport.java
+    * XhulooActivity_playmusic.java
+    * .database/SQLEditUI.java
+    
 ##About Author 
 * WebSite:[wuwenjie.tk](http://www.wuwenjie.tk)

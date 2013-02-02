@@ -3,6 +3,8 @@ package wo.wocom.xwell;
 import java.io.File;
 import java.util.ArrayList;
 
+import wo.wocom.xwell.utility.startACIntent;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
@@ -25,7 +27,7 @@ import android.widget.Toast;
 
 /**
  * @author wuwenjie wuwenjie.tk
- * @version 1.3.5
+ * @version 1.3.6
  * @see 屏幕信息，文件游览功能，PHONE，MEM,smallshell
  */
 
@@ -96,8 +98,7 @@ public class XhulooActivity_myplaces extends Activity {
 		Bundle bundle = getIntent().getExtras(); // 得到传过来的bundle
 		String data_MP = bundle.getString("XA_Data");// 读出数据
 		Log.i(TAG, "OS_Build_info:" + OS_Build_info);
-		mp_textview.setText(data_MP + "\n" + ScreenInfo_s
-				+ OS_Build_info);
+		mp_textview.setText(data_MP + "\n" + ScreenInfo_s + OS_Build_info);
 
 		/* 得到SD卡PATH */
 		String SD_PATH_S = Environment.getExternalStorageDirectory().toString();
@@ -221,94 +222,72 @@ public class XhulooActivity_myplaces extends Activity {
 
 		android.R.drawable.ic_menu_call);
 
-		menu.add(Menu.NONE, Menu.FIRST + 5, 5, "水波").setIcon(
+		menu.add(Menu.NONE, Menu.FIRST + 5, 5, "JNI").setIcon(
 
 		android.R.drawable.progress_indeterminate_horizontal);
 
 		menu.add(Menu.NONE, Menu.FIRST + 6, 6, "GPS").setIcon(
 
 		android.R.drawable.ic_menu_mylocation);
+		
+		menu.add(Menu.NONE, Menu.FIRST + 7, 7, "DB").setIcon(
 
-		menu.add(Menu.NONE, Menu.FIRST + 7, 7, "返回").setIcon(
+				android.R.drawable.ic_menu_slideshow);
+
+		menu.add(Menu.NONE, Menu.FIRST + 8, 8, "返回").setIcon(
 
 		android.R.drawable.ic_menu_revert);
 		return true;
 
 	}
 
-	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 
 		case Menu.FIRST + 1:
 
-			Toast.makeText(this, "MP_内存菜单点击", Toast.LENGTH_SHORT).show();
-			/* 跳转新界面activity */
-			Intent intent2 = new Intent(); // 新建Intent意图
-			intent2.setClass(XhulooActivity_myplaces.this,
+			startACIntent.stAcIntent(XhulooActivity_myplaces.this,
 					XhulooActivity_MEM.class);
-			// 方便的调用名称为,返回一个Class对象
-			startActivityForResult(intent2, 0); // 跳转，此处的0 OR >=0
-
 			break;
 
 		case Menu.FIRST + 2:
 
-			Toast.makeText(this, "MP_CPU", Toast.LENGTH_SHORT).show();
-
-			/* 跳转新界面activity */
-			Intent intent01 = new Intent(); // 新建Intent意图
-			intent01.setClass(XhulooActivity_myplaces.this,
+			startACIntent.stAcIntent(XhulooActivity_myplaces.this,
 					XhulooActivity_cupinfo.class);
-			// 方便的调用名称为,返回一个Class对象
-			startActivity(intent01); // 跳转
-
 			break;
 
 		case Menu.FIRST + 3:
 
-			/* 跳转新界面activity */
-			Intent intent4 = new Intent(); // 新建Intent意图
-			intent4.setClass(XhulooActivity_myplaces.this, XA_smallshell.class);
-			// 方便的调用名称为,返回一个Class对象
-			startActivity(intent4); // 跳转
-
+			startACIntent.stAcIntent(XhulooActivity_myplaces.this,
+					XA_smallshell.class);
 			break;
 
 		case Menu.FIRST + 4:
 
-			Toast.makeText(this, "MP_phone点击", Toast.LENGTH_SHORT).show();
-
-			/* 跳转新界面activity */
-			Intent intent = new Intent(); // 新建Intent意图
-			intent.setClass(XhulooActivity_myplaces.this,
+			startACIntent.stAcIntent(XhulooActivity_myplaces.this,
 					XhulooActivity_PHONE.class);
-			// 方便的调用名称为,返回一个Class对象
-
-			startActivity(intent); // 跳转
-
 			break;
 
 		case Menu.FIRST + 5:
-			/* 跳转新界面activity */
-			Intent intent3 = new Intent(); // 新建Intent意图
-			intent3.setClass(XhulooActivity_myplaces.this, XAplasma.class);
-			// 方便的调用名称为,返回一个Class对象
-			startActivity(intent3); // 跳转
+			startACIntent.stAcIntent(XhulooActivity_myplaces.this,
+					XAplasma.class);
 
 			break;
 
 		case Menu.FIRST + 6:
-			/* 跳转新界面activity */
-			Intent intent5 = new Intent(); // 新建Intent意图
-			intent5.setClass(XhulooActivity_myplaces.this,
+
+			startACIntent.stAcIntent(XhulooActivity_myplaces.this,
 					wo.wocom.xwell.location.XA_p_lo_simpleGPS.class);
-			// 方便的调用名称为,返回一个Class对象
-			startActivity(intent5); // 跳转
 
 			break;
 
 		case Menu.FIRST + 7:
+			startACIntent.stAcIntent(XhulooActivity_myplaces.this,
+					wo.wocom.xwell.database.SQLEditUI.class);
+
+			break;
+
+		case Menu.FIRST + 8:
 			Toast.makeText(this, "MP_退出菜单点击", Toast.LENGTH_SHORT).show();
 			Log.i(TAG, "XhulooActivity.this.finish()");
 			XhulooActivity_myplaces.this.finish();

@@ -7,7 +7,7 @@ import java.util.Map;
 
 import wo.wocom.xwell.R;
 import wo.wocom.xwell.database.HistoryBean;
-import wo.wocom.xwell.database.SQLiteHelper;
+import wo.wocom.xwell.database.SQLHelperForBrowser;
 import wo.wocom.xwell.utility.XA_util_ProgressDialog;
 
 import android.app.Activity;
@@ -28,8 +28,6 @@ import android.net.http.SslError;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.Log;
-import android.view.ContextMenu;
-import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -54,7 +52,7 @@ import android.widget.Toast;
 /**
  * @author unknown
  * @improve wuwenjie wuwenjie.tk
- * @version 1.3.1
+ * @version 1.3.4
  * @more 自定义webbrowser的主界面
  */
 public class browser_main_view extends Activity {
@@ -62,7 +60,7 @@ public class browser_main_view extends Activity {
 	private static String TAG = "XA_pac_b_bmv";
 	private WebView mWebView = null; // 网页视图，WebKit渲染引擎
 	final Activity context = this;
-	private SQLiteHelper mOpenHelper; // 自定义SQLiteOpenHelper，用于数据库的操作管理
+	private SQLHelperForBrowser mOpenHelper; // 自定义SQLiteOpenHelper，用于数据库的操作管理
 	public static Cursor myCursor_one;// 光标，提供随机读写访问【由数据库查询返回的】结果集
 	Intent directCall;// 自定义 意图
 	private WriteFavoriteXml writeXml = new WriteFavoriteXml();//
@@ -106,7 +104,7 @@ public class browser_main_view extends Activity {
 		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
 				WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-		mOpenHelper = new SQLiteHelper(this);
+		mOpenHelper = new SQLHelperForBrowser(this);
 		directCall = new Intent(Intent.ACTION_MAIN);
 		// 标识Activity为一程序的开始，Start as main entry point, does not receive data.
 		onInit();
@@ -174,7 +172,7 @@ public class browser_main_view extends Activity {
 
 		XA_util_pd = new XA_util_ProgressDialog(context);// 实例化 自定义 进程对话框
 
-		// 按钮监听
+		// 按钮监听，前往按钮
 		btn.setOnClickListener(new Button.OnClickListener() {
 			public void onClick(View v) {
 				String str = edit.getText().toString();
@@ -228,6 +226,14 @@ public class browser_main_view extends Activity {
 			public void onPageFinished(WebView view, String url) {
 				super.onPageFinished(view, url);
 				XA_util_pd.util_pDialogCancel();// 对话框取消
+
+				// 移除控件
+				edit.setVisibility(View.GONE);
+				btn.setVisibility(View.GONE);
+				forwardBtn.setVisibility(View.GONE);
+				backBtn.setVisibility(View.GONE);
+				menuBtn.setVisibility(View.GONE);
+
 				mWebView.requestFocusFromTouch();
 			}
 
@@ -267,7 +273,8 @@ public class browser_main_view extends Activity {
 					XA_util_pd.show();
 				} else {
 					XA_util_pd.util_pDialogCancel();// 对话框取消
-					insertTable(cur_url, 1, view.getTitle());
+					insertTable(cur_url, 1, view.getTitle());// 记录历史
+
 				}
 			}
 
@@ -291,7 +298,7 @@ public class browser_main_view extends Activity {
 				return true;
 			}
 
-			//js确认对话框
+			// js确认对话框
 			public boolean onJsConfirm(WebView view, String url,
 					String message, final JsResult result) {
 
@@ -320,18 +327,34 @@ public class browser_main_view extends Activity {
 
 		});
 
-		WebSettings webSettings = mWebView.getSettings();
-		webSettings.setJavaScriptEnabled(true);
+		setJavaScript(false);// 设置是否启用JS，否
 
 		mWebView.loadUrl(cur_url);
 		setFavicon();
 
 	}// oninit end
 
-	// 菜单
+	/////-------------菜单----------------
+	//菜单显示之前调用，一般用于调整菜单
+	public boolean onPrepareOptionsMenu(Menu menu) {
+		
+		super.onPrepareOptionsMenu(menu);
+		
+		Log.i(TAG, "onPrepareOptionsMenu:" + menu);
+		// 显示控件
+		edit.setVisibility(View.VISIBLE);
+		btn.setVisibility(View.VISIBLE);
+		forwardBtn.setVisibility(View.VISIBLE);
+		backBtn.setVisibility(View.VISIBLE);
+		menuBtn.setVisibility(View.VISIBLE);
+		return true;
+	}
+
+	// 菜单键 按下
 	public boolean onCreateOptionsMenu(Menu menu) {
 
 		super.onCreateOptionsMenu(menu);
+
 		menu.add(0, HISTORY_ITEM, HISTORY_ITEM, R.string.pac_b_bmv_history)
 				.setIcon(R.drawable.history); // setIcon,setText
 		menu.add(0, HTTP_ITEM, HTTP_ITEM, R.string.pac_b_bmv_http_name)
@@ -347,6 +370,7 @@ public class browser_main_view extends Activity {
 		return true;
 	}
 
+	//菜单项目选择，调用
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case HISTORY_ITEM:
@@ -373,10 +397,18 @@ public class browser_main_view extends Activity {
 		return super.onOptionsItemSelected(item);
 	}
 
-	public void onCreateContextMenu(ContextMenu menu, View v,
-			ContextMenuInfo menuInfo) {
-		Log.i(TAG, "onCreateContextMenu" + v.toString());
-		Log.i(TAG, "onCreateContextMenu" + String.valueOf(v.getId()));
+	// 菜单关闭时，此方法似乎无效
+	public boolean closeOptionsMenu(Menu menu) {
+		super.closeOptionsMenu();
+
+		Log.i(TAG, "closeOptionsMenu" + menu);
+		// 显示控件
+		edit.setVisibility(View.VISIBLE);
+		btn.setVisibility(View.VISIBLE);
+		forwardBtn.setVisibility(View.VISIBLE);
+		backBtn.setVisibility(View.VISIBLE);
+		menuBtn.setVisibility(View.VISIBLE);
+		return false;
 	}
 
 	//
@@ -399,8 +431,8 @@ public class browser_main_view extends Activity {
 		go_back = (Button) findViewById(R.id.pac_b_bmv_go_back);
 
 		SimpleAdapter adapter = new SimpleAdapter(this, getData(),
-				android.R.layout.simple_list_item_2, new String[] { "��ҳ",
-						"��ַ" }, new int[] { android.R.id.text1,
+				android.R.layout.simple_list_item_2,
+				new String[] { "标题", "地址" }, new int[] { android.R.id.text1,
 						android.R.id.text2 });
 
 		// final ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
@@ -411,14 +443,21 @@ public class browser_main_view extends Activity {
 			public void onClick(View v) {
 				onInit();
 			}
-		});
+		});// go_back 监听
+
 		list.setOnItemClickListener(new OnItemClickListener() {
 			public void onItemClick(AdapterView<?> parent, View v,
 					int position, long id) {
-				cur_url = history_data.get(position).get("��ַ").toString();
-				onInit();
+				// ///////////////
+				if (cur_url.equals(history_data.get(position).get("地址")
+						.toString()))
+					;
+				else {
+					cur_url = history_data.get(position).get("地址").toString();
+					onInit();
+				}
 			}
-		});
+		});// list item 监听
 	}
 
 	//
@@ -429,7 +468,6 @@ public class browser_main_view extends Activity {
 			item.put("标题", mylist.getItemAtIndex(i).getTitle());
 			item.put("地址", mylist.getItemAtIndex(i).getUrl());
 			history_data.add(item);
-
 			// history_data.add(mylist.getItemAtIndex(i).getUrl().toString());
 		}
 	}
@@ -533,16 +571,17 @@ public class browser_main_view extends Activity {
 		time = (int) Math.floor(System.currentTimeMillis() / 1000);
 		SQLiteDatabase db = mOpenHelper.getWritableDatabase();
 
-		myCursor_one = db.rawQuery("SELECT * FROM " + SQLiteHelper.TB_NAME
-				+ " where name=?", new String[] { String.valueOf(title) });
+		myCursor_one = db.rawQuery("SELECT * FROM "
+				+ SQLHelperForBrowser.TB_NAME + " where name=?",
+				new String[] { String.valueOf(title) });
 
 		String sql;
 		String tip;
 
 		if (myCursor_one.moveToFirst()) {
-			sql = "update " + SQLiteHelper.TB_NAME + " set " + HistoryBean.TIME
-					+ "=" + time + " where " + HistoryBean.NAME + "='" + title
-					+ "'";
+			sql = "update " + SQLHelperForBrowser.TB_NAME + " set "
+					+ HistoryBean.TIME + "=" + time + " where "
+					+ HistoryBean.NAME + "='" + title + "'";
 			if (title != null) {
 				Log.i("update", title);
 			}// java.lang.NullPointerException: println needs a message
@@ -550,7 +589,7 @@ public class browser_main_view extends Activity {
 			tip = "update";
 
 		} else {
-			sql = "insert into " + SQLiteHelper.TB_NAME + " ("
+			sql = "insert into " + SQLHelperForBrowser.TB_NAME + " ("
 					+ HistoryBean.URL + ", " + HistoryBean.TIME + ", "
 					+ HistoryBean.NAME + ") " + "values('" + url + "','" + time
 					+ "','" + title + "');";
@@ -567,6 +606,9 @@ public class browser_main_view extends Activity {
 			return;
 		}
 
+		mOpenHelper.close();
+		myCursor_one.close();
+
 		Toast.makeText(browser_main_view.this, tip + " insertTable()",
 				Toast.LENGTH_LONG).show();
 	}
@@ -575,21 +617,24 @@ public class browser_main_view extends Activity {
 	private void deleteTable() {
 		int time = (int) Math.floor(System.currentTimeMillis() / 1000) - 86400;
 		SQLiteDatabase db = mOpenHelper.getWritableDatabase();
-		String sql = "delete from " + SQLiteHelper.TB_NAME + " where " + time
-				+ ">" + HistoryBean.TIME;
+		String sql = "delete from " + SQLHelperForBrowser.TB_NAME + " where "
+				+ time + ">" + HistoryBean.TIME;
 		try {
 			db.execSQL(sql);
 		} catch (SQLException e) {
 			Toast.makeText(browser_main_view.this, "deleteTable，SQLException",
 					Toast.LENGTH_LONG).show();
 		}
+
+		mOpenHelper.close();
+
 	}
 
 	private void getHistory() {
 
 		SQLiteDatabase db = mOpenHelper.getWritableDatabase();
-		myCursor_one = db.rawQuery("SELECT * FROM " + SQLiteHelper.TB_NAME,
-				null);
+		myCursor_one = db.rawQuery("SELECT * FROM "
+				+ SQLHelperForBrowser.TB_NAME, null);
 		int url = myCursor_one.getColumnIndex(HistoryBean.URL);
 		int name = myCursor_one.getColumnIndex(HistoryBean.NAME);
 
@@ -600,8 +645,8 @@ public class browser_main_view extends Activity {
 
 				if (myCursor_one.getString(0) != null) {
 					// java.lang.NullPointerException: println needs a message
-					item.put("��ҳ", myCursor_one.getString(name));
-					item.put("��ַ", myCursor_one.getString(url));
+					item.put("标题", myCursor_one.getString(name));
+					item.put("地址", myCursor_one.getString(url));
 					history_data.add(item);
 				}
 
@@ -609,14 +654,15 @@ public class browser_main_view extends Activity {
 			} while (myCursor_one.moveToNext());
 		}
 		myCursor_one.close();
+		mOpenHelper.close();
+
 	}
 
 	private void createShortcut() {
 		Intent addShortcut = new Intent(ACTION_ADD_SHORTCUT);
-		String numToDial = null;
+		String numToDial = "TBrowser";
 		Parcelable icon = null;
 
-		numToDial = "TBrowser";
 		icon = Intent.ShortcutIconResource.fromContext(this,
 				R.drawable.browser_icon);
 
