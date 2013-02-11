@@ -39,7 +39,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
-        android:src="@drawable/back" />
+        android:src="@drawable/back" 
+        android:contentDescription="@string/pac_b_bmv_backBt"/>
 
     <ImageButton
         android:id="@+id/pac_b_bmv_forward_btn"
@@ -47,7 +48,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_toRightOf="@+id/pac_b_bmv_back_btn"
-        android:src="@drawable/forward" />
+        android:src="@drawable/forward" 
+        android:contentDescription="@string/pac_b_bmv_forwardBt"/>
 
     <ImageButton
         android:id="@+id/pac_b_bmv_menu_btn"
@@ -55,6 +57,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_toRightOf="@+id/pac_b_bmv_edit_1"
-        android:src="@drawable/menu" />
+        android:src="@drawable/menu" 
+       android:contentDescription="@string/pac_b_bmv_menuBt" />
 
 </RelativeLayout>

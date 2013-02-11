@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="hello">1.3.10.3.11DataBase版</string>
     <string name="app_name">XHuloo</string>
     <string name="ok">OK</string>
     <string name="XA_activity_lable">XA_activity</string>
@@ -92,7 +91,11 @@
     <string name="pac_b_bmv_long_press">长按操作</string>
     <string name="pac_b_bmv_exit_title">提示</string>
     <string name="pac_b_bmv_exit_message">是否要退出?</string>
-
+    <string name="pac_b_bmv_backBt">返回按钮</string>
+    <string name="pac_b_bmv_forwardBt">前进按钮</string>
+    <string name="pac_b_bmv_menuBt">菜单按钮</string>
+    
+    
     <!-- pac database -->
     <string name="pac_db_bt">执行</string>
     <string name="pac_db_outIsNull">结果为空</string>

@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="wo.wocom.xwell"
     android:versionCode="1"
-    android:versionName="1.3.10.3.11DataBase版" >
+    android:versionName="1.3.10.3.12DB修复版" >
 
     <uses-sdk android:minSdkVersion="9" />
 
@@ -128,6 +128,8 @@
         <activity android:name=".sensor.XA_sens_orientation" >
         </activity>
         <activity android:name=".sensor.XA_sens_magnetic_field" >
+        </activity>
+        <activity android:name=".sensor.XA_sens_proximity" >
         </activity>
 
         <!-- pac_database -->

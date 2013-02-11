@@ -13,7 +13,7 @@ import android.widget.TextView;
 
 /**
  * @author wuwenjie wuwenjie.tk
- * @version 1.3.7
+ * @version 1.3.7;1.3.10.3.12:1
  * @more NDK(Native Development Kit) JNI(Java Native Interface)
  * @via some codes from :Author: Frank Ableson Contact Info:
  *      fableson@navitend.com
@@ -69,6 +69,11 @@ public class XAplasma extends Activity {
 		Log.i(TAG, "onResetImage");
 		ivDisplay.setImageBitmap(bitmapOrig);
 		// Sets a Bitmap as the content of this ImageView
+		
+		jniExit(0);
+		
+		
+		
 	}
 
 	// pl_btnFindEdges；找到边界；android:onClick="onFindEdges"
@@ -137,5 +142,7 @@ public class XAplasma extends Activity {
 	public native void findEdges(Bitmap bitmapIn, Bitmap bitmapOut);// 找到边界
 
 	public native int returnid(int i); // 返回进程id信息
+	
+	public native int jniExit(int i); // 调用exit
 
 }

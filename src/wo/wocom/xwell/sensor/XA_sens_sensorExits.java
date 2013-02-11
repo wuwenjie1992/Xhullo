@@ -21,12 +21,12 @@ import android.widget.AdapterView.OnItemClickListener;
 
 /**
  * @author wuwenjie wuwenjie.tk
- * @version 1.3.1
- * @see 指南,
+ * @version 1.3.2；1.3.10.3.12
+ * @see 电磁场；方向（指南）；
  */
 public class XA_sens_sensorExits extends Activity {
 
-	//private static final String TAG = "XA_pac_sensorEXits";
+	// private static final String TAG = "XA_pac_sensorEXits";
 
 	protected void onCreate(Bundle savedInstanceState) {
 
@@ -121,28 +121,42 @@ public class XA_sens_sensorExits extends Activity {
 						Toast.LENGTH_SHORT).show();
 
 				if (select_s.matches("不存在.|未知")) {
-					XA_util_ADialog alog=new XA_util_ADialog(XA_sens_sensorExits.this);
-					alog.show1ADialog("注意", "传感器不存在或未知","好的");
+					XA_util_ADialog alog = new XA_util_ADialog(
+							XA_sens_sensorExits.this);
+					alog.show1ADialog("注意", "传感器不存在或未知", "好的");
 				} else {
 					switch (position) {
 					case 0:
 
 						break;
-					case 1:
+					case 1:// 电磁场
 						startACIntent.stAcIntent(XA_sens_sensorExits.this,
 								XA_sens_magnetic_field.class);
 						break;
-					case 2:
+					case 2:// 方向
 						startACIntent.stAcIntent(XA_sens_sensorExits.this,
 								XA_sens_orientation.class);
 						break;
 					case 3:
-
+						
 						break;
 					case 4:
 
 						break;
 					case 5:
+
+						break;
+					case 6:
+
+						break;
+					case 7://距离
+						startACIntent.stAcIntent(XA_sens_sensorExits.this,
+								XA_sens_proximity.class);
+						break;
+					case 8:
+
+						break;
+
 					}// switch
 
 				}// else

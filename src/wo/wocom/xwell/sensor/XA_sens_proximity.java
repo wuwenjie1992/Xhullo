@@ -13,24 +13,28 @@ import android.widget.TextView;
 
 /**
  * @author wuwenjie wuwenjie.tk
- * @version 1.3.1;1.3.10.3.12:1
- * @see 磁场
+ * @version 1.3.10.3.12:1
+ * @see 距离
  */
-public class XA_sens_magnetic_field extends Activity {
+public class XA_sens_proximity extends Activity {
 
-	String TAG = "XA_S_Mf";
-	float x, y, z;
+	String TAG = "XA_S_PX";
+	double x;
+	float y, z;
 	Sensor sensor;
 	SensorManager sm;
+	TextView textView_sensor;
 
 	protected void onCreate(Bundle savedInstanceState) {
 		Log.i(TAG, "");
 		super.onCreate(savedInstanceState);
 
 		setContentView(R.layout.pac_lo_simplegps);
+		textView_sensor = (TextView) findViewById(R.id.pac_lo_sg_tv);
+
 		sm = (SensorManager) this.getSystemService(SENSOR_SERVICE);
 		// System services not available to Activities before onCreate
-		sensor = sm.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+		sensor = sm.getDefaultSensor(Sensor.TYPE_PROXIMITY);// 距离
 		sm.registerListener(sel, sensor, SensorManager.SENSOR_DELAY_GAME);
 
 	}
@@ -44,21 +48,28 @@ public class XA_sens_magnetic_field extends Activity {
 			y = se.values[SensorManager.DATA_Y];
 			z = se.values[SensorManager.DATA_Z];
 
-			TextView textView_sensor = (TextView) findViewById(R.id.pac_lo_sg_tv);
-			// float[] i = {(float) 0.0,(float) 0.0,(float) 0.0};
 			// 设置显示文字
-			textView_sensor.setText("磁场感应:" + "\n" + "x=" + x + "\n" + "y=" + y
+			textView_sensor.setText("距离感应:" + "\n" + "x=" + x + "\n" + "y=" + y
 					+ "\n" + "z=" + z + "\n\n" + "Name:" + sensor.getName()
 					+ "\n" + "Type:" + sensor.getType() + "\n" + "Version:"
 					+ sensor.getVersion() + "\n" + "vendor:"
 					+ sensor.getVendor() + "\n" + "MAXrange:"
 					+ sensor.getMaximumRange() + "\n" + "MinDelay:"
-					+ sensor.getMinDelay()+"\n" + "power:" + sensor.getPower()
+					+ sensor.getMinDelay() + "\n" + "power:"
+					+ sensor.getPower()
 					// getMinDelay()Added in API level 9
 					+ "\n" + "Resolution:" + sensor.getResolution() + "\n");
-		}// onSensorChanged
-			// 精度
 
+			if (x == 0) {
+				textView_sensor.setBackgroundColor(0xff000000);// 设背景颜色为黑
+			} else if (x == 1) {
+				textView_sensor.setBackgroundColor(0xff0000ff);// 设背景颜色为蓝
+			} else {
+				return;
+			}
+		}// onSensorChanged
+
+		// 精度
 		public void onAccuracyChanged(Sensor arg0, int arg1) {
 		}
 	};
@@ -96,5 +107,4 @@ public class XA_sens_magnetic_field extends Activity {
 		sm.unregisterListener(sel);
 
 	}
-
 }

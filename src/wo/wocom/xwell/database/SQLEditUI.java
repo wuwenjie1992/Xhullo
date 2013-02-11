@@ -3,6 +3,7 @@ package wo.wocom.xwell.database;
 import wo.wocom.xwell.CMDExecute;
 import wo.wocom.xwell.R;
 import wo.wocom.xwell.utility.XA_util_fileExits;
+import wo.wocom.xwell.utility.XA_util_readStrByregEx;
 import android.app.Activity;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -19,7 +20,7 @@ import android.widget.Toast;
 
 /**
  * @author wuwenjie wuwenjie.tk
- * @version 1.3.10.3.11:5
+ * @version 1.3.10.3.11:7
  * @more 打开sqlite文件，root 改变权限，执行sql命令
  */
 public class SQLEditUI extends Activity {
@@ -30,8 +31,7 @@ public class SQLEditUI extends Activity {
 	SQLiteDatabase db; // 数据库对象
 	Cursor cur; // 数据库操作光标
 	String sql = "select * from sqlite_master where type='table'";// 显示所有表
-	String show = null;
-	Toast to;
+	String show, DB_Path_DIR = null;
 	// 控件
 	EditText et;
 	Button bt;
@@ -47,7 +47,13 @@ public class SQLEditUI extends Activity {
 		bt = (Button) findViewById(R.id.pac_db_sqlui_bt);
 		tv = (TextView) findViewById(R.id.pac_db_sqlui_tv);
 
-		CMDExecute.Rootrun("chmod 777 " + DB_Path);// root 权限 改DB权限
+		DB_Path_DIR = XA_util_readStrByregEx.readout(DB_Path, "(\\/.*\\/)", 0);// (\/.*\/)
+																				// 获取文件目录
+		CMDExecute.Rootrun("chmod 777 " + DB_Path);// root 权限 改DB文件权限
+		CMDExecute.Rootrun("chmod 777 " + DB_Path_DIR);// root 权限 改DB文件目录的权限
+		// Failure 14 (unable to open database file) on 0x60f110 when executing
+		// 'update T_USER set Coins =999999999'
+
 		// boolean
 
 		et.setText(sql);
@@ -85,35 +91,59 @@ public class SQLEditUI extends Activity {
 			CursorFactory cursor_f = null;
 			db = SQLiteDatabase.openDatabase(DB_Path, cursor_f,
 					SQLiteDatabase.OPEN_READWRITE);// 打开数据库,path,CursorFactory,flags,读写
-			try {
-				cur = db.rawQuery(sqlstmt, null);// 执行sql查询
-			} catch (SQLiteException e) {
-				Toast.makeText(getApplicationContext(), e.toString(),
-						Toast.LENGTH_LONG).show();
+
+			// 如果是更新数据
+			if (!sqlstmt.startsWith("select") & !sqlstmt.startsWith("SELECT")) {
+				// 不【以select开头】并且【不以SELECT开头】
+				Log.i(TAG, sqlstmt);
+
+				try {
+					db.execSQL(sqlstmt);
+					resultSet = sql + "\nSuccess";
+				} catch (SQLiteException e) {
+					Toast.makeText(getApplicationContext(), e.toString(),
+							Toast.LENGTH_LONG).show();
+					resultSet = sql + "\nFailed.\n"+"e.toString()";
+				}
+
 			}
+			// 如果是查询数据
+			else {
+				try {
+					cur = db.rawQuery(sqlstmt, null);// 执行sql查询
 
-			if (cur.moveToFirst()) {// 是否 移动到第一行
+					if (cur.moveToFirst()) {// 是否 移动到第一行
 
-				Log.i(TAG,
-						"行count" + cur.getCount() + "Column:"
-								+ cur.getColumnCount() + "\n");
+						Log.i(TAG,
+								"行count" + cur.getCount() + "Column:"
+										+ cur.getColumnCount() + "\n");
+						do {
+							for (int i = 0; i <= cur.getColumnCount() - 1; i++) {
+								resultSet = resultSet + cur.getString(i) + "\t";
+							}
+							resultSet = resultSet + "\n\n";
 
-				do {
-					for (int i = 0; i <= cur.getColumnCount() - 1; i++) {
-						resultSet = resultSet + cur.getString(i) + "\t";
+						} while (cur.moveToNext());// 是否 可以移动到下一行
+					} else {
+						resultSet = "???";
 					}
-					resultSet = resultSet + "\n\n";
+					Log.i(TAG, "resultSet:\n" + resultSet);
 
-				} while (cur.moveToNext());// 是否 可以移动到下一行
-			}
+				} catch (SQLiteException e) {
+					Toast.makeText(getApplicationContext(), e.toString(),
+							Toast.LENGTH_LONG).show();
+				}
+				cur.close();
+				// android.database.sqlite.DatabaseObjectNotClosedException:
+				// Application did not close the cursor or database object that
+				// was
+				// opened here
 
-			Log.i(TAG, "resultSet:\n" + resultSet);
+			}// else end
+
+			// if()
 
 			db.close();
-			cur.close();
-			// android.database.sqlite.DatabaseObjectNotClosedException:
-			// Application did not close the cursor or database object that was
-			// opened here
 
 		}
 

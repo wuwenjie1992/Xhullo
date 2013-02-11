@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -26,7 +28,7 @@ import android.widget.Toast;
 
 /**
  * @author wuwenjie wuwenjie.tk
- * @version 1.3.2
+ * @version 1.3.4
  * @more 程序入口
  */
 public class XhulooActivity extends Activity {
@@ -55,6 +57,17 @@ public class XhulooActivity extends Activity {
 		final CheckBox iAccept = (CheckBox) findViewById(R.id.CheckBox_Accept);
 		final String[] data = { "冰绡", "夜来幽梦,柔肠难成", "流景伤年,高楼危倚", "月华如练,蕊珠未眠",
 				"哀萧飘飘,一路烟霞" };
+
+		String verName = null;
+		try {
+			verName = this.getPackageManager().getPackageInfo(
+					this.getPackageName(),
+					PackageManager.COMPONENT_ENABLED_STATE_DEFAULT).versionName;
+			// 获取本包的版本名称
+		} catch (NameNotFoundException e) {
+			e.printStackTrace();
+		}
+		main_textview.setText(verName);
 
 		/* 按钮监听 */
 		ok_button.setOnClickListener(new Button.OnClickListener() {
@@ -137,7 +150,7 @@ public class XhulooActivity extends Activity {
 					main_textview.setText("checkbox checked");
 					mImageView.setVisibility(View.VISIBLE);
 				} else {
-					main_textview.setText(getString(R.string.hello));
+					main_textview.setText("unchecked");
 					mImageView.setVisibility(View.INVISIBLE);
 				}
 			}

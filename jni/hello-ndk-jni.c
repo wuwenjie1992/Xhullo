@@ -9,7 +9,7 @@
 #include <unistd.h>
 /**
  * @author wuwenjie wuwenjie.tk
- * @version 1.3.7(20130116)
+ * @version 1.3.7(20130116);1.3.10.3.12:1
  * @more NDK(Native Development Kit) JNI(Java Native Interface)
  * @via some codes from :Author: Frank Ableson Contact Info:
  *      fableson@navitend.com
@@ -67,6 +67,14 @@ int returnid(int i) {
 jint Java_wo_wocom_xwell_XAplasma_returnid(JNIEnv* env, jobject obj,int i) {
 	return returnid(i);
 }
+
+//进程退出
+void Java_wo_wocom_xwell_XAplasma_jniExit(JNIEnv* env, jobject obj,int i){
+		exit(i);
+}
+
+
+
 
 
 

@@ -601,7 +601,7 @@ public class browser_main_view extends Activity {
 		try {
 			db.execSQL(sql);
 		} catch (SQLException e) {
-			Toast.makeText(browser_main_view.this, tip, Toast.LENGTH_LONG)
+			Toast.makeText(browser_main_view.this, tip+e.toString(), Toast.LENGTH_LONG)
 					.show();
 			return;
 		}

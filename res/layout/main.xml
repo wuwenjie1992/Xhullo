@@ -10,7 +10,6 @@
         android:layout_height="76dp"
         android:layout_weight="0.00"
         android:background="@drawable/ic_launcher"
-        android:text="@string/hello"
         android:textColor="#ff0f0f"
         android:textSize="28sp" />
 

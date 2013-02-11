@@ -68,6 +68,8 @@
     * Change XhulooActivity_weatherreport.java TODO new weather alarm
 * 20130203
     * Add .database/SQLEditUI.java TODO exec SQL & change db value
+* 20130211
+    * Add .sensor/XA_sens_proximity.java TODO use DistanceSensors
 
 ##Bug Reports
 * 20120903
