@@ -9,7 +9,7 @@
 #include <unistd.h>
 /**
  * @author wuwenjie wuwenjie.tk
- * @version 1.3.7(20130116);1.3.10.3.12:1
+ * @version 1.3.7(20130116);1.3.10.3.12:3
  * @more NDK(Native Development Kit) JNI(Java Native Interface)
  * @via some codes from :Author: Frank Ableson Contact Info:
  *      fableson@navitend.com
@@ -19,9 +19,17 @@
 #define LOGI(...) ((void)__android_log_print(ANDROID_LOG_INFO,LOG_TAG,__VA_ARGS__))	//宏定义
 #define LOGE(...) ((void)__android_log_print(ANDROID_LOG_ERROR,LOG_TAG,__VA_ARGS__))
 
+//<time.h>
 int currentTimeMillis() {
 	time_t timer_null = time(NULL); //得到从（一般是19700101午夜）到当前时间的秒数
 	return timer_null;
+}
+
+char * charTime() {
+	time_t t;
+	time(&t);
+	return ctime(&t); //char* ctime(const time_t* timer)
+	//把日历时间time_t timer输出到字符串
 }
 
 //返回一个字符串
@@ -38,6 +46,12 @@ void Java_wo_wocom_xwell_XAplasma_printLOGI(JNIEnv * env, jobject jobj) {
 //返回秒数
 jint Java_wo_wocom_xwell_XAplasma_currentTimeMillis(JNIEnv* env, jobject obj) {
 	return currentTimeMillis();
+}
+
+//返回字符串格式的日期
+jstring Java_wo_wocom_xwell_XAplasma_charTime(JNIEnv* env, jobject obj) {
+	return (*env)->NewStringUTF(env, charTime());
+	//jstring NewStringUTF(JNIEnv *env, const char *bytes);
 }
 
 //进程信息,unistd.h
@@ -64,27 +78,18 @@ int returnid(int i) {
 
 	}
 }
-jint Java_wo_wocom_xwell_XAplasma_returnid(JNIEnv* env, jobject obj,int i) {
+jint Java_wo_wocom_xwell_XAplasma_returnid(JNIEnv* env, jobject obj, int i) {
 	return returnid(i);
 }
 
 //进程退出
-void Java_wo_wocom_xwell_XAplasma_jniExit(JNIEnv* env, jobject obj,int i){
-		exit(i);
+void Java_wo_wocom_xwell_XAplasma_jniExit(JNIEnv* env, jobject obj, int i) {
+	exit(i);
 }
 
-
-
-
-
-
-
-/* http://www.ibm.com/developerworks/cn/opensource/tutorials/os-androidndk/index.html
- * convertToGray 		参数：颜色Bitmap，二是灰度版本填充的Bitmap。
- * changeBrightness 	一是up或down的整数。二是逐个像素进行修改的Bitmap
- * findEdges 			一是灰度Bitmap，二是接收图像“仅显示边缘”的Bitmap。
- */
-
+//--------------------------------------------------------------
+//-----------------------图像处理--------------------------------
+//--------------------------------------------------------------
 /* 图像数据表示为uint8_t，表示未带符号的8位值，每字节值的范围0至255 */
 typedef struct {
 	uint8_t alpha;
@@ -93,7 +98,144 @@ typedef struct {
 	uint8_t blue;
 } argb; // 3个未带符号的8位值集合表示24位图像的图像数据的一个像素
 
-/*
+//哈哈镜效果 DistortingMirror
+void Java_wo_wocom_xwell_XAplasma_DistortingMirror(JNIEnv* env, jobject obj,
+		jobject OriginalBm, jobject DistortingBm) {
+
+	AndroidBitmapInfo InfoOri; //bitmap.h中定义，有助了解Bitmap对象
+	void* pixelsOri; //pixelscolor 的指针引用图像数据的基准地址
+	AndroidBitmapInfo infoDis;
+	void* pixelsDis; //pixelsDis 的指针引用图像数据的基准地址
+	int ret, dif, Dis, Dis2, y, x, y2, x2, click_x, click_y;
+	float r = 60.0;
+
+	/*typedef struct {
+	 uint32_t    width;
+	 uint32_t    height;
+	 uint32_t    stride;	//Stride:步幅  每行字节数
+	 int32_t     format;
+	 uint32_t    flags;      // 0 for now
+	 } AndroidBitmapInfo;
+	 */
+
+	//进行检查
+	LOGI("DistortingMirror");
+	//AndroidBitmap_getInfo 函数，在 jnigraphics 库中，获取有关具体 Bitmap 对象的信息
+	if ((ret = AndroidBitmap_getInfo(env, OriginalBm, &InfoOri)) < 0) {
+		LOGE("AndroidBitmap_getInfo() failed ! error=%d", ret);
+		return;
+	}
+
+	if ((ret = AndroidBitmap_getInfo(env, DistortingBm, &infoDis)) < 0) {
+		LOGE("AndroidBitmap_getInfo() failed ! error=%d", ret);
+		return;
+	}
+
+	LOGI(
+			"InfoOri img:width %d;height %d;stride %d;format %d;flags %d", InfoOri.width, InfoOri.height, InfoOri.stride, InfoOri.format, InfoOri.flags);
+	if (InfoOri.format != ANDROID_BITMAP_FORMAT_RGBA_8888) {
+		LOGE("InfoOri format is not RGBA_8888 !");
+		return;
+	}
+
+	/*enum AndroidBitmapFormat {
+	 ANDROID_BITMAP_FORMAT_NONE      = 0,
+	 ANDROID_BITMAP_FORMAT_RGBA_8888 = 1,
+	 ANDROID_BITMAP_FORMAT_RGB_565   = 4,
+	 ANDROID_BITMAP_FORMAT_RGBA_4444 = 7,
+	 ANDROID_BITMAP_FORMAT_A_8       = 8,
+	 };
+	 */
+
+	LOGI(
+			"infoDis img:width %d;height %d;stride %d;format %d;flags %d", infoDis.width, infoDis.height, infoDis.stride, infoDis.format, infoDis.flags);
+	if (infoDis.format != ANDROID_BITMAP_FORMAT_RGBA_8888) {
+		LOGE("infoDis format is not RGBA_8888 !");
+		return;
+	}
+
+	//对像素缓存上锁，即获得该缓存的指针，可以直接在数据上执行操作
+	if ((ret = AndroidBitmap_lockPixels(env, OriginalBm, &pixelsOri)) < 0) {
+		LOGE("OriginalBm AndroidBitmap_lockPixels() failed ! error=%d", ret);
+	}
+	//对像素缓存上锁，即获得该缓存的指针
+	if ((ret = AndroidBitmap_lockPixels(env, DistortingBm, &pixelsDis)) < 0) {
+		LOGE("DistortingBm AndroidBitmap_lockPixels() failed ! error=%d", ret);
+	}
+
+	click_x = InfoOri.width / 2;
+	click_y = InfoOri.height / 2;
+
+	LOGI("r=%f,click_x=%d,click_y=%d", r, click_x, click_y);
+
+	//哈哈镜效果处理算法
+	//原理：利用凸函数，弯曲突出的线形，映射坐标
+	//y=x^(1/r)
+	for (y = 0; y < InfoOri.height; y++) {
+		argb * line = (argb *) pixelsOri; //定义argb的结构体指针
+		argb * Disline = (argb *) pixelsDis;
+		for (x = 0; x < InfoOri.width; x++) {
+
+			//LOGI("click_x=%d,x=%d,y=%d",click_x,x,y);
+
+			Dis2 = (x - click_x) * (x - click_x)
+					+ (y - click_y) * (y - click_y); //Dis2两点距离的平方
+
+			Dis = sqrt(Dis2);
+
+			if (Dis <= r && Dis > 0) { //如果在圆的范围内
+
+				LOGI(
+						"abs(x - click_x)=%d,/r =%f", abs(x - click_x), (abs(x - click_x))/r);
+
+				x2 = floor(Dis * (abs(x - click_x) / r) + click_x); //加号前是x方向的增量
+				y2 = floor(Dis * (abs(y - click_x) / r) + click_y); //加号前是y方向的增量
+				//double floor(double x)不大于x的最大整數
+
+				LOGI("a%d:%d ; b%d:%d,Dis=%d", x, y, x2, y2, Dis);
+
+				ret, dif = 0;
+				if (y2 - y > ret)
+					ret = y2 - y;
+
+				if (x2 - x > dif)
+					dif = x2 - x;
+
+				LOGI("ret=%d,dif=%d", ret, dif);
+
+				Disline[x + ret + dif * InfoOri.width] = line[x]; //对当前像素进行移动
+
+				//	Disline[x - dif * 3 + ret * InfoOri.width].alpha =line[x].alpha;
+				//Disline[x - dif * 3 + 1 + ret * InfoOri.width].red =line[x].red;
+				//Disline[x - dif * 3 + 2 + ret * InfoOri.width].green =line[x].green;
+				//	Disline[x - dif * 3 + 3 + ret * InfoOri.width].blue =line[x].blue;
+
+			} else {
+
+				Disline[x] = line[x];
+				//	Disline[x].alpha = line[x].alpha;
+				//	Disline[x].red = line[x].red;
+				//	Disline[x].green = line[x].green;
+				//	Disline[x].blue = line[x].blue;
+			}
+
+		} //for end
+
+		pixelsOri = (char *) pixelsOri + InfoOri.stride; //void* pixelsOri指针;stride步幅  每行字节数//指针指向下一行
+		pixelsDis = (char *) pixelsDis + infoDis.stride; //AndroidBitmapInfo  infoDis
+
+	} //for end
+	LOGI("unlocking pixels");
+	LOGI("MAX ret=%d,dif=%d", ret, dif);
+	AndroidBitmap_unlockPixels(env, OriginalBm); //解锁，解锁之前锁定的像素数据
+	AndroidBitmap_unlockPixels(env, DistortingBm);
+}
+
+/* http://www.ibm.com/developerworks/cn/opensource/tutorials/os-androidndk/index.html
+ * convertToGray 		参数：颜色Bitmap，二是灰度版本填充的Bitmap。
+ * changeBrightness 	一是up或down的整数。二是逐个像素进行修改的Bitmap
+ * findEdges 			一是灰度Bitmap，二是接收图像“仅显示边缘”的Bitmap
+ *
  convertToGray
  Pixel operation
  此函数有两个调用 Java 代码的参数：
@@ -182,7 +324,7 @@ return;
 	    //当您迭代某一行的列时，就将彩色数据的每个像素转换为表示灰度值的单个值
 	    //当转换了完成行时，需要将指针指向下一行,通过跳过跨距值来完成
 	    for(y=0;y<infocolor.height;y++) {
-	    		argb * line =(argb *) pixelscolor;//定义argb的结构体指针
+	    		argb * line =(argb *) pixelscolor;//定义argb结构体的指针
 	    		uint8_t * grayline = (uint8_t *) pixelsgray;
 	    		for(x=0;x<infocolor.width;x++) {
 	    			grayline[x]=0.3*line[x].red+0.59*line[x].green+0.11*line[x].blue;

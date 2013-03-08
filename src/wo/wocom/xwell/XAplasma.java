@@ -7,13 +7,15 @@ import android.graphics.Bitmap.Config;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 /**
  * @author wuwenjie wuwenjie.tk
- * @version 1.3.7;1.3.10.3.12:1
+ * @version 1.3.7;1.3.10.3.12:2
  * @more NDK(Native Development Kit) JNI(Java Native Interface)
  * @via some codes from :Author: Frank Ableson Contact Info:
  *      fableson@navitend.com
@@ -24,6 +26,7 @@ public class XAplasma extends Activity {
 	private Bitmap bitmapOrig = null;// 保存原始彩色图像。
 	private Bitmap bitmapGray = null;// 保存图像的灰度副本，并且仅在 findEdges 例程中暂时使用
 	private Bitmap bitmapWip = null;// 保存修改亮度值时的灰度图像
+	private Bitmap bitmapDis = null;// DistortingMirror哈哈镜图像
 
 	public void onCreate(Bundle savedInstanceState) {
 
@@ -56,8 +59,8 @@ public class XAplasma extends Activity {
 		ivDisplay.setOnTouchListener(itl); // 注册监听器
 
 		String myString = stringFromNDKJNI();// stringFromNDKJNI
-		textView.setText(myString + "\n" + "time_t timer_null="
-				+ currentTimeMillis() + "\n" + "进程号:" + returnid(0) + "用户号:"
+		textView.setText(myString + "\n" + "Millis=" + currentTimeMillis()
+				+ "	" + charTime() + "\n" + "进程号:" + returnid(0) + "用户号:"
 				+ returnid(1) + "有效用户:" + returnid(2) + "\n" + "父进程:"
 				+ returnid(3) + "组:" + returnid(4) + "有效组:" + returnid(5));
 
@@ -69,21 +72,16 @@ public class XAplasma extends Activity {
 		Log.i(TAG, "onResetImage");
 		ivDisplay.setImageBitmap(bitmapOrig);
 		// Sets a Bitmap as the content of this ImageView
-		
-		jniExit(0);
-		
-		
-		
 	}
 
 	// pl_btnFindEdges；找到边界；android:onClick="onFindEdges"
 	public void onFindEdges(View v) {
 		Log.i(TAG, "onFindEdges");
 
-		// 保存图像的灰度副本
+		// 实例化【保存图像的灰度】副本
 		bitmapGray = Bitmap.createBitmap(bitmapOrig.getWidth(),
 				bitmapOrig.getHeight(), Config.ALPHA_8);
-		// 保存修改亮度值时的灰度图像
+		// 实例化【保存修改亮度值时的灰度】图像
 		bitmapWip = Bitmap.createBitmap(bitmapOrig.getWidth(),
 				bitmapOrig.getHeight(), Config.ALPHA_8);
 		// 在【找到边界】前，将其转换图像为灰色
@@ -120,12 +118,60 @@ public class XAplasma extends Activity {
 		ivDisplay.setImageBitmap(bitmapWip);
 	}
 
-	// 调用库文件
+	/* 菜单制作 */
+	public boolean onCreateOptionsMenu(Menu menu) {
+
+		menu.add(Menu.NONE, Menu.FIRST + 1, 1, "哈哈镜").setIcon(
+				android.R.drawable.ic_menu_my_calendar);
+
+		menu.add(Menu.NONE, Menu.FIRST + 3, 3, "reboot").setIcon(
+				android.R.drawable.ic_menu_revert);
+
+		menu.add(Menu.NONE, Menu.FIRST + 3, 3, "exit").setIcon(
+				android.R.drawable.ic_menu_revert);
+
+		return true;
+
+	}
+
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+
+		case Menu.FIRST + 1:
+			// 哈哈镜效果的调用和显示
+			bitmapDis = Bitmap.createBitmap(bitmapOrig.getWidth(),
+					bitmapOrig.getHeight(), Config.ARGB_8888);// rgb图像
+
+			DistortingMirror(bitmapOrig, bitmapDis);
+
+			ivDisplay.setImageBitmap(bitmapDis);
+
+			break;
+
+		case Menu.FIRST + 2:
+
+			reboot();// 重启
+
+			break;
+
+		case Menu.FIRST + 3:
+
+			jniExit(0);
+
+			break;
+
+		}
+
+		return false;
+
+	}
+
+	// -----------------------调用库文件----------------------------------
 	static {
 		try {
 			System.loadLibrary("hello-ndk-jni");
-		} catch (UnsatisfiedLinkError ule) {
-			Log.i(TAG, "WARNING: Could not load lib!" + ule.toString());
+		} catch (UnsatisfiedLinkError e) {
+			Log.i(TAG, "WARNING: Could not load lib!" + e.toString());
 		}
 	}
 
@@ -135,14 +181,20 @@ public class XAplasma extends Activity {
 
 	public native int currentTimeMillis();// 返回秒数
 
-	public native void convertToGray(Bitmap bitmapIn, Bitmap bitmapOut);// 转换到灰色
+	public native void convertToGray(Bitmap In, Bitmap Out);// 转换到灰色
 
-	public native void changeBrightness(int direction, Bitmap bitmap);// 改变亮度
+	public native void changeBrightness(int direction, Bitmap bm);// 改变亮度
 
-	public native void findEdges(Bitmap bitmapIn, Bitmap bitmapOut);// 找到边界
+	public native void findEdges(Bitmap In, Bitmap Out);// 找到边界
 
 	public native int returnid(int i); // 返回进程id信息
-	
+
 	public native int jniExit(int i); // 调用exit
+
+	public native void DistortingMirror(Bitmap In, Bitmap Out);// 哈哈镜效果
+
+	public native String charTime();// 返回字符串格式的日期
+
+	public native void reboot();// 重启
 
 }

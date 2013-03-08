@@ -292,6 +292,7 @@ public class XhulooActivity_weatherreport extends Activity {
 				// 向Handler发送消息,更新UI
 				b.putInt("DONE", 0);// 0表示不成功
 				msg.setData(b);
+				XhulooActivity_weatherreport.this.myHandler.sendMessage(msg);
 			}
 
 		}// run end

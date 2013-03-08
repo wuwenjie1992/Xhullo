@@ -94,10 +94,11 @@
     <string name="pac_b_bmv_backBt">返回按钮</string>
     <string name="pac_b_bmv_forwardBt">前进按钮</string>
     <string name="pac_b_bmv_menuBt">菜单按钮</string>
-    
-    
+
     <!-- pac database -->
+    <string name="pac_db_dbname">db文件路径</string>
     <string name="pac_db_bt">执行</string>
     <string name="pac_db_outIsNull">结果为空</string>
+    <string name="pac_db_path">/data/data/com.og.danjiddz/databases/ddz.LandLords</string>
 
 </resources>

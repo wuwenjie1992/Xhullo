@@ -70,6 +70,9 @@
     * Add .database/SQLEditUI.java TODO exec SQL & change db value
 * 20130211
     * Add .sensor/XA_sens_proximity.java TODO use DistanceSensors
+* 20130308
+    * Change XA_AirQuality.java Because [the website](http://www.semc.gov.cn/home/index.aspx) Changed
+    * Change XA_AirQuality.java Because ADD AQI_Warning 
 
 ##Bug Reports
 * 20120903
@@ -86,6 +89,9 @@
     * XA_AirQuality.java
 * 20130203
     * XhulooActivity_weatherreport.java
+    * XhulooActivity_playmusic.java
+    * .database/SQLEditUI.java
+* 20130308
     * XhulooActivity_playmusic.java
     * .database/SQLEditUI.java
     

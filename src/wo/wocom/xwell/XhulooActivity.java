@@ -131,7 +131,7 @@ public class XhulooActivity extends Activity {
 								}
 							});
 					/* 显示 */
-					my_ADialog1.show();
+					my_ADialog1.create().show();
 				}
 
 				return false;

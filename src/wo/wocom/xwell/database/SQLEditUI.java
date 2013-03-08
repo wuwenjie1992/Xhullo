@@ -5,12 +5,15 @@ import wo.wocom.xwell.R;
 import wo.wocom.xwell.utility.XA_util_fileExits;
 import wo.wocom.xwell.utility.XA_util_readStrByregEx;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteException;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
@@ -20,43 +23,98 @@ import android.widget.Toast;
 
 /**
  * @author wuwenjie wuwenjie.tk
- * @version 1.3.10.3.11:7
+ * @version 1.3.10.3.11:8
  * @more 打开sqlite文件，root 改变权限，执行sql命令
  */
 public class SQLEditUI extends Activity {
 
 	String TAG = "PAC_DB_SQUI";
-	String DB_Path = "/data/data/com.og.danjiddz/databases/ddz.LandLords";// 数据库文件
 
 	SQLiteDatabase db; // 数据库对象
 	Cursor cur; // 数据库操作光标
 	String sql = "select * from sqlite_master where type='table'";// 显示所有表
-	String show, DB_Path_DIR = null;
+	String DB_Path, show, DB_Path_DIR = null;
 	// 控件
 	EditText et;
 	Button bt;
 	TextView tv;
+	AlertDialog.Builder et_dialog;
 
+	// 生命开始
 	protected void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.pac_db_sqleditui); // 设置主布局
 
-		// 控件
-		et = (EditText) findViewById(R.id.pac_db_sqlui_et);
-		bt = (Button) findViewById(R.id.pac_db_sqlui_bt);
-		tv = (TextView) findViewById(R.id.pac_db_sqlui_tv);
+		// 引用edittext.xml文件中的视图组件
+		LayoutInflater inflater = (LayoutInflater) SQLEditUI.this
+				.getSystemService(LAYOUT_INFLATER_SERVICE);
+		// View&xml关联
+		final View et_dialog_v = inflater.inflate(R.layout.et_dialog, null);
 
-		DB_Path_DIR = XA_util_readStrByregEx.readout(DB_Path, "(\\/.*\\/)", 0);// (\/.*\/)
-																				// 获取文件目录
-		CMDExecute.Rootrun("chmod 777 " + DB_Path);// root 权限 改DB文件权限
-		CMDExecute.Rootrun("chmod 777 " + DB_Path_DIR);// root 权限 改DB文件目录的权限
-		// Failure 14 (unable to open database file) on 0x60f110 when executing
-		// 'update T_USER set Coins =999999999'
+		// db文件 对话框
+		et_dialog = new AlertDialog.Builder(SQLEditUI.this); // 实例化
+		et_dialog.setTitle(R.string.pac_db_dbname).setView(et_dialog_v);
 
-		// boolean
+		et_dialog.setPositiveButton(R.string.pac_b_bmv_ok_btn,
+				new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface arg0, int arg1) {
 
-		et.setText(sql);
+						// xml中的控件
+						EditText db_path_et = (EditText) et_dialog_v
+								.findViewById(R.id.pac_db_ed_et);
+						CharSequence edit_value = db_path_et.getText();
+						arg0.dismiss();
+						DB_Path = edit_value.toString();
+
+						// 自定义文件是否存在
+						if (!XA_util_fileExits.dofExits(DB_Path)) {
+							DB_Path = null;
+
+							Toast.makeText(
+									SQLEditUI.this,
+									" "
+											+ SQLEditUI.this
+													.getString(R.string.pac_db_dbname)
+											+ SQLEditUI.this
+													.getString(R.string.pac_db_outIsNull),
+									Toast.LENGTH_LONG).show();// 提示
+						}// if
+
+						// -------生成界面---------
+						if (DB_Path != null) { // 如果 db文件不存在
+
+							// 控件
+							et = (EditText) findViewById(R.id.pac_db_sqlui_et);
+							bt = (Button) findViewById(R.id.pac_db_sqlui_bt);
+							tv = (TextView) findViewById(R.id.pac_db_sqlui_tv);
+
+							DB_Path_DIR = XA_util_readStrByregEx.readout(
+									DB_Path, "(\\/.*\\/)", 0);// (\/.*\/) 获取文件目录
+							Log.i(TAG, DB_Path_DIR);
+
+							CMDExecute.Rootrun("chmod 777 " + DB_Path);
+							// root权限改DB文件权限
+							CMDExecute.Rootrun("chmod 777 " + DB_Path_DIR);
+							// root权限改DB文件目录的权限
+							// Failure 14 (unable to open database file) on
+							// 0x60f110 when executing 。。。
+
+							et.setText(sql);
+
+						}
+
+					}// onClick
+				});
+
+		et_dialog.setNegativeButton(R.string.pac_b_bmv_no_btn,
+				new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+						SQLEditUI.this.finish(); // 退出
+					}
+				});
+
+		et_dialog.create().show();
 
 	}// oncreat end
 
@@ -103,7 +161,7 @@ public class SQLEditUI extends Activity {
 				} catch (SQLiteException e) {
 					Toast.makeText(getApplicationContext(), e.toString(),
 							Toast.LENGTH_LONG).show();
-					resultSet = sql + "\nFailed.\n"+"e.toString()";
+					resultSet = sql + "\nFailed.\n" + "e.toString()";
 				}
 
 			}
