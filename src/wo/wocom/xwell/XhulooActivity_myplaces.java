@@ -229,14 +229,19 @@ public class XhulooActivity_myplaces extends Activity {
 		menu.add(Menu.NONE, Menu.FIRST + 6, 6, "GPS").setIcon(
 
 		android.R.drawable.ic_menu_mylocation);
-		
+
 		menu.add(Menu.NONE, Menu.FIRST + 7, 7, "DB").setIcon(
 
-				android.R.drawable.ic_menu_slideshow);
+		android.R.drawable.ic_menu_slideshow);
 
-		menu.add(Menu.NONE, Menu.FIRST + 8, 8, "返回").setIcon(
+		menu.add(Menu.NONE, Menu.FIRST + 8, 8, "AES加密").setIcon(
 
 		android.R.drawable.ic_menu_revert);
+
+		menu.add(Menu.NONE, Menu.FIRST + 9, 9, "返回").setIcon(
+
+		android.R.drawable.ic_menu_revert);
+
 		return true;
 
 	}
@@ -286,12 +291,17 @@ public class XhulooActivity_myplaces extends Activity {
 					wo.wocom.xwell.database.SQLEditUI.class);
 
 			break;
-
 		case Menu.FIRST + 8:
+			startACIntent.stAcIntent(XhulooActivity_myplaces.this,
+					wo.wocom.xwell.security.XA_SEC_AES.class);
+			break;
+
+		case Menu.FIRST + 9:
 			Toast.makeText(this, "MP_退出菜单点击", Toast.LENGTH_SHORT).show();
 			Log.i(TAG, "XhulooActivity.this.finish()");
 			XhulooActivity_myplaces.this.finish();
 			break;
+
 		}
 
 		return false;

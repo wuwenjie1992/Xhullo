@@ -17,7 +17,7 @@ import android.widget.ListView;
 
 /**
  * @author wuwenjie wuwenjie.tk
- * @version 1.3.10.3.8：6
+ * @version 1.3.10.3.8：6.2
  * @more 空气质量，semcs,haqi网页太大,使用php抓取
  * @Notice 代码依赖于网页信息，网页改变可能导致crash
  */
@@ -104,6 +104,7 @@ public class XA_AirQuality extends Activity {
 				list_s[0] = "空气指数：" + aq.getcurrentAQI();
 				list_s[1] = "空气质量：" + aq.getAQStatus();
 				list_s[2] = "首要污染：" + aq.getPrimaryPollutants();
+				//list_s[3] = "PM2.5浓度：" + aq.getPM25Concentration();
 				list_s[3] = "主要影响：" + aq.getHealthEffects();
 				list_s[4] = "采取措施：" + aq.getRecommendedAction();
 				// list_s[5] = "PM2.5：" + aq.getIAQI(0);
@@ -150,25 +151,26 @@ public class XA_AirQuality extends Activity {
 			html_s = GetHtml2Str.reStr(html_s, url, XA_AirQuality.this);
 			// 联网处理数据,返回字符串
 
-			if (html_s != null && html_s.substring(0, 1).equals("实")) { // 第一url判断条件
+			if (html_s != null && regValue(html_s, "(实时)").equals("实时")) { // 第一url判断条件
 
 				// 处理数据-----------------------
-				aq.settime(regValue(html_s, "况(.*时)"));// 设置时间
+				aq.settime(regValue(html_s, "况(.*\\d时)"));// 设置时间
 
-				aq.setcurrentAQI(Integer
-						.parseInt(regValue(html_s, "\\)(\\d*)")));
-				// \)(\d*); '\'需使用'\\'转义
+				aq.setcurrentAQI(Integer.parseInt(regValue(html_s, "I.(\\d*)")));
+				// I.(\d*); '\'需使用'\\'转义
 				// Integer.parseInt(String i);//i转换为int
 
 				aq.setAQStatus(regValue(html_s, "\\)\\d*(.*级)"));
 				// \)\d*(.*级)
 
 				if (regValue(html_s, "(首要)") != null) {
-					aq.setPrimaryPollutants(regValue(html_s, "物(.*)对健"));
-					// 污染物(.*)对健
+					aq.setPrimaryPollutants(regValue(html_s, "物(.*\\d)对"));
+					// 物(.*\d)对
 				} else {
 					aq.setPrimaryPollutants("无");
 				}
+
+				//aq.setPM25Concentration(regValue(html_s, "度.(.*米)"));
 
 				aq.setHealthEffects(regValue(html_s, "响(.*)建"));
 
@@ -241,8 +243,8 @@ public class XA_AirQuality extends Activity {
 				aq.addAQIWarning("");
 				aq.addAQIWarning("");
 
-				aq.setAQIWarning(regValue(html_s, "^(.*)&"), 0);
-				aq.setAQIWarning(regValue(html_s, "：(.*。)"), 1);
+				aq.setAQIWarning(regValue(html_s, "^(.*)\\d"), 0);
+				aq.setAQIWarning(regValue(html_s, "^(.*)"), 1);
 
 				if (aq.getAQIWarning(0) != null) {// 如果无信息
 					// 向Handler发送消息,更新UI
@@ -278,7 +280,8 @@ public class XA_AirQuality extends Activity {
 		public String AQStatus; // 空气质量状况： 优一级
 		public String PrimaryPollutants; // 首要污染物
 		public String HealthEffects; // 对健康的影响 空气质量令人满意，基本无空气污染。
-		public String RecommendedAction; // 建议采取的措施 各类人群可正常活动。
+		public String RecommendedAction; // 建议采取的措施 各类人群可正常活动
+		//public String PM25Concentration; // PM2.5小时浓度
 		public ArrayList<String> AQIWarning = new ArrayList<String>(); // 空气质量警告
 
 		// public ArrayList<Integer> IAQI = new ArrayList<Integer>(); // 指标
@@ -340,6 +343,14 @@ public class XA_AirQuality extends Activity {
 		public void setRecommendedAction(String Re) {
 			this.RecommendedAction = Re;
 		}// RecommendedAction
+
+		//public String getPM25Concentration() {
+		//	return PM25Concentration;
+		//}
+
+		//public void setPM25Concentration(String pm) {
+		//	this.PM25Concentration = pm;
+		//}// PM25Concentration
 
 		public void addAQIWarning(String tmp) {
 			this.AQIWarning.add(tmp);
@@ -426,7 +437,7 @@ public class XA_AirQuality extends Activity {
 	}
 
 	/**
-	 * @version 1
+	 * @version 2
 	 * @author wuwenjie
 	 * @filename AQIWarning.php
 	 * 
@@ -440,10 +451,9 @@ public class XA_AirQuality extends Activity {
 	 * 
 	 *           $info=file_get_contents($m[1]);
 	 *           preg_match('|t01">([\s\S]*)<\/p|i',$info,$m);
-	 *           $m=preg_replace('|<[^>]*>|','',$m);//去除标签
-	 *           $m=preg_replace('|\s|','',$m); //去除任何空白字符 echo $m[1];
-	 * 
-	 *           ?>
+	 *           $m=preg_replace('|<[^>]*>|','',$m); //去除标签
+	 *           $m=preg_replace('|(&nbsp;)|',' ',$m); //将&nbsp; 替换为空白
+	 *           $m=preg_replace('|\s|','',$m); //去除任何空白字符 echo $m[1]; ?>
 	 * 
 	 * 
 	 */

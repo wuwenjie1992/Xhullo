@@ -101,4 +101,11 @@
     <string name="pac_db_outIsNull">结果为空</string>
     <string name="pac_db_path">/data/data/com.og.danjiddz/databases/ddz.LandLords</string>
 
+    <!-- pac_sec -->
+    <string name="pac_sec_encrypt">加密</string>
+    <string name="pac_sec_decrypt">解密</string>
+    <string name="pac_sec_t">AES加密方法图形界面</string>
+    <string name="pac_sec_warning">警告</string>
+    <string name="pac_sec_w">输入为空</string>
+
 </resources>

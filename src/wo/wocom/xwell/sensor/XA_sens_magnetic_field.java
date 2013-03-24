@@ -46,16 +46,22 @@ public class XA_sens_magnetic_field extends Activity {
 
 			TextView textView_sensor = (TextView) findViewById(R.id.pac_lo_sg_tv);
 			// float[] i = {(float) 0.0,(float) 0.0,(float) 0.0};
+
+			//矢量和
+			double a = Math.round(Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2)
+					+ Math.pow(z, 2)));
+			// static double pow(double a, double b) 返回第一个参数的第二个参数次幂的值。
+			// public static long round(double a)返回最接近参数的 long
+
 			// 设置显示文字
-			textView_sensor.setText("磁场感应:" + "\n" + "x=" + x + "\n" + "y=" + y
-					+ "\n" + "z=" + z + "\n\n" + "Name:" + sensor.getName()
-					+ "\n" + "Type:" + sensor.getType() + "\n" + "Version:"
-					+ sensor.getVersion() + "\n" + "vendor:"
-					+ sensor.getVendor() + "\n" + "MAXrange:"
-					+ sensor.getMaximumRange() + "\n" + "MinDelay:"
-					+ sensor.getMinDelay()+"\n" + "power:" + sensor.getPower()
+			textView_sensor.setText("磁场感应:\n" + "x=" + x + "\ny=" + y + "\nz="
+					+ z + "\nE=" + a + "\n\n" + "Name:" + sensor.getName()
+					+ "\nType:" + sensor.getType() + "\nVersion:"
+					+ sensor.getVersion() + "\nvendor:" + sensor.getVendor()
+					+ "\nMAXrange:" + sensor.getMaximumRange() + "\nMinDelay:"
+					+ sensor.getMinDelay() + "\npower:" + sensor.getPower()
 					// getMinDelay()Added in API level 9
-					+ "\n" + "Resolution:" + sensor.getResolution() + "\n");
+					+ "\nResolution:" + sensor.getResolution() + "\n");
 		}// onSensorChanged
 			// 精度
 

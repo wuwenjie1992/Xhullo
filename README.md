@@ -73,6 +73,9 @@
 * 20130308
     * Change XA_AirQuality.java Because [the website](http://www.semc.gov.cn/home/index.aspx) Changed
     * Change XA_AirQuality.java Because ADD AQI_Warning 
+* 20130324
+    * Add .security/XA_SEC_AES.java TODO GUI Tool for Encryption USE AES
+    * Add .utility/XA_util_aes.java TODO solution for [AES(zh)](http://zh.wikipedia.org/wiki/%E9%AB%98%E7%BA%A7%E5%8A%A0%E5%AF%86%E6%A0%87%E5%87%86)
 
 ##Bug Reports
 * 20120903

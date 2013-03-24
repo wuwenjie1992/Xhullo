@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
+
+    <EditText
+        android:id="@+id/pac_sec_aes_et1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:ems="10"
+        android:inputType="textPassword" />
+
+    <EditText
+        android:id="@+id/pac_sec_aes_et2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/pac_sec_aes_et1"
+        android:ems="10"
+        android:inputType="text" />
+
+    <Button
+        android:id="@+id/pac_sec_aes_bt1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/pac_sec_aes_et2"
+        android:layout_marginRight="56dp"
+        android:onClick="bt1_onClick"
+        android:text="@string/pac_sec_encrypt" />
+
+    <Button
+        android:id="@+id/pac_sec_aes_bt2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/pac_sec_aes_et2"
+        android:onClick="bt2_onClick"
+        android:text="@string/pac_sec_decrypt" />
+
+    <TextView
+        android:id="@+id/pac_sec_aes_tv1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/pac_sec_aes_bt1"
+        android:text="@string/ss_output"
+        android:textColor="#00D800" />
+
+</RelativeLayout>

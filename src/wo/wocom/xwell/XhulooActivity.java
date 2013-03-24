@@ -55,8 +55,8 @@ public class XhulooActivity extends Activity {
 		final Button ok_button = (Button) findViewById(R.id.widget40_button_OK);
 		final EditText mEditText01 = (EditText) findViewById(R.id.myEditText);
 		final CheckBox iAccept = (CheckBox) findViewById(R.id.CheckBox_Accept);
-		final String[] data = { "冰绡", "夜来幽梦,柔肠难成", "流景伤年,高楼危倚", "月华如练,蕊珠未眠",
-				"哀萧飘飘,一路烟霞" };
+		final String[] data = { "天高淡微雲", "月蟾星宿隕", "破曉聞靈駒", "騏驥兮驎驎", "錦衾若冰綃",
+				"身骸草覆絞", "凡塵水鏡花", "天涯潮星寡" };
 
 		String verName = null;
 		try {
@@ -184,6 +184,8 @@ public class XhulooActivity extends Activity {
 				// 计算三个方向的加速度
 				double a = Math.round(Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2)
 						+ Math.pow(z, 2)));
+				// static double pow(double a, double b) 返回第一个参数的第二个参数次幂的值。
+				// public static long round(double a)返回最接近参数的 long
 
 				// 消去原有的重力引起的压力
 				currentAcceleration = Math.abs((float) (a - calibration));
