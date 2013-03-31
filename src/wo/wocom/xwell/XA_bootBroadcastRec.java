@@ -8,7 +8,7 @@ import android.util.Log;
 
 /**
  * @author wuwenjie wuwenjie.tk
- * @version 1.3.4
+ * @version 1.3.4;1.3.10.3.17:1
  * @see 广播接收，启动程序
  */
 
@@ -24,7 +24,7 @@ public class XA_bootBroadcastRec extends BroadcastReceiver {
 
 			Log.i(TAG, "XA_BBR will start new task");
 			Intent boot_Intent = new Intent(con,
-					wo.wocom.xwell.sensor.XA_sens_sensorExits.class);
+					wo.wocom.xwell.admin.DevicePolicy.class);
 			boot_Intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 			// become the start of a new task on this history stack
 			con.startActivity(boot_Intent); // 启动activity

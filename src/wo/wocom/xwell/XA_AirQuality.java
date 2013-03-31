@@ -164,8 +164,8 @@ public class XA_AirQuality extends Activity {
 				// \)\d*(.*级)
 
 				if (regValue(html_s, "(首要)") != null) {
-					aq.setPrimaryPollutants(regValue(html_s, "物(.*\\d)对"));
-					// 物(.*\d)对
+					aq.setPrimaryPollutants(regValue(html_s, "物(.*)对健"));
+					// 物(.*\d)对健
 				} else {
 					aq.setPrimaryPollutants("无");
 				}

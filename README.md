@@ -76,6 +76,9 @@
 * 20130324
     * Add .security/XA_SEC_AES.java TODO GUI Tool for Encryption USE AES
     * Add .utility/XA_util_aes.java TODO solution for [AES(zh)](http://zh.wikipedia.org/wiki/%E9%AB%98%E7%BA%A7%E5%8A%A0%E5%AF%86%E6%A0%87%E5%87%86)
+* 20130331
+    * Add .admin/DevicePolicy.java TODO Request for DeviceAdmin & lock Screen & reset password
+    * Add .admin/AdminReceiver.java TODO receiver for DeviceAdmin
 
 ##Bug Reports
 * 20120903

@@ -108,4 +108,11 @@
     <string name="pac_sec_warning">警告</string>
     <string name="pac_sec_w">输入为空</string>
 
+    <!-- pac_ad_dp -->
+    <string name="pac_ad_dp_bt1">一键就锁屏</string>
+    <string name="pac_ad_dp_bt2">获得管理员</string>
+    <string name="pac_ad_dp_bt3">注销管理员</string>
+    <string name="pac_ad_dp_bt4">更改新密码</string>
+    <string name="pac_ad_dp_bt5">更改新二码</string>
+
 </resources>

@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="wo.wocom.xwell"
     android:versionCode="1"
-    android:versionName="1.3.10.3.16AES加密工具版" >
+    android:versionName="1.3.10.3.17DevicePolicyRequest版" >
 
     <uses-sdk android:minSdkVersion="9" />
 
@@ -139,6 +139,11 @@
         <!-- pac_security -->
         <activity android:name=".security.XA_SEC_AES" >
         </activity>
+        <!-- pac_admin -->
+        <activity
+            android:name=".admin.DevicePolicy"
+            android:label="DevicePolicy" >
+        </activity>
 
         <!-- service -->
         <!-- 音乐服务 -->
@@ -150,6 +155,19 @@
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <!-- 过滤 启动完成 -->
+            </intent-filter>
+        </receiver>
+        <!-- 设备管理组件 DeviceAdminReceiver -->
+
+        <receiver
+            android:name=".admin.AdminReceiver"
+            android:permission="android.permission.BIND_DEVICE_ADMIN" >
+            <meta-data
+                android:name="android.app.device_admin"
+                android:resource="@xml/pac_ad_device" />
+
+            <intent-filter>
+                <action android:name="android.app.action.DEVICE_ADMIN_ENABLED" />
             </intent-filter>
         </receiver>
     </application>

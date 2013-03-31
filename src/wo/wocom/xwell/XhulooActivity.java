@@ -147,10 +147,10 @@ public class XhulooActivity extends Activity {
 		iAccept.setOnClickListener(new CheckBox.OnClickListener() {
 			public void onClick(View v) {
 				if (iAccept.isChecked()) {
-					main_textview.setText("checkbox checked");
+					main_textview.setText("吳鉤秦劍市蒲松\n龍淵魚腸何探踪\n");
 					mImageView.setVisibility(View.VISIBLE);
 				} else {
-					main_textview.setText("unchecked");
+					main_textview.setText("五嶽三山櫻芳竟\n華白枝壓天予公");
 					mImageView.setVisibility(View.INVISIBLE);
 				}
 			}

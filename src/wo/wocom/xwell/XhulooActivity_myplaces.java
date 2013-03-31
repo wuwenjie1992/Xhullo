@@ -238,7 +238,7 @@ public class XhulooActivity_myplaces extends Activity {
 
 		android.R.drawable.ic_menu_revert);
 
-		menu.add(Menu.NONE, Menu.FIRST + 9, 9, "返回").setIcon(
+		menu.add(Menu.NONE, Menu.FIRST + 9, 9, "管理员").setIcon(
 
 		android.R.drawable.ic_menu_revert);
 
@@ -297,9 +297,8 @@ public class XhulooActivity_myplaces extends Activity {
 			break;
 
 		case Menu.FIRST + 9:
-			Toast.makeText(this, "MP_退出菜单点击", Toast.LENGTH_SHORT).show();
-			Log.i(TAG, "XhulooActivity.this.finish()");
-			XhulooActivity_myplaces.this.finish();
+			startACIntent.stAcIntent(XhulooActivity_myplaces.this,
+					wo.wocom.xwell.admin.DevicePolicy.class);
 			break;
 
 		}

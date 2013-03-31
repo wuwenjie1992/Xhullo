@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#25cdb6" >
+
+    <Button
+        android:id="@+id/pac_ad_dp_bt1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:onClick="bt1_onClick"
+        android:text="@string/pac_ad_dp_bt1" />
+
+    <Button
+        android:id="@+id/pac_ad_dp_bt2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/pac_ad_dp_bt1"
+        android:layout_alignBottom="@+id/pac_ad_dp_bt1"
+        android:layout_toLeftOf="@+id/pac_ad_dp_bt1"
+        android:onClick="bt2_onClick"
+        android:text="@string/pac_ad_dp_bt2" />
+
+    <Button
+        android:id="@+id/pac_ad_dp_bt3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/pac_ad_dp_bt1"
+        android:layout_alignBottom="@+id/pac_ad_dp_bt1"
+        android:layout_toRightOf="@+id/pac_ad_dp_bt1"
+        android:onClick="bt3_onClick"
+        android:text="@string/pac_ad_dp_bt3" />
+
+    <Button
+        android:id="@+id/pac_ad_dp_bt4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/pac_ad_dp_bt1"
+        android:layout_alignLeft="@+id/pac_ad_dp_bt1"
+        android:onClick="bt4_onClick"
+        android:text="@string/pac_ad_dp_bt4" />
+
+    <Button
+        android:id="@+id/pac_ad_dp_bt5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/pac_ad_dp_bt1"
+        android:layout_toRightOf="@+id/pac_ad_dp_bt2"
+        android:onClick="bt5_onClick"
+        android:text="@string/pac_ad_dp_bt5" />
+
+</RelativeLayout>
