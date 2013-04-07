@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
+
+    <Button
+        android:id="@+id/pac_net_cc_bt1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:text="Button" />
+
+    <EditText
+        android:id="@+id/pac_net_cc_et1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_toLeftOf="@+id/pac_net_cc_bt1"
+        android:ems="10" 
+        android:inputType="text">
+
+        <requestFocus />
+    </EditText>
+
+    <ScrollView
+        android:id="@+id/pac_net_cc_sv1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/pac_net_cc_bt1"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true" >
+
+        <TextView
+            android:id="@+id/pac_net_cc_tv1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="开始聊天吧" />
+       
+    </ScrollView>
+
+</RelativeLayout>

@@ -9,7 +9,7 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
-        android:text="@string/pac_db_dbname" />
+        />
 
     <EditText
         android:id="@+id/pac_db_ed_et"

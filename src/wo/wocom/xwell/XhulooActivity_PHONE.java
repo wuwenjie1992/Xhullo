@@ -21,6 +21,8 @@ import android.widget.Toast;
 public class XhulooActivity_PHONE extends Activity {
 
 	private static final String TAG = "PH_Xhuloo";
+	/* 通讯信息 */
+	TelephonyManager tm;
 
 	/* activity生命周期 */
 	public void onCreate(Bundle savedInstanceState) {
@@ -33,9 +35,6 @@ public class XhulooActivity_PHONE extends Activity {
 		final TextView ph_textview = (TextView) findViewById(R.id.ph_textview);
 		StringBuffer NBCinfo_sb = new StringBuffer("小区通讯信息：" + "\n");
 
-		/* 通讯信息 */
-		TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-
 		List<NeighboringCellInfo> infos = tm.getNeighboringCellInfo();
 		for (NeighboringCellInfo NBCinfo : infos) { // for(循环变量类型 循环变量名称 :
 													// 要被遍历的对象) 循环体
@@ -45,7 +44,8 @@ public class XhulooActivity_PHONE extends Activity {
 					+ "\n" + "信号强度" + NBCinfo.getRssi() + "\n\n");
 
 		}
-
+		tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+		
 		String telephone_info_s = new String("手机串号:" + tm.getDeviceId() + "\n"
 				+ "通话状态:" + tm.getCallState() + "\n" + "数据活动状态:"
 				+ tm.getDataActivity() + "\n" + "数据连接状态:" + tm.getDataState()

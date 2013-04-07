@@ -79,6 +79,9 @@
 * 20130331
     * Add .admin/DevicePolicy.java TODO Request for DeviceAdmin & lock Screen & reset password
     * Add .admin/AdminReceiver.java TODO receiver for DeviceAdmin
+* 20130407
+    * Add .net/ChatClient.java TODO use TCP|UDP send|recieve msg
+    * Add .net/ChatServer.java TODO Be a TCP|UDP Msg PC server 
 
 ##Bug Reports
 * 20120903
@@ -100,6 +103,12 @@
 * 20130308
     * XhulooActivity_playmusic.java
     * .database/SQLEditUI.java
-    
+* 20120407
+    * XhulooActivity_playmusic.java
+    * .database/SQLEditUI.java
+    * .net/ChatClient.java
+    * .net/ChatServer.java
+
+
 ##About Author 
 * WebSite:[wuwenjie.tk](http://www.wuwenjie.tk)

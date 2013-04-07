@@ -39,9 +39,9 @@ public class DevicePolicy extends Activity {
 		startPermissionBtn = (Button) findViewById(R.id.pac_ad_dp_bt2);
 		stopPermissionBtn = (Button) findViewById(R.id.pac_ad_dp_bt3);
 
-		// 取得系统服务
+		// 取得系统服务,设备策略管理
 		dpm = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
-		// 设备策略管理
+		
 		compName = new ComponentName(this, AdminReceiver.class);
 
 	}
@@ -52,7 +52,7 @@ public class DevicePolicy extends Activity {
 		// 组件是否获得管理员
 		if (active) {
 			dpm.lockNow();// 锁定
-			dpm.setMaximumTimeToLock(compName, 6000);
+			dpm.setMaximumTimeToLock(compName, 60000);
 			// 设置最大解锁时间
 		}
 		Log.i(TAG, "DevicePolicy locked");
@@ -95,7 +95,7 @@ public class DevicePolicy extends Activity {
 		Intent intent = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
 
 		// 权限列表
-		// EXTRA_DEVICE_ADMIN参数中说明了用到哪些权限，
+		// EXTRA_DEVICE_ADMIN参数中说明用到哪些权限，
 		intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, compName);
 
 		// 描述(additional explanation)

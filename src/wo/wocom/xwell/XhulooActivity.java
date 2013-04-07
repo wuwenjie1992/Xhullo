@@ -306,7 +306,11 @@ public class XhulooActivity extends Activity {
 
 		android.R.drawable.ic_menu_compass);
 
-		menu.add(Menu.NONE, Menu.FIRST + 10, 10, "退出").setIcon(
+		menu.add(Menu.NONE, Menu.FIRST + 10, 10, "聊天").setIcon(
+
+				android.R.drawable.ic_menu_revert);
+		
+		menu.add(Menu.NONE, Menu.FIRST + 11, 11, "退出").setIcon(
 
 		android.R.drawable.ic_menu_revert);
 
@@ -465,8 +469,17 @@ public class XhulooActivity extends Activity {
 					wo.wocom.xwell.sensor.XA_sens_sensorExits.class);
 			startActivity(intent02); // 跳转
 			break;
-
+			
 		case Menu.FIRST + 10:
+
+			/* 跳转新界面activity */
+			Intent intent07 = new Intent(); // 新建Intent意图
+			intent07.setClass(XhulooActivity.this,
+					wo.wocom.xwell.net.ChatClient.class);
+			startActivity(intent07); // 跳转
+			break;
+
+		case Menu.FIRST + 11:
 
 			Toast.makeText(this, "XA_退出菜单点击", Toast.LENGTH_SHORT).show();
 			Log.i(TAG, "XhulooActivity.this.finish()");

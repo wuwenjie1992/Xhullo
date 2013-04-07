@@ -80,6 +80,7 @@ public class AdminReceiver extends DeviceAdminReceiver {
 		super.onPasswordSucceeded(context, intent);
 	}
 
+	//获得
 	public void onReceive(Context context, Intent intent) {
 		Log.i("pac_ad_adminRec", "AdminReceiver onReceive()");
 		Toast.makeText(context, "onReceive", Toast.LENGTH_SHORT).show();
