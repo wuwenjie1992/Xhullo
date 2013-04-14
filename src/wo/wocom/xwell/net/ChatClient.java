@@ -15,6 +15,7 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 
 import wo.wocom.xwell.R;
+import wo.wocom.xwell.utility.XA_util_ADialog;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -36,14 +37,15 @@ import android.widget.TextView;
  * 
  * @author wuwenjie
  * @date 20130405
- * @version 1.3.10.3.18:3
+ * @version 1.3.10.3.18:4
  * @more Socket 编程
  * 
  */
 public class ChatClient extends Activity {
 
-	private static String IpAddress = null;// 
-	private static int TSend_Port = 7777; // tcp 发送的 服务器目标口
+	private static String IpAddress, imei, localIP = null;//
+	private static int TSend_Port = 7770; // tcp 发送的 服务器目标口
+	int UDP_PORT = 56085; // UDP 端口
 	private EditText sendtext = null;
 	private Button send = null;
 	private TextView showMesg = null;
@@ -51,14 +53,11 @@ public class ChatClient extends Activity {
 
 	Socket socket = null;
 	public String sendMesg = null;
-	int UDP_PORT = 56085;	//uDP 端口
 
-	TCPSendThread SendThd;
-	TCPRecvThread trt;
-	UDPRecvThread urt;
-	UDPSendThread ust;
-
-	// ipThread it= new ipThread();;
+	TCPSendThread SendThd; // TCP 发送 线程
+	TCPRecvThread trt; // TCP 接收
+	UDPRecvThread urt; // UDP 接收
+	UDPSendThread ust; // UDP 发送
 
 	public void onCreate(Bundle savedInstanceState) {
 
@@ -69,20 +68,21 @@ public class ChatClient extends Activity {
 		send = (Button) findViewById(R.id.pac_net_cc_bt1);
 		showMesg = (TextView) findViewById(R.id.pac_net_cc_tv1);
 
-		String imei = ((TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE))
+		imei = ((TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE))
 				.getDeviceId();
 		// DeviceId IMEI
 
-		writeIP();
+		// 获得本机地址
+		localIP = isConnectNet.getIPAddress(true);
+		setTitle("Local IP:" + localIP);
 
-		TCPsendMsg("I'm comming!!TCP "+imei);
-
-		UDPSendMsg("I'm comming!!UDP " + imei);
+		writeIP_SendTU();// 填写发送地址
 
 		// send 按钮 监听,TCP发送消息
 		send.setOnClickListener(new OnClickListener() {
 
 			public void onClick(View v) {
+
 				sendMesg = sendtext.getText().toString();
 				TCPsendMsg(sendMesg);
 				showMesg.append("\nSEND:" + sendMesg);
@@ -98,19 +98,17 @@ public class ChatClient extends Activity {
 		trt = new TCPRecvThread();
 		trt.start();
 
-		// }
-
 	}// onCreate
 
-	// 发送信息
+	// TCP 发送
 	public void TCPsendMsg(String text) {
 
 		SendThd = new TCPSendThread(text);
 		SendThd.start();
 
-	}// sendMsg end
+	}
 
-	// 接收UDP消息并显示
+	// UDP 接收
 	public void UDPRecvMsg() {
 
 		urt = new UDPRecvThread();
@@ -119,12 +117,13 @@ public class ChatClient extends Activity {
 
 	}
 
+	// UDP 发送
 	public void UDPSendMsg(String s) {
 		ust = new UDPSendThread(s);
 		ust.start();
 	}
 
-	////////----------线程--------------
+	// ///////////----------线程--------------//////////////
 
 	// 自定义 TCP 发送信息 线程
 	class TCPSendThread extends Thread {
@@ -344,9 +343,8 @@ public class ChatClient extends Activity {
 		stopThread();
 	}
 
-	
 	// 自定义 填写IP
-	public String writeIP() {
+	public String writeIP_SendTU() {
 		// 引用视图组件
 		LayoutInflater inflater = (LayoutInflater) ChatClient.this
 				.getSystemService(LAYOUT_INFLATER_SERVICE);
@@ -376,6 +374,9 @@ public class ChatClient extends Activity {
 						Log.i("onOptionsItemSelected", IpAddress);
 						// it.start();
 
+						TCPsendMsg("Comming T " + imei);// TCP 发送
+						UDPSendMsg("Comming U " + imei);// UDP 发送
+
 					}// onClick
 				});
 
@@ -387,6 +388,7 @@ public class ChatClient extends Activity {
 				});
 
 		et_dialog.create().show();
+
 		return IpAddress;
 
 	}
@@ -394,7 +396,7 @@ public class ChatClient extends Activity {
 	/* 菜单制作 */
 	public boolean onCreateOptionsMenu(Menu menu) {
 
-		menu.add(Menu.NONE, Menu.FIRST + 1, 1, "server ip").setIcon(
+		menu.add(Menu.NONE, Menu.FIRST + 1, 1, "ip info").setIcon(
 
 		android.R.drawable.ic_menu_myplaces);
 
@@ -407,6 +409,10 @@ public class ChatClient extends Activity {
 		switch (item.getItemId()) {
 
 		case Menu.FIRST + 1:
+
+			XA_util_ADialog alog = new XA_util_ADialog(ChatClient.this);
+			alog.show1ADialog("ip info", IpAddress + ":" + localIP + ":"
+					+ TSend_Port + ":" + UDP_PORT, "好的");
 
 			break;
 

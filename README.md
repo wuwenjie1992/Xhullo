@@ -82,6 +82,8 @@
 * 20130407
     * Add .net/ChatClient.java TODO use TCP|UDP send|recieve msg
     * Add .net/ChatServer.java TODO Be a TCP|UDP Msg PC server 
+* 20130414
+    * Changed .net/ChatClient.java & Server's TCP port Use 7770
 
 ##Bug Reports
 * 20120903

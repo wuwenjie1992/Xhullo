@@ -13,18 +13,19 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+
 /**
  * 
  * @author wuwenjie
  * @date 20130405
- * @version 1.3.10.3.18:3
+ * @version 1.3.10.3.18:4
  * @more Socket 编程
  * 
  */
 public class ChatServer {
 
 	public static void main(String[] args) {
-		ServerThread st = new ServerThread();
+		TCPRecThread st = new TCPRecThread();
 		st.start();
 		System.out.println("开始服务器端。。。");
 
@@ -49,7 +50,7 @@ class UDPRecThread extends Thread {
 		try {
 			ds = new DatagramSocket(UPort);
 		} catch (SocketException e) {
-			// TODO Auto-generated catch block
+
 			e.printStackTrace();
 		}
 		byte[] buf = new byte[1024];
@@ -58,7 +59,7 @@ class UDPRecThread extends Thread {
 		try {
 			ds.receive(dp);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+
 			e.printStackTrace();
 		}
 		String str = new String(dp.getData(), 0, dp.getLength());
@@ -112,9 +113,9 @@ class UDPSendThread extends Thread {
 }
 
 // Tcp rec 创建一个线程在后台监听
-class ServerThread extends Thread {
+class TCPRecThread extends Thread {
 
-	private static final int Port = 7777;
+	private static final int Port = 7770;
 	ServerSocket serversocket = null;
 	public boolean Respond;
 	public InetAddress ria;
@@ -148,7 +149,7 @@ class ServerThread extends Thread {
 								this.rport);
 						ust.start();
 
-						ServerTSThread st = new ServerTSThread(this.ria,
+						TCPSendThread st = new TCPSendThread(this.ria,
 								this.rport, "tcpsend");
 						st.start();
 
@@ -158,7 +159,7 @@ class ServerThread extends Thread {
 				String msg = buffer.readLine();
 				// System.out.println(socket.getInetAddress());
 
-				System.out.println("msg:" + msg);
+				System.out.println("msg:" + msg + "\n");
 
 			} // while end
 
@@ -175,12 +176,12 @@ class ServerThread extends Thread {
 }// ServerThread
 
 // TCP send
-class ServerTSThread extends Thread {
+class TCPSendThread extends Thread {
 	public InetAddress ria;
 	int p;
 	private String text;
 
-	public ServerTSThread(InetAddress ria, int p, String text) {
+	public TCPSendThread(InetAddress ria, int p, String text) {
 		this.ria = ria;
 		this.p = p;
 		this.text = text;
@@ -192,13 +193,26 @@ class ServerTSThread extends Thread {
 		try {
 			// 创建socket对象，指定服务器端地址和端口号
 			Socket socket = new Socket(ria, p);
-			socket.setKeepAlive(true);
-			// 获取 Client 端的输出流
-			PrintWriter pw = new PrintWriter(new BufferedWriter(
-					new OutputStreamWriter(socket.getOutputStream())), true);
-			// 填充信息
-			pw.println(text);
-			// this.port = socket.getPort();
+
+			boolean iscon = false;// 是否连接的标志
+
+			if (socket != null) { // 不为空,端口对外开放
+				iscon = true;
+			}
+
+			if (iscon) {
+
+				socket.setKeepAlive(true);
+				// 获取 Client 端的输出流
+				PrintWriter pw = new PrintWriter(new BufferedWriter(
+						new OutputStreamWriter(socket.getOutputStream())), true);
+				// 填充信息
+				pw.println(text);
+				// this.port = socket.getPort();
+			} else {
+				System.out.println("TCP send thread:connect" + ria + ":" + p
+						+ "refused!");
+			}
 
 			// 关闭
 			socket.close();
