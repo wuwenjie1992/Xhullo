@@ -65,4 +65,23 @@ public class CMDExecute {
 		return true;
 	}
 
+	public boolean exec(String cmd) {
+
+		Process process = null;
+
+		try {
+			process = Runtime.getRuntime().exec(cmd);
+
+		} catch (Exception e) {
+			return false;
+		} finally {
+			try {
+
+				process.destroy();
+			} catch (Exception e) {
+			}
+		}
+		return true;
+	}
+
 }

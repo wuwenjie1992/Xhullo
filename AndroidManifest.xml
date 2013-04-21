@@ -2,9 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="wo.wocom.xwell"
     android:versionCode="1"
-    android:versionName="1.3.10.3.19ChatImprove版" >
+    android:versionName="1.3.10.3.19jar调用版" >
 
-    <uses-sdk android:minSdkVersion="9" />
+    <uses-sdk android:minSdkVersion="10" />
 
     <!-- uses-permission -->
     <!-- 获取通话状态 Allows read only access to phone state -->
@@ -108,7 +108,8 @@
         </activity>
         <activity android:name=".XA_AirQuality" >
         </activity>
-        <activity android:name=".net.ChatClient"></activity>
+        <activity android:name=".net.ChatClient" >
+        </activity>
 
         <!-- pac_b -->
         <activity android:name=".browser.browser_main_view" >
@@ -145,10 +146,15 @@
             android:name=".admin.DevicePolicy"
             android:label="DevicePolicy" >
         </activity>
+        <!-- pac_GUItool -->
+        <activity android:name=".GUItool.GT_loadjar" >
+        </activity>
 
         <!-- service -->
         <!-- 音乐服务 -->
         <service android:name=".MusicService" />
+        <!-- 按键服务 -->
+        <service android:name=".service.SV_hotkeyService"></service>
 
         <!-- Receiver -->
         <!-- BroadcastReceiver -->

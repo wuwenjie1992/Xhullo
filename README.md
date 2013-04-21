@@ -84,6 +84,11 @@
     * Add .net/ChatServer.java TODO Be a TCP|UDP Msg PC server 
 * 20130414
     * Changed .net/ChatClient.java & Server's TCP port Use 7770
+* 20130421
+    * Add .utility/XA_util_dexclassloader.java TODO load jar file & invoke Method
+    * Add .GUItool/GT_loadjar.java TODO use jar to search IpAddress
+    * Add .service/SV_hotkeyService.java Unfinished
+    * Changed some icon TODO make them smaller
 
 ##Bug Reports
 * 20120903

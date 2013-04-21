@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import wo.wocom.xwell.utility.startACIntent;
 
 import android.app.Activity;
+import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -242,6 +243,14 @@ public class XhulooActivity_myplaces extends Activity {
 
 		android.R.drawable.ic_menu_revert);
 
+		menu.add(Menu.NONE, Menu.FIRST + 10, 10, "调用jar").setIcon(
+
+		android.R.drawable.ic_menu_revert);
+
+		menu.add(Menu.NONE, Menu.FIRST + 11, 11, "按键服务").setIcon(
+
+		android.R.drawable.ic_menu_revert);
+
 		return true;
 
 	}
@@ -299,6 +308,24 @@ public class XhulooActivity_myplaces extends Activity {
 		case Menu.FIRST + 9:
 			startACIntent.stAcIntent(XhulooActivity_myplaces.this,
 					wo.wocom.xwell.admin.DevicePolicy.class);
+			break;
+
+		case Menu.FIRST + 10:
+			startACIntent.stAcIntent(XhulooActivity_myplaces.this,
+					wo.wocom.xwell.GUItool.GT_loadjar.class);
+			break;
+
+		case Menu.FIRST + 11:
+
+			ComponentName component = new ComponentName(this,
+					wo.wocom.xwell.service.SV_hotkeyService.class);
+			// 组件名称，intent会根据component
+			// name启动一个组件（activity,service,contentProvider）
+
+			Intent mIntent01 = new Intent();
+			mIntent01.setComponent(component);
+			startService(mIntent01);
+
 			break;
 
 		}
