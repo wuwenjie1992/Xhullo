@@ -247,7 +247,7 @@ public class XhulooActivity_myplaces extends Activity {
 
 		android.R.drawable.ic_menu_revert);
 
-		menu.add(Menu.NONE, Menu.FIRST + 11, 11, "按键服务").setIcon(
+		menu.add(Menu.NONE, Menu.FIRST + 11, 11, "浮窗服务").setIcon(
 
 		android.R.drawable.ic_menu_revert);
 
@@ -318,7 +318,7 @@ public class XhulooActivity_myplaces extends Activity {
 		case Menu.FIRST + 11:
 
 			ComponentName component = new ComponentName(this,
-					wo.wocom.xwell.service.SV_hotkeyService.class);
+					wo.wocom.xwell.service.SV_FloateViewService.class);
 			// 组件名称，intent会根据component
 			// name启动一个组件（activity,service,contentProvider）
 

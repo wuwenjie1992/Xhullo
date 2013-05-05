@@ -108,7 +108,7 @@ public class XA_sens_orientation extends Activity implements
 		case Menu.FIRST + 1:
 
 			Log.i(TAG, "XhulooActivity_compass.this.finish()");
-		XA_sens_orientation.this.finish();
+			XA_sens_orientation.this.finish();
 			break;
 
 		}

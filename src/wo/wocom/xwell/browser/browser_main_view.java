@@ -214,7 +214,7 @@ public class browser_main_view extends Activity {
 				edit.setText(url);
 				Map<String, String> headers = new HashMap<String, String>();
 				headers.put("User-Agent",
-						"Mozilla/5.0 (X11;Linux x86_64;rv:12.0) Gecko/20121215 Firefox/17.1");
+						" Mozilla/5.0 (Android; Mobile; rv:21.0) Gecko/21.0 Firefox/21.0");
 				mWebView.loadUrl(url, headers);// API level 8
 				// loadUrl (String url, Map<String,String>
 				// additionalHttpHeaders)
@@ -565,11 +565,13 @@ public class browser_main_view extends Activity {
 		return null;
 	}
 
-	/*  */
+	/*插入历史记录*/
 	private void insertTable(String url, int time, String title) {
 
 		time = (int) Math.floor(System.currentTimeMillis() / 1000);
+		
 		SQLiteDatabase db = mOpenHelper.getWritableDatabase();
+		//Create and/or open a database that will be used for reading and writing.
 
 		myCursor_one = db.rawQuery("SELECT * FROM "
 				+ SQLHelperForBrowser.TB_NAME + " where name=?",

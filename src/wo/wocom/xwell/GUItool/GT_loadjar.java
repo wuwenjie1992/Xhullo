@@ -4,7 +4,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import wo.wocom.xwell.R;
-import wo.wocom.xwell.utility.XA_util_ADialog;
 import wo.wocom.xwell.utility.XA_util_dexclassloader;
 import wo.wocom.xwell.utility.XA_util_fileExits;
 import android.app.Activity;
@@ -53,9 +52,9 @@ public class GT_loadjar extends Activity {
 					ClassLoader.getSystemClassLoader());
 		} else {
 			Log.i("GT_loadjar", "jp else");
-			
-			new Thread(){
-				public void run(){
+
+			new Thread() {
+				public void run() {
 					try {
 						sleep(5);
 						GT_loadjar.this.finish();
@@ -64,8 +63,6 @@ public class GT_loadjar extends Activity {
 					}
 				}
 			}.start();
-			
-			
 
 		}
 

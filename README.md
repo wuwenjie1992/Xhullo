@@ -89,6 +89,10 @@
     * Add .GUItool/GT_loadjar.java TODO use jar to search IpAddress
     * Add .service/SV_hotkeyService.java Unfinished
     * Changed some icon TODO make them smaller
+* 20130505
+    * Changed & Add ./service/SV_FloatViewService.java TODO the service for floatview
+    * Add ./view/Floatview.java TODO the FloatView class 
+    * New floatViewService may cause the HOME & BACK KEY can't use
 
 ##Bug Reports
 * 20120903
