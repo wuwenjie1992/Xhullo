@@ -14,7 +14,7 @@ import android.widget.ImageView;
  * @author wuwenjie
  * @date 20130421
  * @version 1.3.10.3.19:2
- * @more	浮动窗口视图
+ * @more 浮动窗口视图;FLAG_NOT_FOCUSABLE
  */
 public class FloatView extends ImageView {
 
@@ -41,18 +41,19 @@ public class FloatView extends ImageView {
 
 		wmParams.type = LayoutParams.TYPE_SYSTEM_ALERT; // 设置window type
 														// TYPE_SYSTEM_OVERLAY
+														// TYPE_SYSTEM_ALERT
 		wmParams.format = PixelFormat.RGBA_8888; // 设置图片格式，效果为背景透明
 
 		// 设置Window flag
 		wmParams.flags = LayoutParams.FLAG_LAYOUT_NO_LIMITS
 				| LayoutParams.FLAG_NOT_TOUCH_MODAL
+				| LayoutParams.FLAG_NOT_FOCUSABLE
 				| LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH;
-		// | LayoutParams.FLAG_NOT_FOCUSABLE;
 
 		// FLAG_LAYOUT_NO_LIMITS 允许窗口扩展到屏幕之外 Constant Value: 512 (0x00000200)
 		// FLAG_NOT_TOUCH_MODAL 不可触状态 Constant Value: 8 (0x00000008)
 		// FLAG_WATCH_OUTSIDE_TOUCH 监视外部触动 Constant Value: 262144 (0x00040000)
-		// FLAG_NOT_FOCUSABLE Constant Value: 8 (0x00000008)
+		// FLAG_NOT_FOCUSABLE Constant Value: 8 (0x00000008)不聚焦 可使实体按键反应
 
 		/*
 		 * 下面的flags属性的效果形同“锁定”。 悬浮窗不可触摸，不接受任何事件,同时不影响后面的事件响应。
@@ -127,7 +128,9 @@ public class FloatView extends ImageView {
 			break;
 
 		}
-		// return true;
+
+		Log.i(TAG, "" + super.onTouchEvent(event));
+		// return false;
 
 		return super.onTouchEvent(event);
 
