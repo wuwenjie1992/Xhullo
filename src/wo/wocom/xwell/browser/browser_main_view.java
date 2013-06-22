@@ -52,7 +52,7 @@ import android.widget.Toast;
 /**
  * @author unknown
  * @improve wuwenjie wuwenjie.tk
- * @version 1.3.4
+ * @version 1.3.4:1.3.10.3.19:1
  * @more 自定义webbrowser的主界面
  */
 public class browser_main_view extends Activity {
@@ -188,12 +188,14 @@ public class browser_main_view extends Activity {
 		forwardBtn.setOnClickListener(new Button.OnClickListener() {
 			public void onClick(View v) {
 				if (mWebView.canGoForward())
+
 					mWebView.goForward();
 			}
 		});
 		backBtn.setOnClickListener(new Button.OnClickListener() {
 			public void onClick(View v) {
 				if (mWebView.canGoBack())
+
 					mWebView.goBack();
 			}
 		});
@@ -334,12 +336,12 @@ public class browser_main_view extends Activity {
 
 	}// oninit end
 
-	/////-------------菜单----------------
-	//菜单显示之前调用，一般用于调整菜单
+	// ///-------------菜单----------------
+	// 菜单显示之前调用，一般用于调整菜单
 	public boolean onPrepareOptionsMenu(Menu menu) {
-		
+
 		super.onPrepareOptionsMenu(menu);
-		
+
 		Log.i(TAG, "onPrepareOptionsMenu:" + menu);
 		// 显示控件
 		edit.setVisibility(View.VISIBLE);
@@ -370,7 +372,7 @@ public class browser_main_view extends Activity {
 		return true;
 	}
 
-	//菜单项目选择，调用
+	// 菜单项目选择，调用
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case HISTORY_ITEM:
@@ -565,13 +567,14 @@ public class browser_main_view extends Activity {
 		return null;
 	}
 
-	/*插入历史记录*/
+	/* 插入历史记录 */
 	private void insertTable(String url, int time, String title) {
 
 		time = (int) Math.floor(System.currentTimeMillis() / 1000);
-		
+
 		SQLiteDatabase db = mOpenHelper.getWritableDatabase();
-		//Create and/or open a database that will be used for reading and writing.
+		// Create and/or open a database that will be used for reading and
+		// writing.
 
 		myCursor_one = db.rawQuery("SELECT * FROM "
 				+ SQLHelperForBrowser.TB_NAME + " where name=?",
@@ -603,8 +606,8 @@ public class browser_main_view extends Activity {
 		try {
 			db.execSQL(sql);
 		} catch (SQLException e) {
-			Toast.makeText(browser_main_view.this, tip+e.toString(), Toast.LENGTH_LONG)
-					.show();
+			Toast.makeText(browser_main_view.this, tip + e.toString(),
+					Toast.LENGTH_LONG).show();
 			return;
 		}
 
@@ -660,6 +663,7 @@ public class browser_main_view extends Activity {
 
 	}
 
+	// 添加快捷方式
 	private void createShortcut() {
 		Intent addShortcut = new Intent(ACTION_ADD_SHORTCUT);
 		String numToDial = "TBrowser";

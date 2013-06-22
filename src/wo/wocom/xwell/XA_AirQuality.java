@@ -104,7 +104,7 @@ public class XA_AirQuality extends Activity {
 				list_s[0] = "空气指数：" + aq.getcurrentAQI();
 				list_s[1] = "空气质量：" + aq.getAQStatus();
 				list_s[2] = "首要污染：" + aq.getPrimaryPollutants();
-				//list_s[3] = "PM2.5浓度：" + aq.getPM25Concentration();
+				// list_s[3] = "PM2.5浓度：" + aq.getPM25Concentration();
 				list_s[3] = "主要影响：" + aq.getHealthEffects();
 				list_s[4] = "采取措施：" + aq.getRecommendedAction();
 				// list_s[5] = "PM2.5：" + aq.getIAQI(0);
@@ -170,7 +170,7 @@ public class XA_AirQuality extends Activity {
 					aq.setPrimaryPollutants("无");
 				}
 
-				//aq.setPM25Concentration(regValue(html_s, "度.(.*米)"));
+				// aq.setPM25Concentration(regValue(html_s, "度.(.*米)"));
 
 				aq.setHealthEffects(regValue(html_s, "响(.*)建"));
 
@@ -281,7 +281,7 @@ public class XA_AirQuality extends Activity {
 		public String PrimaryPollutants; // 首要污染物
 		public String HealthEffects; // 对健康的影响 空气质量令人满意，基本无空气污染。
 		public String RecommendedAction; // 建议采取的措施 各类人群可正常活动
-		//public String PM25Concentration; // PM2.5小时浓度
+		// public String PM25Concentration; // PM2.5小时浓度
 		public ArrayList<String> AQIWarning = new ArrayList<String>(); // 空气质量警告
 
 		// public ArrayList<Integer> IAQI = new ArrayList<Integer>(); // 指标
@@ -344,13 +344,13 @@ public class XA_AirQuality extends Activity {
 			this.RecommendedAction = Re;
 		}// RecommendedAction
 
-		//public String getPM25Concentration() {
-		//	return PM25Concentration;
-		//}
+		// public String getPM25Concentration() {
+		// return PM25Concentration;
+		// }
 
-		//public void setPM25Concentration(String pm) {
-		//	this.PM25Concentration = pm;
-		//}// PM25Concentration
+		// public void setPM25Concentration(String pm) {
+		// this.PM25Concentration = pm;
+		// }// PM25Concentration
 
 		public void addAQIWarning(String tmp) {
 			this.AQIWarning.add(tmp);
@@ -473,7 +473,7 @@ public class XA_AirQuality extends Activity {
 	 */
 
 	/**
-	 * @version 2 20130302
+	 * @version 2 20130302 obsolete
 	 * @author wuwenjie
 	 * @filename:shapi.php
 	 * 
@@ -486,6 +486,22 @@ public class XA_AirQuality extends Activity {
 	 *                     $m=preg_replace('|\s|','',$m); //去除任何空白字符 echo $m[1];
 	 *                     ?>
 	 * 
+	 */
+
+	/**
+	 * @version 3 20130621
+	 * @author wuwenjie
+	 * @filename shapu.php
+	 * 
+	 *           <?php $url = 'http://www.semc.gov.cn/aqi/home/Index.aspx';
+	 *           $info=file_get_contents($url);
+	 *           preg_match('|(实时空气质量状况[\s\S]*)|i',$info,$m);//<div id="Div1
+	 *           $m=preg_replace('|<[^>]*>|','',$m);//去除标签
+	 *           $m=preg_replace('|\s|','',$m); //去除任何空白字符
+	 * 
+	 *           preg_match('|(.*)。空|i',$m[1],$m);
+	 * 
+	 *           echo $m[1]; ?>
 	 */
 
 	/**
