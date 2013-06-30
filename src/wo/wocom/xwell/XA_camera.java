@@ -21,16 +21,19 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 /**
  * @author wuwenjie wuwenjie.tk
- * @version 1.3.2
- * @see 自定义的相机视图；按键处理；捕捉图像
+ * @version 1.3.2:1.3.10.3.21:1
+ * @see 自定义的相机视图；按键处理；捕捉图像;更换聚焦模式
  */
 
 public class XA_camera extends Activity {
@@ -39,6 +42,8 @@ public class XA_camera extends Activity {
 	private CameraView cv; // 自定义的相机视图
 	private Camera mCamera = null;// 相机对象
 	private Bitmap mBitmap = null;// Bitmap对象
+	Camera.Parameters parameters; // 相机参数对象
+	ImageButton ib;// 微距按键
 
 	public void onCreate(Bundle savedInstanceState) {
 
@@ -54,11 +59,37 @@ public class XA_camera extends Activity {
 		cv = new CameraView(this); // 在新建视图的同时，实例化了Camera
 		fl.addView(cv); // 创建预览用子类，放于fl底层
 
-		TextView tv = new TextView(this); // 创建文本框做特效
-		tv.setText(R.string.XA_camera_note);// "请按\"相机\"按钮ORVOLUME_DOWN"
-		fl.addView(tv);
+		LinearLayout ll = new LinearLayout(this);
 
+		TextView tv = new TextView(this); // 创建文本框做特效
+		tv.setText(R.string.XA_camera_note);// 请按音量下
+		ll.addView(tv);
+
+		ImageButton ib = new ImageButton(this);
+		ib.setImageResource(R.drawable.about);
+		ll.addView(ib);
+
+		fl.addView(ll);
 		setContentView(fl); // 设置Activity的根内容视图
+
+		// 图片按钮监听
+		ib.setOnClickListener(new ImageButton.OnClickListener() {
+			public void onClick(View v) {
+
+				parameters = mCamera.getParameters(); // 获得相机参数对象
+				if (parameters.getFocusMode().equals(
+						Camera.Parameters.FOCUS_MODE_AUTO)) {// 若自动聚焦
+					parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_MACRO);
+				} else {
+					parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
+				}
+
+				mCamera.setParameters(parameters); // 给相机对象设置刚才设定的参数
+				mCamera.startPreview(); // 开始预览
+
+			}
+		});
+
 	}// oncreate end
 
 	// 保存图片的PictureCallback对象；回调接口，用于提供从camera拍摄到的图像数据。
@@ -119,6 +150,10 @@ public class XA_camera extends Activity {
 		return cv.onKeyDown(keyCode, event);
 	}
 
+	public int getRotation(){
+	      return this.getWindowManager ().getDefaultDisplay ().getRotation ();
+	}
+	
 	// 照相视图
 	class CameraView extends SurfaceView {
 
@@ -156,28 +191,34 @@ public class XA_camera extends Activity {
 
 					Log.i(TAG, "CameraView_surfaceChanged");
 
-					Camera.Parameters parameters = mCamera.getParameters(); // 获得相机参数对象
+					parameters = mCamera.getParameters(); // 获得相机参数对象
 					parameters.setPictureFormat(PixelFormat.JPEG); // 设置格式
 					parameters.set("jpeg-quality", 85);// 照片质量
 					parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO); // 设置自动对焦
 					parameters.setPreviewSize(width, height);
-					parameters.setPreviewFrameRate(24);// 每秒24帧
+					parameters.setPreviewFrameRate(48);// 每秒48帧
 
 					// setDisplayOrientation
-
-					// ----设置图片保存时的分辨率大小
+					Log.i(TAG,"getRotation"+getRotation() );
+					
+					// 设置图片保存时的分辨率大小
 					List<Size> previewSizes_L = parameters
 							.getSupportedPreviewSizes();
-					Log.i(TAG,
-							previewSizes_L.toString() + "\n"
-									+ previewSizes_L.size() + "\n"
-									+ previewSizes_L.get(0));
+					Log.i(TAG, "\n" + previewSizes_L.size() + "\n"
+							+ previewSizes_L.get(0));
 					Size s = previewSizes_L.get(0);// 640 480 ;0 320 240
 					Log.i(TAG, s.width + "X" + s.height);
-					// parameters.setPictureSize(s.width,s.height);//默认分辨率高
-
+					// parameters.setPictureSize(s.width,s.height);//默认分辨率高					
+					
 					mCamera.setParameters(parameters); // 给相机对象设置刚才设定的参数
 					mCamera.startPreview(); // 开始预览
+
+					float[] output = new float[3];
+					parameters.getFocusDistances(output);
+					Log.i(TAG, "getFocusDistances" + output[0] + ":"
+							+ output[1] + ":" + output[2]);
+					// Camera和作为焦点对象之间的距离
+
 				}// surfaceChanged end
 
 				public void surfaceDestroyed(SurfaceHolder holder) {

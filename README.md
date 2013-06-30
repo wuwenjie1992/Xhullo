@@ -93,6 +93,8 @@
     * Changed & Add ./service/SV_FloatViewService.java TODO the service for floatview
     * Add ./view/Floatview.java TODO the FloatView class 
     * New floatViewService may cause the HOME & BACK KEY can't use
+* 20130630
+    * Improved XA_camera.java Can change focusMode
 
 ##Bug Reports
 * 20120903

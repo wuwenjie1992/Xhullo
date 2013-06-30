@@ -2,12 +2,16 @@ package wo.wocom.xwell;
 
 import java.util.List;
 
+import wo.wocom.xwell.utility.startACIntent;
+
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.telephony.NeighboringCellInfo;
 import android.telephony.TelephonyManager;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -15,7 +19,7 @@ import android.widget.Toast;
 
 /**
  * @author wuwenjie wuwenjie.tk
- * @version 1.3.1
+ * @version 1.3.1:1.3.10.3.20:2
  * @more 通讯信息；ANDROID_ID
  */
 public class XhulooActivity_PHONE extends Activity {
@@ -35,17 +39,17 @@ public class XhulooActivity_PHONE extends Activity {
 		final TextView ph_textview = (TextView) findViewById(R.id.ph_textview);
 		StringBuffer NBCinfo_sb = new StringBuffer("小区通讯信息：" + "\n");
 
-		List<NeighboringCellInfo> infos = tm.getNeighboringCellInfo();
-		for (NeighboringCellInfo NBCinfo : infos) { // for(循环变量类型 循环变量名称 :
-													// 要被遍历的对象) 循环体
-			NBCinfo_sb.append("小区号" + NBCinfo.getCid() + " LAC位置区域码:"
-					+ NBCinfo.getLac() + "\n" + "网络类型:"
-					+ NBCinfo.getNetworkType() + "主扰码" + NBCinfo.getPsc()
-					+ "\n" + "信号强度" + NBCinfo.getRssi() + "\n\n");
+		// List<NeighboringCellInfo> infos = tm.getNeighboringCellInfo();
+		// for (NeighboringCellInfo NBCinfo : infos) { // for(循环变量类型 循环变量名称 :
+		// 要被遍历的对象) 循环体
+		// NBCinfo_sb.append("小区号" + NBCinfo.getCid() + " LAC位置区域码:"
+		// + NBCinfo.getLac() + "\n" + "网络类型:"
+		// + NBCinfo.getNetworkType() + "主扰码" + NBCinfo.getPsc()
+		// + "\n" + "信号强度" + NBCinfo.getRssi() + "\n\n");
 
-		}
+		// }
 		tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-		
+
 		String telephone_info_s = new String("手机串号:" + tm.getDeviceId() + "\n"
 				+ "通话状态:" + tm.getCallState() + "\n" + "数据活动状态:"
 				+ tm.getDataActivity() + "\n" + "数据连接状态:" + tm.getDataState()
@@ -121,6 +125,25 @@ public class XhulooActivity_PHONE extends Activity {
 		Log.i(TAG, "PH_onDestroy");
 		Toast.makeText(XhulooActivity_PHONE.this, "PH_onDestroy",
 				Toast.LENGTH_SHORT).show();
+	}
+
+	public boolean onCreateOptionsMenu(Menu menu) {
+		menu.add(Menu.NONE, Menu.FIRST + 1, 1, "SMS").setIcon(
+
+		android.R.drawable.ic_menu_call);
+		return true;
+	}
+
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+
+		case Menu.FIRST + 1:
+
+			startACIntent.stAcIntent(XhulooActivity_PHONE.this,
+					wo.wocom.xwell.phone.XA_PHO_phoneUI.class);
+			break;
+		}
+		return false;
 	}
 
 }

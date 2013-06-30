@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="wo.wocom.xwell"
     android:versionCode="1"
-    android:versionName="1.3.10.3.19FloatView版" >
+    android:versionName="1.3.10.3.21CameraImpove版" >
 
     <uses-sdk android:minSdkVersion="10" />
 
@@ -52,6 +52,9 @@
     shown on top of all other applications. )
     -->
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+
+    <!-- 允许程序发送 SMS 短信(Allows an application to send SMS messages) -->
+    <uses-permission android:name="android.permission.SEND_SMS" />
 
     <!-- uses-feature 要求的特性 -->
     <uses-feature
@@ -157,6 +160,10 @@
         <activity android:name="wo.wocom.xwell.GUItool.GT_loadjar" >
         </activity>
 
+        <!-- pac_ph -->
+        <activity android:name="wo.wocom.xwell.phone.XA_PHO_phoneUI" >
+        </activity>
+
         <!-- service -->
         <!-- 音乐服务 -->
         <service android:name="wo.wocom.xwell.MusicService" />
@@ -185,6 +192,7 @@
                 <action android:name="android.app.action.DEVICE_ADMIN_ENABLED" />
             </intent-filter>
         </receiver>
+        
     </application>
 
 </manifest>
