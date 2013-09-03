@@ -154,27 +154,27 @@ public class XA_AirQuality extends Activity {
 			if (html_s != null && regValue(html_s, "(实时)").equals("实时")) { // 第一url判断条件
 
 				// 处理数据-----------------------
-				aq.settime(regValue(html_s, "况(.*\\d时)"));// 设置时间
+				aq.settime(regValue(html_s, ";(.*\\d时)"));// 设置时间
 
-				aq.setcurrentAQI(Integer.parseInt(regValue(html_s, "I.(\\d*)")));
-				// I.(\d*); '\'需使用'\\'转义
+				aq.setcurrentAQI(Integer.parseInt(regValue(html_s, ":(\\d*)")));
+				// :(\d*); '\'需使用'\\'转义
 				// Integer.parseInt(String i);//i转换为int
 
-				aq.setAQStatus(regValue(html_s, "\\)\\d*(.*级)"));
-				// \)\d*(.*级)
+				aq.setAQStatus(regValue(html_s, "\\d(.级)"));
+				// \d(.级)
 
 				if (regValue(html_s, "(首要)") != null) {
-					aq.setPrimaryPollutants(regValue(html_s, "物(.*)对健"));
-					// 物(.*\d)对健
+					aq.setPrimaryPollutants(regValue(html_s, "物:(.*)对健"));
+					// 物:(.*)对健
 				} else {
 					aq.setPrimaryPollutants("无");
 				}
 
 				// aq.setPM25Concentration(regValue(html_s, "度.(.*米)"));
 
-				aq.setHealthEffects(regValue(html_s, "响(.*)建"));
+				aq.setHealthEffects(regValue(html_s, "响:(.*)建"));
 
-				aq.setRecommendedAction(regValue(html_s, "施(.*)"));
+				aq.setRecommendedAction(regValue(html_s, "施:(.*)"));
 
 				// 初始化,ArrayList<String> IAQI,weaStationInfo;
 				// for (i = 0; i <= 6; i++) {

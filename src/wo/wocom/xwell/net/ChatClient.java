@@ -44,7 +44,7 @@ import android.widget.TextView;
 public class ChatClient extends Activity {
 
 	private static String IpAddress, imei, localIP = null;//
-	private static int TSend_Port = 7770; // tcp 发送的 服务器目标口
+	private static int TSend_Port = 6777; // tcp 发送的 服务器目标口
 	int UDP_PORT = 56085; // UDP 端口
 	private EditText sendtext = null;
 	private Button send = null;
@@ -159,8 +159,16 @@ public class ChatClient extends Activity {
 				socket.close();
 			} catch (UnknownHostException e1) {
 				e1.printStackTrace();
+				Log.i("TCPSendThread", "UnknownHostException");
+				showMesg.append("UnknownHost");
 			} catch (IOException e1) {
 				e1.printStackTrace();
+				Log.i("TCPSendThread", "IOException");
+				//showMesg.append("\nSys Err:IOException"+e1.getLocalizedMessage()+"\n");
+				//android.view.ViewRoot$CalledFromWrongThreadException:
+				//Only the original thread that created a view hierarchy can touch its views.
+				
+				//需要Handler来【更新、通知】UI线程
 			}
 		}
 	}// SendThread
@@ -374,7 +382,7 @@ public class ChatClient extends Activity {
 						Log.i("onOptionsItemSelected", IpAddress);
 						// it.start();
 
-						TCPsendMsg("Comming T " + imei);// TCP 发送
+						//TCPsendMsg("Comming T " + imei);// TCP 发送
 						UDPSendMsg("Comming U " + imei);// UDP 发送
 
 					}// onClick

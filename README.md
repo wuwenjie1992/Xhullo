@@ -95,6 +95,8 @@
     * New floatViewService may cause the HOME & BACK KEY can't use
 * 20130630
     * Improved XA_camera.java Can change focusMode
+* 20130630
+    * Fixed XA_AirQuality.java Because [the website](http://www.semc.gov.cn/home/index.aspx) Changed
 
 ##Bug Reports
 * 20120903
