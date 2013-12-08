@@ -250,7 +250,9 @@ public class XhulooActivity_weatherreport extends Activity {
 						XhulooActivity_weatherreport.this);// 联网处理数据,返回字符串
 				// if (html_s != null) {
 				wi.setcity(returnJValue(html_s, "city", 2));
-				wi.setdate_y(returnJValue(html_s, "date_y", 9));
+				wi.setdate_y(XA_util_readStrByregEx.readout(html_s,
+						"date_y.{3}(.+?)\"", 1));
+				// date_y.{3}(.+?)"
 				wi.setweek(returnJValue(html_s, "week", 3));
 				wi.setfchh(returnJValue(html_s, "fchh", 2));
 				wi.setadvise(returnJValue(html_s, "index_d", 20));

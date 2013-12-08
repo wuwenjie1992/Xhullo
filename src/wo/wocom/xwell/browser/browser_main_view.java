@@ -78,7 +78,7 @@ public class browser_main_view extends Activity {
 	private final static int PREFERENCE_ITEM = 5; //
 	private final static int EXIT_ITEM = 7; //
 
-	private String cur_url = "http://www.wuwenjie.tk/o/ok.html"; // 主页，当前链接
+	private String cur_url = "file://sdcard"; // 主页，当前链接
 	private final String ACTION_ADD_SHORTCUT = "com.android.launcher.action.INSTALL_SHORTCUT";
 	// 添加桌面快捷方式
 	List<Map<String, Object>> history_data = new ArrayList<Map<String, Object>>();

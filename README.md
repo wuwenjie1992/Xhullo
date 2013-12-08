@@ -97,6 +97,9 @@
     * Improved XA_camera.java Can change focusMode
 * 20130630
     * Fixed XA_AirQuality.java Because [the website](http://www.semc.gov.cn/home/index.aspx) Changed
+* 20131208
+    * Fixed XA_AirQuality.java Because [the old URL](http://wuwenjie.tk/o/shapi.php) too slow
+    * Add shaqi.js TODO run in [heroku APP](http://shaqi.herokuapp.com/shaqi) Show AQI Info
 
 ##Bug Reports
 * 20120903

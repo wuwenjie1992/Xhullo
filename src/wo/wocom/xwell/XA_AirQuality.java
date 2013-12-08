@@ -17,23 +17,23 @@ import android.widget.ListView;
 
 /**
  * @author wuwenjie wuwenjie.tk
- * @version 1.3.10.3.8：6.2
- * @more 空气质量，semcs,haqi网页太大,使用php抓取
+ * @version 1.3.10.3.8：6.3
+ * @more 空气质量，semcs,haqi网页太大,使用php抓取,6.3时改进使用nodejs
  * @Notice 代码依赖于网页信息，网页改变可能导致crash
  */
 public class XA_AirQuality extends Activity {
 
 	String TAG = "XA_AirQuality";
-	String title = "正在联网获取数据....";
-	String[] list_s = new String[5];
+	String title = "联网获取数据....";
+	String[] list_s = new String[6];
 	// String alert_title, alert_context = null;
 	int i;
 	MyHandler2 myHandler2;
 	ArrayAdapter<String> lv_ArrayAd;
-	String url = "http://wuwenjie.tk/o/shapi.php"; // AQI
-	String url2 = "http://www.wuhuixin.tk/o/AQIWarning.php";// 空气质量警告
+	String url = "http://shaqi.herokuapp.com/shaqi"; // AQI
+	String url2 = "http://shaqi.heroku.com/AQIWarning";// 空气质量警告
 	// http://wuwenjie.tk/o/shweaStationInfo.php";// 站点信息
-	String url3 = "http://wuwenjie.tk/o/foreignAQI.php";// 外国检测结果
+	// String url3 = "http://wuwenjie.tk/o/foreignAQI.php";// 外国检测结果
 	// http://www.aqicn.info/?city=Shanghai/USconsulate&size=xlarge&lang=cn
 	AirQuality aq;
 	XA_util_ADialog alog;
@@ -45,7 +45,7 @@ public class XA_AirQuality extends Activity {
 
 		// 初始化---------------
 		aq = new AirQuality();
-		for (i = 0; i <= 4; i++) {
+		for (i = 0; i <= 5; i++) {
 			list_s[i] = title;
 		}
 
@@ -107,6 +107,7 @@ public class XA_AirQuality extends Activity {
 				// list_s[3] = "PM2.5浓度：" + aq.getPM25Concentration();
 				list_s[3] = "主要影响：" + aq.getHealthEffects();
 				list_s[4] = "采取措施：" + aq.getRecommendedAction();
+				list_s[5] = "更多信息：" + aq.MoreInfo;
 				// list_s[5] = "PM2.5：" + aq.getIAQI(0);
 				// list_s[6] = "O3一小时：" + aq.getIAQI(1);
 				// list_s[7] = "O3八小时：" + aq.getIAQI(2);
@@ -151,71 +152,82 @@ public class XA_AirQuality extends Activity {
 			html_s = GetHtml2Str.reStr(html_s, url, XA_AirQuality.this);
 			// 联网处理数据,返回字符串
 
-			if (html_s != null && regValue(html_s, "(实时)").equals("实时")) { // 第一url判断条件
+			if (html_s != null) { // 第一url判断条件
 
-				// 处理数据-----------------------
-				aq.settime(regValue(html_s, ";(.*\\d时)"));// 设置时间
+				if (html_s.indexOf("实时") >= 0) { // 判断返回是否正确
 
-				aq.setcurrentAQI(Integer.parseInt(regValue(html_s, ":(\\d*)")));
-				// :(\d*); '\'需使用'\\'转义
-				// Integer.parseInt(String i);//i转换为int
+					// 处理数据-----------------------
+					aq.settime(regValue(html_s, ";(.*\\d时)"));// 设置时间
 
-				aq.setAQStatus(regValue(html_s, "\\d(.级)"));
-				// \d(.级)
+					aq.setcurrentAQI(Integer.parseInt(regValue(html_s,
+							":(\\d*)")));
+					// :(\d*); '\'需使用'\\'转义
+					// Integer.parseInt(String i);//i转换为int
 
-				if (regValue(html_s, "(首要)") != null) {
-					aq.setPrimaryPollutants(regValue(html_s, "物:(.*)对健"));
-					// 物:(.*)对健
-				} else {
-					aq.setPrimaryPollutants("无");
+					aq.setAQStatus(regValue(html_s, "\\d(.级)"));
+					// \d(.级)
+
+					if (regValue(html_s, "(首要)") != null) {
+						aq.setPrimaryPollutants(regValue(html_s, "物:(.*)对健"));
+						// 物:(.*)对健
+					} else {
+						aq.setPrimaryPollutants("无");
+					}
+
+					// aq.setPM25Concentration(regValue(html_s, "度.(.*米)"));
+
+					aq.setHealthEffects(regValue(html_s, "响:(.*)建"));
+
+					aq.setRecommendedAction(regValue(html_s, "施:(.+?)空"));
+
+					aq.setMoreInfo(regValue(html_s, "AQI(\\d.*)"));
+
+					// 初始化,ArrayList<String> IAQI,weaStationInfo;
+					// for (i = 0; i <= 6; i++) {
+					// aq.addIAQI(i);
+					// aq.addweaStationInfo(i);
+					// }
+
+					// aq.setIAQI(Integer.parseInt(regValue(html_s,
+					// "5(\\d*)O")),
+					// 0);// PM2.5
+					// aq.setIAQI(Integer.parseInt(regValue(html_s,
+					// "时(\\d*)O")),
+					// 1);// O3-1小时
+					// aq.setIAQI(Integer.parseInt(regValue(html_s,
+					// "(\\d*)CO")),
+					// 2);// O3-8小时
+					// aq.setIAQI(Integer.parseInt(regValue(html_s,
+					// "CO(\\d*)")),
+					// 3);// CO
+					// aq.setIAQI(Integer.parseInt(regValue(html_s,
+					// "PM10(\\d{1,})")),
+					// 4);// PM10
+					// aq.setIAQI(Integer.parseInt(regValue(html_s,
+					// "SO2(\\d*)")),
+					// 5);// SO2
+					// aq.setIAQI(Integer.parseInt(regValue(html_s,
+					// "NO2(\\d*)$")),
+					// 6);// NO2
+
+					// Log.i(TAG,
+					// "aq...." + aq.gettime() + ":" + aq.getcurrentAQI()
+					// + ":" + aq.getAQStatus() + ":"
+					// + aq.getPrimaryPollutants() + ":"
+					// + aq.getHealthEffects() + ":"
+					// + aq.getRecommendedAction() + ":"
+					// + aq.getIAQI(0) + ":" + aq.getIAQI(1) + ":"
+					// + aq.getIAQI(2) + ":" + aq.getIAQI(3) + ":"
+					// + aq.getIAQI(4) + ":" + aq.getIAQI(5) + ":"
+					// + aq.getIAQI(6));
+
+					// 向Handler发送消息,更新UI
+					b.putInt("DO", 1);// 1表示成功；可用putString
+					msg_run1.setData(b);
+
+					XA_AirQuality.this.myHandler2.sendMessage(msg_run1);
+					// 把【信息】在【现在之前的待发信息发送完毕】时推送到【信息队列的末端】
 				}
-
-				// aq.setPM25Concentration(regValue(html_s, "度.(.*米)"));
-
-				aq.setHealthEffects(regValue(html_s, "响:(.*)建"));
-
-				aq.setRecommendedAction(regValue(html_s, "施:(.*)"));
-
-				// 初始化,ArrayList<String> IAQI,weaStationInfo;
-				// for (i = 0; i <= 6; i++) {
-				// aq.addIAQI(i);
-				// aq.addweaStationInfo(i);
-				// }
-
-				// aq.setIAQI(Integer.parseInt(regValue(html_s, "5(\\d*)O")),
-				// 0);// PM2.5
-				// aq.setIAQI(Integer.parseInt(regValue(html_s, "时(\\d*)O")),
-				// 1);// O3-1小时
-				// aq.setIAQI(Integer.parseInt(regValue(html_s, "(\\d*)CO")),
-				// 2);// O3-8小时
-				// aq.setIAQI(Integer.parseInt(regValue(html_s, "CO(\\d*)")),
-				// 3);// CO
-				// aq.setIAQI(Integer.parseInt(regValue(html_s,
-				// "PM10(\\d{1,})")),
-				// 4);// PM10
-				// aq.setIAQI(Integer.parseInt(regValue(html_s, "SO2(\\d*)")),
-				// 5);// SO2
-				// aq.setIAQI(Integer.parseInt(regValue(html_s, "NO2(\\d*)$")),
-				// 6);// NO2
-
-				// Log.i(TAG,
-				// "aq...." + aq.gettime() + ":" + aq.getcurrentAQI()
-				// + ":" + aq.getAQStatus() + ":"
-				// + aq.getPrimaryPollutants() + ":"
-				// + aq.getHealthEffects() + ":"
-				// + aq.getRecommendedAction() + ":"
-				// + aq.getIAQI(0) + ":" + aq.getIAQI(1) + ":"
-				// + aq.getIAQI(2) + ":" + aq.getIAQI(3) + ":"
-				// + aq.getIAQI(4) + ":" + aq.getIAQI(5) + ":"
-				// + aq.getIAQI(6));
-
-				// 向Handler发送消息,更新UI
-				b.putInt("DO", 1);// 1表示成功；可用putString
-				msg_run1.setData(b);
-
-				XA_AirQuality.this.myHandler2.sendMessage(msg_run1);
-				// 把【信息】在【现在之前的待发信息发送完毕】时推送到【信息队列的末端】
-
 			}// if end
 			else {
 				// 向Handler发送消息,更新UI
@@ -237,24 +249,27 @@ public class XA_AirQuality extends Activity {
 			// 联网处理数据,返回字符串
 
 			// 判断页面返回是否正确
-			if (html_s != null && regValue(html_s, "(Host)").equals("Host")) {
+			if (html_s != null) {
 
-				// 初始化,ArrayList<String> AQIWarning
-				aq.addAQIWarning("");
-				aq.addAQIWarning("");
+				if (html_s.indexOf("实时") >= 0) {
 
-				aq.setAQIWarning(regValue(html_s, "^(.*)\\d"), 0);
-				aq.setAQIWarning(regValue(html_s, "^(.*)"), 1);
+					// 初始化,ArrayList<String> AQIWarning
+					aq.addAQIWarning("");
+					aq.addAQIWarning("");
 
-				if (aq.getAQIWarning(0) != null) {// 如果无信息
-					// 向Handler发送消息,更新UI
-					b2.putInt("DO2", 1);// 1表示警告信息成功；可用putString
-					msg_run2.setData(b2);
+					aq.setAQIWarning(regValue(html_s, "^(.*)\\d"), 0);
+					aq.setAQIWarning(regValue(html_s, "^(.*)"), 1);
 
-					XA_AirQuality.this.myHandler2.sendMessage(msg_run2);
-					// 把【信息】在【现在之前的待发信息发送完毕】时推送到【信息队列的末端】
-				} else {
-					Log.i(TAG, "AQI警告信息空");
+					if (aq.getAQIWarning(0) != null) {// 如果无信息
+						// 向Handler发送消息,更新UI
+						b2.putInt("DO2", 1);// 1表示警告信息成功；可用putString
+						msg_run2.setData(b2);
+
+						XA_AirQuality.this.myHandler2.sendMessage(msg_run2);
+						// 把【信息】在【现在之前的待发信息发送完毕】时推送到【信息队列的末端】
+					} else {
+						Log.i(TAG, "AQI警告信息空");
+					}
 				}
 			} else {
 				Log.i(TAG, "AQI警告信息错误");
@@ -281,6 +296,7 @@ public class XA_AirQuality extends Activity {
 		public String PrimaryPollutants; // 首要污染物
 		public String HealthEffects; // 对健康的影响 空气质量令人满意，基本无空气污染。
 		public String RecommendedAction; // 建议采取的措施 各类人群可正常活动
+		public String MoreInfo; // 更多信息
 		// public String PM25Concentration; // PM2.5小时浓度
 		public ArrayList<String> AQIWarning = new ArrayList<String>(); // 空气质量警告
 
@@ -364,6 +380,14 @@ public class XA_AirQuality extends Activity {
 			this.AQIWarning.set(index, IAQI);
 		}// AQIWarning
 
+		public String getMoreInfo() {
+			return this.MoreInfo;
+		}
+
+		public void setMoreInfo(String m) {
+			this.MoreInfo = m;
+		}// MoreInfo
+
 		// public void addIAQI(int tmp) {
 		// this.IAQI.add(tmp);
 		// }
@@ -437,6 +461,16 @@ public class XA_AirQuality extends Activity {
 	}
 
 	/**
+	 * @version 1
+	 * @author wuwenjie
+	 * @filename shaqi.js
+	 * @powerby nodejs
+	 * 
+	 *          ./shaqi.js
+	 * 
+	 */
+
+	/**
 	 * @version 2
 	 * @author wuwenjie
 	 * @filename AQIWarning.php
@@ -454,44 +488,12 @@ public class XA_AirQuality extends Activity {
 	 *           $m=preg_replace('|<[^>]*>|','',$m); //去除标签
 	 *           $m=preg_replace('|(&nbsp;)|',' ',$m); //将&nbsp; 替换为空白
 	 *           $m=preg_replace('|\s|','',$m); //去除任何空白字符 echo $m[1]; ?>
-	 * 
-	 * 
-	 */
-
-	/**
-	 * @version 1 obsolete
-	 * @author wuwenjie
-	 * @filename:shapi.php <?php $url =
-	 *                     'http://www.semc.gov.cn/aqi/home/Index.aspx';
-	 *                     $info=file_get_contents($url);
-	 *                     preg_match('|实时空气质量指数([\s\S]*)公众调查|i',$info,$m);
-	 *                     $m=preg_replace('|<[^>]*>|','',$m);//去除标签
-	 *                     $m=preg_replace('|\s|','',$m); //去除任何空白字符
-	 *                     //\(AQI\)(.*)空气质量指数\(AQI\).*(空气质量日报\(0-23时均值\).*)
-	 *                     $m=preg_replace('|(空气质量指数\(AQI\).*关闭)|','',$m); echo
-	 *                     $m[1]; ?>
-	 */
-
-	/**
-	 * @version 2 20130302 obsolete
-	 * @author wuwenjie
-	 * @filename:shapi.php
-	 * 
-	 *                     <?php $url =
-	 *                     'http://www.semc.gov.cn/aqi/home/Index.aspx';
-	 *                     $info=file_get_contents($url);
-	 *                     preg_match('|(实时空气质量状况[\s\S]*)<div
-	 *                     id="Div1|i',$info,$m);
-	 *                     $m=preg_replace('|<[^>]*>|','',$m);//去除标签
-	 *                     $m=preg_replace('|\s|','',$m); //去除任何空白字符 echo $m[1];
-	 *                     ?>
-	 * 
 	 */
 
 	/**
 	 * @version 3 20130621
 	 * @author wuwenjie
-	 * @filename shapu.php
+	 * @filename shapi.php
 	 * 
 	 *           <?php $url = 'http://www.semc.gov.cn/aqi/home/Index.aspx';
 	 *           $info=file_get_contents($url);
