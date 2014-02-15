@@ -37,7 +37,7 @@ import android.widget.TextView;
  * 
  * @author wuwenjie
  * @date 20130405
- * @version 1.3.10.3.18:4
+ * @version 1.3.10.3.18:5
  * @more Socket 编程
  * 
  */
@@ -45,6 +45,7 @@ public class ChatClient extends Activity {
 
 	private static String IpAddress, imei, localIP = null;//
 	private static int TSend_Port = 6777; // tcp 发送的 服务器目标口
+	private static int TListen_Port = 6778; // tcp 监听目标口
 	int UDP_PORT = 56085; // UDP 端口
 	private EditText sendtext = null;
 	private Button send = null;
@@ -52,6 +53,7 @@ public class ChatClient extends Activity {
 	AlertDialog.Builder et_dialog;
 
 	Socket socket = null;
+	ServerSocket serversocket = null;
 	public String sendMesg = null;
 
 	TCPSendThread SendThd; // TCP 发送 线程
@@ -156,7 +158,7 @@ public class ChatClient extends Activity {
 
 				Log.i("TCPSendThread", "activeCount:" + activeCount());
 				// 关闭
-				socket.close();
+				// socket.close();
 			} catch (UnknownHostException e1) {
 				e1.printStackTrace();
 				Log.i("TCPSendThread", "UnknownHostException");
@@ -164,11 +166,12 @@ public class ChatClient extends Activity {
 			} catch (IOException e1) {
 				e1.printStackTrace();
 				Log.i("TCPSendThread", "IOException");
-				//showMesg.append("\nSys Err:IOException"+e1.getLocalizedMessage()+"\n");
-				//android.view.ViewRoot$CalledFromWrongThreadException:
-				//Only the original thread that created a view hierarchy can touch its views.
-				
-				//需要Handler来【更新、通知】UI线程
+				// showMesg.append("\nSys Err:IOException"+e1.getLocalizedMessage()+"\n");
+				// android.view.ViewRoot$CalledFromWrongThreadException:
+				// Only the original thread that created a view hierarchy can
+				// touch its views.
+
+				// 需要Handler来【更新、通知】UI线程
 			}
 		}
 	}// SendThread
@@ -176,23 +179,21 @@ public class ChatClient extends Activity {
 	// 自定义 TCP 接收 线程
 	class TCPRecvThread extends Thread {
 
-		ServerSocket serversocket = null;
-
 		public void run() {
 			// 创建一个serversocket对象，并让他在Port端口监听
 			try {
-				serversocket = new ServerSocket(TSend_Port);
+				serversocket = new ServerSocket(TListen_Port);
 				while (true) {
 
-					Socket socket = serversocket.accept();
+					Socket socket_tr = serversocket.accept();
 
 					BufferedReader buffer = new BufferedReader(
-							new InputStreamReader(socket.getInputStream()));
+							new InputStreamReader(socket_tr.getInputStream()));
 
 					// 读取数据
 					String msg = buffer.readLine();
 					Log.i("TCPRecvThread", msg);
-					serversocket.close();
+					// serversocket.close();
 				} // while end
 			} catch (IOException e) {
 
@@ -325,6 +326,12 @@ public class ChatClient extends Activity {
 	protected void onPause() {
 
 		super.onPause();
+		try {
+			socket.close();
+			serversocket.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		stopThread();
 
 	}
@@ -382,7 +389,7 @@ public class ChatClient extends Activity {
 						Log.i("onOptionsItemSelected", IpAddress);
 						// it.start();
 
-						//TCPsendMsg("Comming T " + imei);// TCP 发送
+						// TCPsendMsg("Comming T " + imei);// TCP 发送
 						UDPSendMsg("Comming U " + imei);// UDP 发送
 
 					}// onClick

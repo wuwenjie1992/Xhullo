@@ -17,7 +17,7 @@ import android.widget.ListView;
 
 /**
  * @author wuwenjie wuwenjie.tk
- * @version 1.3.10.3.8：6.3
+ * @version 1.3.10.3.8：6.3.1
  * @more 空气质量，semcs,haqi网页太大,使用php抓取,6.3时改进使用nodejs
  * @Notice 代码依赖于网页信息，网页改变可能导致crash
  */
@@ -157,24 +157,28 @@ public class XA_AirQuality extends Activity {
 				if (html_s.indexOf("实时") >= 0) { // 判断返回是否正确
 
 					// 处理数据-----------------------
-					aq.settime(regValue(html_s, ";(.*\\d时)"));// 设置时间
+					aq.settime(regValue(html_s, "况(.+?时)"));// 设置时间
 
 					aq.setcurrentAQI(Integer.parseInt(regValue(html_s,
-							":(\\d*)")));
-					// :(\d*); '\'需使用'\\'转义
+							"I.:(\\d*)")));
+					// I为(\d*); '\'需使用'\\'转义
 					// Integer.parseInt(String i);//i转换为int
 
-					aq.setAQStatus(regValue(html_s, "\\d(.级)"));
-					// \d(.级)
+					aq.setAQStatus(regValue(html_s, "I.*\\d(.*)实"));
+					// ，..质量(.+?)。
 
 					if (regValue(html_s, "(首要)") != null) {
-						aq.setPrimaryPollutants(regValue(html_s, "物:(.*)对健"));
-						// 物:(.*)对健
+
+						if (regValue(html_s, "物(.+?)A") != null)
+							aq.setPrimaryPollutants(regValue(html_s, "物(.+?)A"));
+						else
+							aq.setPrimaryPollutants("无");
+						// 物:(.+?)对健
 					} else {
 						aq.setPrimaryPollutants("无");
 					}
 
-					// aq.setPM25Concentration(regValue(html_s, "度.(.*米)"));
+					// aq.setPM25Concentration(regValue(html_s, "为(.*\\d)微"));
 
 					aq.setHealthEffects(regValue(html_s, "响:(.*)建"));
 
@@ -297,7 +301,7 @@ public class XA_AirQuality extends Activity {
 		public String HealthEffects; // 对健康的影响 空气质量令人满意，基本无空气污染。
 		public String RecommendedAction; // 建议采取的措施 各类人群可正常活动
 		public String MoreInfo; // 更多信息
-		// public String PM25Concentration; // PM2.5小时浓度
+		public String PM25Concentration; // PM2.5小时浓度
 		public ArrayList<String> AQIWarning = new ArrayList<String>(); // 空气质量警告
 
 		// public ArrayList<Integer> IAQI = new ArrayList<Integer>(); // 指标
@@ -360,13 +364,13 @@ public class XA_AirQuality extends Activity {
 			this.RecommendedAction = Re;
 		}// RecommendedAction
 
-		// public String getPM25Concentration() {
-		// return PM25Concentration;
-		// }
+		public String getPM25Concentration() {
+			return PM25Concentration;
+		}
 
-		// public void setPM25Concentration(String pm) {
-		// this.PM25Concentration = pm;
-		// }// PM25Concentration
+		public void setPM25Concentration(String pm) {
+			this.PM25Concentration = pm;
+		}// PM25Concentration
 
 		public void addAQIWarning(String tmp) {
 			this.AQIWarning.add(tmp);

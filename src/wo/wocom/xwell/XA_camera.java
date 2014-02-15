@@ -32,7 +32,7 @@ import android.widget.Toast;
 
 /**
  * @author wuwenjie wuwenjie.tk
- * @version 1.3.2:1.3.10.3.21:1
+ * @version 1.3.2:1.3.10.3.21:2
  * @see 自定义的相机视图；按键处理；捕捉图像;更换聚焦模式
  */
 
@@ -130,9 +130,21 @@ public class XA_camera extends Activity {
 
 		public void onShutter() {
 			Log.i(TAG, "onShutter");
+			mCamera.autoFocus(AutoFocusCallBack);
 			/* 震动，获取震动硬件服务 */
 			final Vibrator vi = (Vibrator) getSystemService(VIBRATOR_SERVICE);
 			vi.vibrate(85);// 震动开始
+		}
+	};
+
+	// 自动对焦
+	private Camera.AutoFocusCallback AutoFocusCallBack = new Camera.AutoFocusCallback() {
+
+		public void onAutoFocus(boolean success, Camera camera) {
+			if (success) { // 对焦成功
+				Log.i(TAG, "AutoFocusCallback success then tikePic");
+				mCamera.takePicture(shutterCallback, null, pictureCallback);
+			}
 		}
 	};
 
@@ -142,18 +154,19 @@ public class XA_camera extends Activity {
 		if (keyCode == KeyEvent.KEYCODE_CAMERA
 				| keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
 			if (mCamera != null) {
-				Log.i(TAG, "mCamera.takePicture");
-				// 执行相机对象的takePicture()
-				mCamera.takePicture(shutterCallback, null, pictureCallback);
+				Log.i(TAG, "onKeyDown mCamera.takePicture");
+				//自动对焦后拍照
+				mCamera.autoFocus(AutoFocusCallBack);
+				//stackoverflow.com/questions/5878042/android-camera-autofocus-on-demand
 			}
 		}
 		return cv.onKeyDown(keyCode, event);
 	}
 
-	public int getRotation(){
-	      return this.getWindowManager ().getDefaultDisplay ().getRotation ();
+	public int getRotation() {
+		return this.getWindowManager().getDefaultDisplay().getRotation();
 	}
-	
+
 	// 照相视图
 	class CameraView extends SurfaceView {
 
@@ -199,8 +212,8 @@ public class XA_camera extends Activity {
 					parameters.setPreviewFrameRate(48);// 每秒48帧
 
 					// setDisplayOrientation
-					Log.i(TAG,"getRotation"+getRotation() );
-					
+					Log.i(TAG, "getRotation" + getRotation());
+
 					// 设置图片保存时的分辨率大小
 					List<Size> previewSizes_L = parameters
 							.getSupportedPreviewSizes();
@@ -208,8 +221,8 @@ public class XA_camera extends Activity {
 							+ previewSizes_L.get(0));
 					Size s = previewSizes_L.get(0);// 640 480 ;0 320 240
 					Log.i(TAG, s.width + "X" + s.height);
-					// parameters.setPictureSize(s.width,s.height);//默认分辨率高					
-					
+					// parameters.setPictureSize(s.width,s.height);//默认分辨率高
+
 					mCamera.setParameters(parameters); // 给相机对象设置刚才设定的参数
 					mCamera.startPreview(); // 开始预览
 
