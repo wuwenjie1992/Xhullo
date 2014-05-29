@@ -2,10 +2,12 @@ package wo.wocom.xwell;
 
 import java.util.ArrayList;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import wo.wocom.xwell.net.GetHtml2Str;
 import wo.wocom.xwell.utility.Util_Notifiy;
 import wo.wocom.xwell.utility.XA_util_ADialog;
-import wo.wocom.xwell.utility.XA_util_readStrByregEx;
 import wo.wocom.xwell.utility.startACIntent;
 
 import android.app.Activity;
@@ -26,8 +28,9 @@ import android.widget.TextView;
 
 /**
  * @author wuwenjie wuwenjie.tk
- * @version 1.3.9
- * @more 自定义列表模式；联网；解析JASON； 联网、解析的耗时操作使用handler;实现天气预报和实时预报
+ * @version 1.3.10
+ * @more 自定义列表模式；联网；解析JASON； 联网、解析的耗时操作使用handler;
+ * 			实现天气预报和实时预报;使用Org.json解析
  */
 
 public class XhulooActivity_weatherreport extends Activity {
@@ -36,12 +39,11 @@ public class XhulooActivity_weatherreport extends Activity {
 
 	myListViewAdapter my_LVA;// 自定义LISTVIEW
 
-	String[][] newtext = new String[6][5];
+	String[][] newtext = new String[7][5];
 	String title = "联网数据..";
-	String get_url_weaReport = "http://m.weather.com.cn/data/101020300.html"; // 未来天气
-	String get_url_weaAlarm = "http://product.weather.com.cn/alarm/grepalarm.php?areaid=10102";// 天气预警
-	// http://www.weather.com.cn/alarm/newalarmcontent.shtml?file=1012808-20130118164411-9102.html
-	String get_url_weaNow = "http://www.weather.com.cn/data/sk/101020300.html";// 实时天气
+	String get_url_weaReport = "http://cnweather.herokuapp.com/cnweather?cityid=101020300"; // 未来天气
+	String get_url_weaAlarm = "http://cnweather.herokuapp.com/alarm?cityid=101020300";// 天气预警
+	String get_url_weaNow = "http://cnweather.herokuapp.com/now?cityid=101020300";// 实时天气
 	// 省份代码：http://www.weather.com.cn/data/city3jdata/china.html
 	// 城市代码：http://www.weather.com.cn/data/city3jdata/station/1010200.html
 	MyHandler myHandler;
@@ -62,7 +64,7 @@ public class XhulooActivity_weatherreport extends Activity {
 		wn = new weatherNow();// 实时天气类
 
 		// List<String[]>,以输出结果
-		for (j = 0; j <= 5; j++) {
+		for (j = 0; j <= 6; j++) {
 			for (i = 0; i <= 4; i++) {
 				newtext[j][i] = title;
 			}
@@ -80,7 +82,7 @@ public class XhulooActivity_weatherreport extends Activity {
 
 	public void showMyLV(boolean i) {
 		ListView listView = (ListView) this.findViewById(R.id.wr_lv);
-		my_LVA = new myListViewAdapter(6); // 自定义的列表试图适配器
+		my_LVA = new myListViewAdapter(7); // 自定义的列表试图适配器
 		listView.setAdapter(my_LVA);
 		if (i)
 			my_LVA.notifyDataSetChanged();// 通知数据改变，反应该刷新视图
@@ -154,7 +156,7 @@ public class XhulooActivity_weatherreport extends Activity {
 
 	} // myListViewAdapter
 
-	// /////////////////////////////////////////////////////////////////////////
+	// //////////////////////////////
 
 	// 接收,处理消息,Handler与当前主线程一起运行
 	public class MyHandler extends Handler {
@@ -184,23 +186,22 @@ public class XhulooActivity_weatherreport extends Activity {
 				// weatherNow------------------------------
 				showDialog(
 						wn.getcity() + "实时天气 " + "发布于" + wn.gettime(),
-						"气温：" + wn.gettemp() + "°C\n风向：" + wn.getwind()
+						"气温：" + wn.gettemp() + "\n风向：" + wn.getwind()
 								+ "\n风力：" + wn.getwindPower() + "\n相对湿度："
 								+ wn.getRelativeHumidity(), "知道了");
 
 				// weatherReport------------------------------
-				title = wi.getcity() + " 今天" + wi.getdate_y() + "		" + "发布于"
+				title = wi.getcity() + " " + wi.getdate_y() + "\t" + "发布于"
 						+ wi.getfchh() + ":00";
 				XhulooActivity_weatherreport.this.setTitle(title);// 设置标题
 
-				newtext[0][0] = wi.getweek();// 获得星期
-				newtext[0][4] = wi.getadvise();// 获得建议
-
 				// 顺序以list_item.xml为准，设置温度，天气,风
-				for (i = 0; i <= 5; i++) {
+				for (i = 0; i <= 6; i++) {
+					newtext[i][0] = wi.getweek(i);// 获得星期
 					newtext[i][2] = wi.gettemp(i);
 					newtext[i][1] = wi.getweather(i);
 					newtext[i][3] = wi.getwind(i);
+					newtext[i][4] = wi.getadvise();// 获得建议
 				}
 
 				showMyLV(true);// notify changed 刷新视图
@@ -230,107 +231,98 @@ public class XhulooActivity_weatherreport extends Activity {
 			Message msg = new Message();
 			Bundle b = new Bundle();// 存放数据
 
+			JSONObject info;
 			html_s = GetHtml2Str.reStr(html_s, get_url_weaNow,
 					XhulooActivity_weatherreport.this);
 			// 联网处理数据,返回字符串
 
-			if (html_s != null) {
-				// 处理数据
-				// weatherNow------------------------------
+			try {
+				info = new JSONObject(html_s);
 
-				wn.setcity(returnByJM(html_s, "city"));
-				wn.setRelativeHumidity(returnByJM(html_s, "SD"));
-				wn.settemp(returnByJM(html_s, "temp"));
-				wn.settime(returnJValue(html_s, "time", 5));
-				wn.setwind(returnByJM(html_s, "WD"));
-				wn.setwindPower(returnByJM(html_s, "WS"));
+				if (html_s != null) {
+					// weatherNow------------------------------
 
-				// weatherReport------------------------------
-				html_s = GetHtml2Str.reStr(html_s, get_url_weaReport,
-						XhulooActivity_weatherreport.this);// 联网处理数据,返回字符串
-				// if (html_s != null) {
-				wi.setcity(returnJValue(html_s, "city", 2));
-				wi.setdate_y(XA_util_readStrByregEx.readout(html_s,
-						"date_y.{3}(.+?)\"", 1));
-				// date_y.{3}(.+?)"
-				wi.setweek(returnJValue(html_s, "week", 3));
-				wi.setfchh(returnJValue(html_s, "fchh", 2));
-				wi.setadvise(returnJValue(html_s, "index_d", 20));
+					JSONObject info_ja = info.getJSONObject("result")
+							.getJSONObject("sk_info");
 
-				// 初始化,ArrayList<String> temp;
-				for (i = 0; i <= 5; i++) {
-					wi.addtemp("temp" + i);
-					wi.addweather("wea" + i);
-					wi.addwind("win" + i);
+					wn.setcity(info_ja.getString("cityName"));
+					wn.setRelativeHumidity(info_ja.getString("sd"));
+					wn.settemp(info_ja.getString("temp"));
+					wn.settime(info_ja.getString("time"));
+					wn.setwind(info_ja.getString("wd"));
+					wn.setwindPower(info_ja.getString("ws"));
+
+					// weatherReport------------------------------
+					html_s = GetHtml2Str.reStr(html_s, get_url_weaReport,
+							XhulooActivity_weatherreport.this);// 联网处理数据,返回字符串
+
+					info = new JSONObject(html_s);
+
+					wi.setcity(info.getString("cityname"));
+					wi.setdate_y(info.getString("publish_date").substring(0, 8));
+
+					wi.setfchh(info.getJSONObject("date_detail").getString(
+							"timehours"));
+					wi.setadvise("");
+
+					// 初始化,ArrayList<String> temp;
+					for (i = 0; i <= 6; i++) {
+						wi.addweek("temp" + i);
+						wi.addtemp("temp" + i);
+						wi.addweather("wea" + i);
+						wi.addwind("win" + i);
+					}
+
+					// 处理气温，天气，风
+					for (i = 0; i <= 6; i++) {
+						wi.setweek(info.getJSONArray("weekArr").getString(i), i);
+						wi.settemp(info.getJSONArray("temp1").getString(i)
+								+ "->"
+								+ info.getJSONArray("temp2").getString(i), i);
+						wi.setweather(
+								info.getJSONArray("weather").getString(i), i);
+						wi.setwind(info.getJSONArray("wind").getString(i), i);
+					}
+
+					// weather alarm---------------------------
+					html_s = null; // 置空
+					html_s = GetHtml2Str.reStr(html_s, get_url_weaAlarm,
+							XhulooActivity_weatherreport.this);// 联网处理数据,返回字符串
+					info = new JSONObject(html_s);
+
+					if (info.getInt("code") == 0) {
+						hasnotify = false;
+					} else {
+						hasnotify = true;
+						get_url_weaAlarm = html_s;
+					}
+
+					// 向Handler发送消息,更新UI
+					b.putInt("DONE", 1);// 1表示成功；可用putString
+					msg.setData(b);
+
+					XhulooActivity_weatherreport.this.myHandler
+							.sendMessage(msg);
+
+				}// if end
+				else {
+					// 向Handler发送消息,更新UI
+					b.putInt("DONE", 0);// 0表示不成功
+					msg.setData(b);
+					XhulooActivity_weatherreport.this.myHandler
+							.sendMessage(msg);
 				}
 
-				// 处理气温，天气，风
-				for (i = 0; i <= 5; i++) {
-					wi.settemp(returnByJM(html_s, "temp" + (i + 1)), i);
-					wi.setweather(returnByJM(html_s, "weather" + (i + 1)), i);
-					wi.setwind(returnByJM(html_s, "wind" + (i + 1)), i);
-				}
-
-				// weather alarm---------------------------
-				html_s = null; // 置空
-				html_s = GetHtml2Str.reStr(html_s, get_url_weaAlarm,
-						XhulooActivity_weatherreport.this);// 联网处理数据,返回字符串
-
-				if (returnJValue(html_s, "count", 1).equals("0")) {
-					hasnotify = false;
-				} else {
-					hasnotify = true;
-					get_url_weaAlarm = html_s;
-				}
-
-				// 向Handler发送消息,更新UI
-				b.putInt("DONE", 1);// 1表示成功；可用putString
-				msg.setData(b);
-
-				XhulooActivity_weatherreport.this.myHandler.sendMessage(msg);
-
-			}// if end
-			else {
+			} catch (JSONException e) {
 				// 向Handler发送消息,更新UI
 				b.putInt("DONE", 0);// 0表示不成功
 				msg.setData(b);
 				XhulooActivity_weatherreport.this.myHandler.sendMessage(msg);
+				e.printStackTrace();
 			}
 
 		}// run end
 	} // my thread end
-
-	/**
-	 * @see XA_util_readStrByregEx
-	 * @param input
-	 *            输入字符串
-	 * @param key
-	 *            关键词
-	 * 
-	 * @param regEX_i
-	 *            取得字个数
-	 */
-	public String returnJValue(String input, String key, int regEX_i) {
-
-		String regEX = key + "\":\"(.{" + regEX_i + "})";// city":"(.{2})
-
-		String out = XA_util_readStrByregEx.readout(input, regEX, 1);
-		return out;
-
-	}
-
-	public String returnByJM(String input, String key) {
-
-		// int i=0;int j=0;
-		// j = input.indexOf(key);
-		// i = input.indexOf("\"", j + key.length() + 3);
-		// String out = input.substring(j + key.length() + 3, i);
-
-		String out = input.substring(input.indexOf(key) + key.length() + 3,
-				input.indexOf("\"", input.indexOf(key) + key.length() + 3));
-
-		return out;
-	}
 
 	/**
 	 * @see XA_util_ADialog
@@ -344,7 +336,7 @@ public class XhulooActivity_weatherreport extends Activity {
 		alog.show1ADialog(ti, msg, bnt);
 	}
 
-	// /////////////////////////////////////////////
+	// ////////////////////////
 	// 自定义 weatherAlarm
 
 	// 自定义 weatherNow
@@ -412,7 +404,7 @@ public class XhulooActivity_weatherreport extends Activity {
 
 		private String date_y;// 日期,设置到title
 		private String city; // 城市
-		private String week; // 星期几
+		private ArrayList<String> week = new ArrayList<String>();; // 星期几
 		private String fchh; // 发布时间，设置到title
 		private ArrayList<String> weather = new ArrayList<String>();// 天气
 		private ArrayList<String> temp = new ArrayList<String>();// 气温
@@ -437,12 +429,16 @@ public class XhulooActivity_weatherreport extends Activity {
 			this.city = city;
 		}
 
-		public String getweek() {
-			return week;
+		public String getweek(int index) {
+			return week.get(index);
 		}
 
-		public void setweek(String week) {
-			this.week = week;
+		public void setweek(String week, int index) {
+			this.week.set(index, week);
+		}
+
+		public void addweek(String week) {
+			this.week.add(week);
 		}
 
 		public String getfchh() {

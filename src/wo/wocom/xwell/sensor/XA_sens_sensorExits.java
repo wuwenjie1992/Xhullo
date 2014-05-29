@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import wo.wocom.xwell.R;
+import wo.wocom.xwell.XhulooActivity;
 import wo.wocom.xwell.utility.XA_util_ADialog;
 import wo.wocom.xwell.utility.startACIntent;
 import android.app.Activity;
@@ -53,7 +54,8 @@ public class XA_sens_sensorExits extends Activity {
 			switch (s.getType()) {// 传感器的泛型类型 int
 
 			case Sensor.TYPE_ACCELEROMETER:
-				item.set(0, s.getName() + "加速度");// set(int index, E object)
+				item.set(0, s.getName() + "加速度");// 重力感应 set(int index, E
+													// object)
 				break;
 			case Sensor.TYPE_MAGNETIC_FIELD:
 				item.set(1, s.getName() + "电磁场");
@@ -127,8 +129,8 @@ public class XA_sens_sensorExits extends Activity {
 				} else {
 					switch (position) {
 					case 0:
-
-						break;
+						
+						break;// 加速度
 					case 1:// 电磁场
 						startACIntent.stAcIntent(XA_sens_sensorExits.this,
 								XA_sens_magnetic_field.class);
@@ -138,7 +140,7 @@ public class XA_sens_sensorExits extends Activity {
 								XA_sens_orientation.class);
 						break;
 					case 3:
-						
+
 						break;
 					case 4:
 
@@ -149,7 +151,7 @@ public class XA_sens_sensorExits extends Activity {
 					case 6:
 
 						break;
-					case 7://距离
+					case 7:// 距离
 						startACIntent.stAcIntent(XA_sens_sensorExits.this,
 								XA_sens_proximity.class);
 						break;

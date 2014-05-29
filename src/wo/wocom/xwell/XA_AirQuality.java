@@ -17,7 +17,7 @@ import android.widget.ListView;
 
 /**
  * @author wuwenjie wuwenjie.tk
- * @version 1.3.10.3.8：6.3.1
+ * @version 1.3.10.3.8：6.3.2
  * @more 空气质量，semcs,haqi网页太大,使用php抓取,6.3时改进使用nodejs
  * @Notice 代码依赖于网页信息，网页改变可能导致crash
  */
@@ -157,20 +157,21 @@ public class XA_AirQuality extends Activity {
 				if (html_s.indexOf("实时") >= 0) { // 判断返回是否正确
 
 					// 处理数据-----------------------
-					aq.settime(regValue(html_s, "况(.+?时)"));// 设置时间
+					aq.settime(regValue(html_s, "况(.+?\b时)"));// 设置时间
 
+					Log.i(TAG, regValue(html_s, ":(\\d*).级"));
 					aq.setcurrentAQI(Integer.parseInt(regValue(html_s,
-							"I.:(\\d*)")));
-					// I为(\d*); '\'需使用'\\'转义
+							":(\\d*).级")));
+					// :(\d*).级; '\'需使用'\\'转义
 					// Integer.parseInt(String i);//i转换为int
 
-					aq.setAQStatus(regValue(html_s, "I.*\\d(.*)实"));
-					// ，..质量(.+?)。
+					aq.setAQStatus(regValue(html_s, "\\d(.级)"));
+					// \d(.级)
 
 					if (regValue(html_s, "(首要)") != null) {
 
-						if (regValue(html_s, "物(.+?)A") != null)
-							aq.setPrimaryPollutants(regValue(html_s, "物(.+?)A"));
+						if (regValue(html_s, "物:(.+?)对") != null)
+							aq.setPrimaryPollutants(regValue(html_s, "物:(.+?)对"));
 						else
 							aq.setPrimaryPollutants("无");
 						// 物:(.+?)对健
@@ -180,11 +181,11 @@ public class XA_AirQuality extends Activity {
 
 					// aq.setPM25Concentration(regValue(html_s, "为(.*\\d)微"));
 
-					aq.setHealthEffects(regValue(html_s, "响:(.*)建"));
+					aq.setHealthEffects(regValue(html_s, "响:(.*。)建"));
 
-					aq.setRecommendedAction(regValue(html_s, "施:(.+?)空"));
+					aq.setRecommendedAction(regValue(html_s, "施:(.+?。)"));
 
-					aq.setMoreInfo(regValue(html_s, "AQI(\\d.*)"));
+					aq.setMoreInfo(regValue(html_s, "AQI-.+?(\\b.*)"));
 
 					// 初始化,ArrayList<String> IAQI,weaStationInfo;
 					// for (i = 0; i <= 6; i++) {
@@ -214,17 +215,12 @@ public class XA_AirQuality extends Activity {
 					// "NO2(\\d*)$")),
 					// 6);// NO2
 
-					// Log.i(TAG,
-					// "aq...." + aq.gettime() + ":" + aq.getcurrentAQI()
-					// + ":" + aq.getAQStatus() + ":"
-					// + aq.getPrimaryPollutants() + ":"
-					// + aq.getHealthEffects() + ":"
-					// + aq.getRecommendedAction() + ":"
-					// + aq.getIAQI(0) + ":" + aq.getIAQI(1) + ":"
-					// + aq.getIAQI(2) + ":" + aq.getIAQI(3) + ":"
-					// + aq.getIAQI(4) + ":" + aq.getIAQI(5) + ":"
-					// + aq.getIAQI(6));
-
+					/*
+					 * Log.i(TAG, "aq...." + aq.gettime() + ":" +
+					 * aq.getcurrentAQI() + ":" + aq.getAQStatus() + ":" +
+					 * aq.getPrimaryPollutants() + ":" + aq.getHealthEffects() +
+					 * ":" + aq.getRecommendedAction());
+					 */
 					// 向Handler发送消息,更新UI
 					b.putInt("DO", 1);// 1表示成功；可用putString
 					msg_run1.setData(b);
